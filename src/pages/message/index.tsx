@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ContentMessage } from "../../components/Message/ContentMessage"
+// import { ContentMessage } from "../../components/Message/ContentMessage"
 import { MessageUser } from "../../components/Message/MessageUser"
 import { Input } from "../../components/ui/input"
 import { Button } from "../../components/ui/button"
@@ -20,7 +20,7 @@ import "./style.css"
 export default function Message() {
   const [isSize, setIsSize] = useState(false)
   const [chat, setChat] = useState<IChat[]>([])
-  const [chatContent, setChatContent] = useState<IMessage[]>([])
+  // const [chatContent, setChatContent] = useState<IMessage[]>([])
   const [chatContents, setChatContents] = useState<IMessage | null>(null)
   const [userData, setUserData] = useState<InfoUser | null>(null)
   const [currentDateTime, setCurrentDateTime] = useState<string>("")
@@ -72,7 +72,7 @@ export default function Message() {
       }
       const postChat = await fetchMessage(userData.id_user, idChat)
       if (postChat && postChat.length > 0) {
-        setChatContent(postChat)
+        // setChatContent(postChat)
         setChatContents(postChat[0])
       }
     } catch (error) {
@@ -129,7 +129,7 @@ export default function Message() {
           </span>
         ) : (
           <>
-            <ContentMessage value={chatContent} id={idChat} />
+            {/* <ContentMessage value={chatContent} id={idChat} /> */}
             <div className="w-full bg-zinc-200 dark:bg-dark-TT2 p-2">
               <form
                 onSubmit={handleNewMessage}
