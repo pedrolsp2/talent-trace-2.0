@@ -18,7 +18,6 @@ export function FormPost(props: IForm) {
   const [newContent, setNewContent] = useState("");
   const [caracter, setCaracter] = useState(255);
   const { id } = useParams<{ id: string }>();
-  const [refreshKey, setRefreshKey] = useState(0); // State to force re-render
 
   useEffect(() => {
     setNewContent("");
@@ -46,7 +45,6 @@ export function FormPost(props: IForm) {
         fetchNewPost(idUser, newContent);
         setNewContent("");
         props?.fetch;
-        setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to force re-render
         toast({
           variant: "default",
           title: "Sucesso!",
@@ -72,7 +70,6 @@ export function FormPost(props: IForm) {
         fetchNewAnswers(idUser, newContent, Number(id));
         setNewContent("");
         props?.fetch;
-        setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to force re-render
         toast({
           variant: "default",
           title: "Sucesso!",

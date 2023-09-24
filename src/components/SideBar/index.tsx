@@ -1,13 +1,10 @@
-import { PlusCircle } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
   ChatCircleText,
   House,
-  MagnifyingGlass,
   Moon,
   SidebarSimple,
   Sun,
-  UsersThree,
 } from "@phosphor-icons/react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
@@ -30,9 +27,6 @@ export function SideBar() {
   const location = useLocation()
   const currentRouteRef = useRef<{ current: string } | null>(null)
   const [home, setHome] = useState(false)
-  const [search, setSearch] = useState(false)
-  const [post, setPost] = useState(false)
-  const [favorito, setFavorito] = useState(false)
   const [message, setMessage] = useState(false)
   const [toggle, setToggle] = useState<boolean>(false)
   const [user, setUser] = useState<InfoUser | null>(null)
@@ -61,9 +55,10 @@ export function SideBar() {
   }
 
   useEffect(() => {
+    const theme: string = "";
     localStorage.setItem("theme", theme)
-    const localTheme = localStorage.getItem("theme")
-    document.querySelector("html")?.setAttribute("data-mode", localTheme)
+    const localTheme: string | null = localStorage.getItem("theme")
+    document.querySelector("html")?.setAttribute("data-mode", localTheme || "")
   }, [theme])
 
   useEffect(() => {
@@ -95,44 +90,26 @@ export function SideBar() {
     switch (currentPath) {
       case "/":
         setHome(true)
-        setSearch(false)
-        setPost(false)
-        setFavorito(false)
         setMessage(false)
         break
       case "/search":
         setHome(false)
-        setSearch(true)
-        setPost(false)
-        setFavorito(false)
         setMessage(false)
         break
       case "/new-post":
         setHome(false)
-        setSearch(false)
-        setPost(true)
-        setFavorito(false)
         setMessage(false)
         break
       case "/favoritos":
         setHome(false)
-        setSearch(false)
-        setPost(false)
-        setFavorito(true)
         setMessage(false)
         break
       case "/conversas":
         setHome(false)
-        setSearch(false)
-        setPost(false)
-        setFavorito(false)
         setMessage(true)
         break
       default:
         setHome(false)
-        setSearch(false)
-        setPost(false)
-        setFavorito(false)
         setMessage(false)
         break
     }

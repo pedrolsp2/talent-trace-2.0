@@ -37,12 +37,14 @@ export interface IChat {
 }
 
 export interface IMessage {
-  id_chat: number;
-  id_user_sender: number;
-  data_envio: Date;
-  Mensagem: string;
-  NomeSender: string;
-  FotoSender: string;
+  id_chat: number
+  id_user_sender: number
+  id_user_friend?: number
+  data_envio: Date
+  Mensagem: string
+  NomeSender: string
+  FotoSender: string
+  content?:string;
 }
 
 export interface IContext extends IUser {

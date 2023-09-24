@@ -2,8 +2,6 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import background from "../../../assets/back-olheiro.png"
-import imgBack from "../../../assets/img-back.jpg"
-import iconLogin from "../../../assets/icon-login.png"
 
 import {
   Award,
