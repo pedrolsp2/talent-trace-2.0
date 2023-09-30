@@ -17,19 +17,18 @@ import { Button } from "../../../../components/ui/button"
 import { useToast } from "../../../../components/ui/use-toast"
 import { Loader } from "../../../../components/ui/loader"
 
-import { useAuth } from "../../../../context/AuthProvider/useAuth"
-
 import { useNavigate } from "react-router-dom"
 
 import iconLogin from "../../../../assets/icon-login.png"
 import { Eye, EyeOff, KeyRound, User2 } from "lucide-react"
+import { getLogin, setLocalStorage } from "../../../../hooks"
 import {
+  DialogHeader,
+  DialogFooter,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
-  DialogHeader,
-  DialogFooter,
   DialogTrigger,
 } from "../../../../components/ui/dialog"
 
@@ -46,34 +45,48 @@ export default function Signin() {
   const [user, setUser] = useState("")
   const [password, setPassword] = useState("")
   const { toast } = useToast()
-  const auth = useAuth()
   const navigate = useNavigate()
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
     setIsLoading(true)
 
+    let hasError = false
+
     if (!user) {
       setBorderUser("border border-rose-500 bg-rose-200")
-      setIsLoading(false)
+      hasError = true
     } else {
       setBorderUser("border border-gray-200 bg-slate-50")
-      setIsLoading(false)
     }
+
     if (!password) {
       setBorderPsw("border border-rose-500 bg-rose-200")
-      setIsLoading(false)
+      hasError = true
     } else {
       setBorderPsw("border border-gray-200 bg-slate-50")
+    }
+
+    if (!hasError) {
+      getLogin(user, password)
+        .then((result) => {
+          setLocalStorage(result[0].email, result[0].token)
+          navigate("/")
+        })
+        .catch((error) => {
+          console.error(error)
+          toast({
+            variant: "destructive",
+            title: "Não foi possivel prosseguir.",
+            description: "E-mail ou senha inválidos.",
+          })
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
+    } else {
       setIsLoading(false)
     }
-
-    const values = {
-      email: user,
-      password: password,
-    }
-
-    onHandleSignIn(values)
   }
 
   function handlePswdText() {
@@ -84,28 +97,6 @@ export default function Signin() {
     if (!isActive) {
       setIsActive(!isActive)
       setInput("text")
-    }
-  }
-
-  async function onHandleSignIn(values: { email: string; password: string }) {
-    setIsLoading(true)
-    try {
-      await auth.authenticate(values.email, values.password)
-      setIsLoading(false)
-      navigate("/")
-    } catch (error) {
-      setIsLoading(false)
-      toast({
-        variant: "destructive",
-        title: "Não foi possivel prosseguir.",
-        description: "E-mail ou senha inválidos.",
-      })
-      setBorderUser("border border-rose-500 bg-rose-200")
-      setBorderPsw("border border-rose-500 bg-rose-200")
-      setTimeout(() => {
-        setBorderUser("border border-gray-200 bg-slate-50")
-        setBorderPsw("border border-gray-200 bg-slate-50")
-      }, 5000)
     }
   }
 

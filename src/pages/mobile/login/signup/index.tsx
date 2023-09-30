@@ -16,7 +16,9 @@ import { Label } from "../../../../components/ui/label"
 import { useToast } from "../../../../components/ui/use-toast"
 import background from "../../../../assets/back-olheiro.png"
 import { useForm } from "react-hook-form"
-import axios from "axios"
+import { firebase as fb } from "../../../../services/firebase/firebasestorageconfig"
+import firebase from "../../../../services/firebase/config"
+import { useNavigate } from "react-router-dom"
 
 import {
   Compass,
@@ -32,6 +34,7 @@ import {
   Split,
   User2,
 } from "lucide-react"
+import axios from "axios"
 
 type FormValues = {
   user: string
@@ -58,6 +61,7 @@ type ufProps = {
 const initialState = ""
 
 export default function MobileSignup() {
+  const navigate = useNavigate()
   const [selectedCity, setSelectedCity] = useState(initialState)
   const [isMobile, setIsMobile] = useState(false)
   const [isActive, setIsActive] = useState(false)
@@ -80,22 +84,61 @@ export default function MobileSignup() {
   const { toast } = useToast()
   const { register, handleSubmit } = useForm<FormValues>()
 
+  const [capaName, setCapaName] = useState<string | null>(null)
+  const [coverName, setCoverName] = useState<string | null>(null)
+
   useEffect(() => {
     const newTitle = "Talent Trace | Cadastrar"
     document.title = newTitle
   }, [])
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data)
+  const onSubmit = async (data: FormValues) => {
+    const id = Math.floor(Math.random() * 10000)
+    try {
+      await firebase.firestore().collection("users").add({
+        id_user: id,
+        altura: data.altura,
+        cidade: data.cidade,
+        email: data.email,
+        estado: data.estado,
+        fotoCapa: coverName,
+        fotoPerfil: capaName,
+        idade: data.idade,
+        password: data.password,
+        perna: data.perna,
+        peso: data.peso,
+        posicao: data.posicao,
+        user: data.user,
+      })
+      toast({
+        variant: "default",
+        title: "Sucesso!",
+        description: "Dados inseridos com sucesso!",
+      })
+      navigate("/login")
+    } catch (error) {
+      console.error("Erro ao inserir os dados:", error)
+      toast({
+        variant: "destructive",
+        title: "Erro!",
+        description: "Erro ao inserir os dados. Por favor, tente novamente.",
+      })
+    }
   }
 
   function getCity(e: React.ChangeEvent<HTMLSelectElement>) {
     const selected = e.target.value
     setSelectedCity(selected)
+
     getAllCitiesByState(selected)
       .then((cities) => {
-        setUFs(cities)
+        const sortedCities = cities.sort(
+          (a: { nome: string }, b: { nome: string }) =>
+            a.nome.localeCompare(b.nome)
+        )
+        setUFs(sortedCities)
       })
+
       .catch((error) => {
         console.error("Erro ao obter cidades:", error)
       })
@@ -163,18 +206,6 @@ export default function MobileSignup() {
       setActiveFieldset((prev) => prev - 1)
     }
   }
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth > 1400)
-    }
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
-
   function handlePswdText() {
     if (isActive) {
       setIsActive(!isActive)
@@ -197,29 +228,69 @@ export default function MobileSignup() {
     }
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
+  const uploadImageToFirebase = async (
+    file: File,
+    folder: string
+  ): Promise<{ url: string; name: string }> => {
+    // Gerar um nome aleatório para o arquivo
+    const randomFileName =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15) +
+      "_" +
+      file.name
+
+    // Criar uma referência para o arquivo no Firebase Storage
+    const fileRef = fb.storage().ref().child(`${folder}/${randomFileName}`)
+
+    // Fazer o upload do arquivo
+    await fileRef.put(file)
+
+    // Obter a URL de download
+    const downloadURL = await fileRef.getDownloadURL()
+
+    return { url: downloadURL, name: randomFileName }
   }
 
-  const handleFileChangeCover = (
+  const handleFileChangeCapa = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewCover(reader.result as string)
+      try {
+        const result = await uploadImageToFirebase(file, "capa")
+        setPreviewImage(result.url)
+        setCapaName(result.url)
+      } catch (error) {
+        console.error("Erro ao fazer upload da imagem:", error)
       }
-      reader.readAsDataURL(file)
     }
   }
+
+  const handleFileChangeCover = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      try {
+        const result = await uploadImageToFirebase(file, "cover")
+        setPreviewCover(result.url)
+        setCoverName(result.url)
+      } catch (error) {
+        console.error("Erro ao fazer upload da imagem:", error)
+      }
+    }
+  }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth > 1400)
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   return (
     <div
@@ -580,7 +651,7 @@ export default function MobileSignup() {
                 <Input
                   {...register("fotoPerfil", { required: true })}
                   type="file"
-                  onChange={handleFileChange}
+                  onChange={handleFileChangeCapa}
                   accept="image/jpeg, image/png"
                   className="w-auto rounded-xl text-sm border border-gray-200 bg-slate-50 cursor-pointer placeholder:text-gray-500"
                   id="foto-perfil"
