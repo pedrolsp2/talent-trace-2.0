@@ -7,7 +7,6 @@ import MobileSignup from "./pages/mobile/login/signup"
 
 import { Default } from "./layout/Default"
 import { ProtectedLayout } from "./components/ProtectedLayout"
-import Message from "./pages/message"
 import NotFound from "./components/NotFound"
 import SignUpOlheiro from "./pages/SignUpOlheiro"
 import MobileSignUpOlheiro from "./pages/mobile/SignUpOlheiro"

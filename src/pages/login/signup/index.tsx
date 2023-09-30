@@ -132,9 +132,13 @@ export default function Signup() {
 
     getAllCitiesByState(selected)
       .then((cities) => {
-        const sortedCities = cities.sort((a, b) => a.nome.localeCompare(b.nome))
+        const sortedCities = cities.sort(
+          (a: { nome: string }, b: { nome: string }) =>
+            a.nome.localeCompare(b.nome)
+        )
         setUFs(sortedCities)
       })
+
       .catch((error) => {
         console.error("Erro ao obter cidades:", error)
       })

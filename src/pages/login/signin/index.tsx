@@ -17,8 +17,6 @@ import { Button } from "../../../components/ui/button"
 import { useToast } from "../../../components/ui/use-toast"
 import { Loader } from "../../../components/ui/loader"
 
-import { useAuth } from "../../../context/AuthProvider/useAuth"
-
 import { useNavigate } from "react-router-dom"
 
 import iconLogin from "../../../assets/icon-login.png"
@@ -38,7 +36,6 @@ export default function Signin() {
   const [user, setUser] = useState("")
   const [password, setPassword] = useState("")
   const { toast } = useToast()
-  const auth = useAuth()
   const navigate = useNavigate()
 
   function handleSubmit(event: React.FormEvent) {
