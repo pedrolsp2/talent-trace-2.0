@@ -1,39 +1,47 @@
 export interface IUser {
-  email?: string;
-  token?: string;
+  email?: string
+  token?: string
 }
 
-export interface InfoUser{
+export interface InfoUser {
   id_user: number
-  u_name: string 
-  u_user: string 
-  u_foto: string
+  idade: string
+  email: string
+  fotoPerfil: string
+  fotoCapa: string
+  estado: string
+  user: string
+  perna: string
+  peso: string
+  cidade: string
+  posicao: string
+  password: string
+  altura: string
 }
 
-export interface IPost{
-  value: PostProps;
-  answer?: boolean;
+export interface IPost {
+  value: PostProps
+  answer?: boolean
 }
 
-export interface PostProps{
-  id_post: number;
-  u_foto: string;
-  u_name: string;
-  u_user: string;
-  u_email: string;
-  content: string;
-  number_comment?: number;
-  number_reply?: number;
-  number_likes: number;
-  id_answers?: number;
+export interface PostProps {
+  foto_user: string
+  nome_user: string
+  email_user: string
+  id_post: number
+  id_answers?: number
+  id_user: number
+  content: string
+  n_likes?: number
+  n_comement?: number
 }
 
 export interface IChat {
-  id_chat: number;
-  id_user_receiver:  number;
-  Nome: string; 
-  Foto: string;
-  Mensagem: string;
+  id_chat: number
+  id_user_receiver: number
+  Nome: string
+  Foto: string
+  Mensagem: string
 }
 
 export interface IMessage {
@@ -44,14 +52,14 @@ export interface IMessage {
   Mensagem: string
   NomeSender: string
   FotoSender: string
-  content?:string;
+  content?: string
 }
 
 export interface IContext extends IUser {
-  authenticate: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  authenticate: (email: string, password: string) => Promise<void>
+  logout: () => void
 }
 
 export interface IAuthProvider {
-  children: JSX.Element;
+  children: JSX.Element
 }

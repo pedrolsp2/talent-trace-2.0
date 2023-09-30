@@ -124,8 +124,8 @@ export default function MobileSignUpOlheiro() {
   }, [])
 
   return (
-    <div className="h-screen grid">
-      <div className="flex flex-row w-full py-0 gap-4 sticky top-0">
+    <div className="h-auto grid">
+      <div className="flex flex-row w-full py-4 gap-4 sticky top-1 z-40 bg-white">
         <span
           onClick={() => setActiveFieldset(0)}
           className={`flex gap-2 px-3 py-0 rounded-s items-center w-full ml-auto text-primary-50 cursor-pointer ${
@@ -166,7 +166,7 @@ export default function MobileSignUpOlheiro() {
           onSubmit={handleSubmit(onSubmit)}
           id="form"
           style={{ background: "rgba(255, 255, 255, 0.19)" }}
-          className={`w-full p-7 justify-between mt-8 h-[650px] rounded-sm backdrop-blur-sm shadow-md flex flex-col gap-4 items-center`}
+          className={`w-full p-2 justify-between mt-8 h-[600px] z-0 rounded-sm backdrop-blur-sm shadow-md flex flex-col gap-4 items-center`}
         >
           <div className="flex flex-col w-full">
             <fieldset

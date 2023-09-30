@@ -1,13 +1,11 @@
-import { useAuth } from "../../context/AuthProvider/useAuth";
-import { MessageSingin } from "../MessageSingin";
+import { MessageSingin } from "../MessageSingin"
 
-export const ProtectedLayout = ({children}: { children: JSX.Element}) => {
-  const auth = useAuth();
+export const ProtectedLayout = ({ children }: { children: JSX.Element }) => {
+  const status = localStorage.getItem("u") ? true : false
 
-  if(!auth.email){
-    return <MessageSingin/>
+  if (!status) {
+    return <MessageSingin />
   }
 
-  return children;
-
+  return children
 }

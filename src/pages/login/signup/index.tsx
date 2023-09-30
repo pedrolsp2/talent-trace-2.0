@@ -17,6 +17,9 @@ import { useToast } from "../../../components/ui/use-toast"
 import iconLogin from "../../../assets/icon-login.png"
 import { useForm } from "react-hook-form"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import firebase from "../../../services/firebase/config"
+import { firebase as fb } from "../../../services/firebase/firebasestorageconfig"
 
 import {
   Compass,
@@ -58,6 +61,7 @@ type ufProps = {
 const initialState = ""
 
 export default function Signup() {
+  const navigate = useNavigate()
   const [selectedCity, setSelectedCity] = useState(initialState)
   const [isMobile, setIsMobile] = useState(false)
   const [isActive, setIsActive] = useState(false)
@@ -69,6 +73,9 @@ export default function Signup() {
   const [idade, setIdade] = useState("")
   const [peso, setPeso] = useState("")
   const [posicao, setPosicao] = useState("")
+  const [capaName, setCapaName] = useState<string | null>(null)
+  const [coverName, setCoverName] = useState<string | null>(null)
+
   const [perna, setPerna] = useState("")
   const [confirmedPassword, setConfirmedPassword] = useState("")
   const [password, setPassword] = useState("")
@@ -85,16 +92,48 @@ export default function Signup() {
     document.title = newTitle
   }, [])
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data)
+  const onSubmit = async (data: FormValues) => {
+    const id = Math.floor(Math.random() * 10000)
+    try {
+      await firebase.firestore().collection("users").add({
+        id_user: id,
+        altura: data.altura,
+        cidade: data.cidade,
+        email: data.email,
+        estado: data.estado,
+        fotoCapa: capaName,
+        fotoPerfil: coverName,
+        idade: data.idade,
+        password: data.password,
+        perna: data.perna,
+        peso: data.peso,
+        posicao: data.posicao,
+        user: data.user,
+      })
+      toast({
+        variant: "default",
+        title: "Sucesso!",
+        description: "Dados inseridos com sucesso!",
+      })
+      navigate("/login")
+    } catch (error) {
+      console.error("Erro ao inserir os dados:", error)
+      toast({
+        variant: "destructive",
+        title: "Erro!",
+        description: "Erro ao inserir os dados. Por favor, tente novamente.",
+      })
+    }
   }
 
   function getCity(e: React.ChangeEvent<HTMLSelectElement>) {
     const selected = e.target.value
     setSelectedCity(selected)
+
     getAllCitiesByState(selected)
       .then((cities) => {
-        setUFs(cities)
+        const sortedCities = cities.sort((a, b) => a.nome.localeCompare(b.nome))
+        setUFs(sortedCities)
       })
       .catch((error) => {
         console.error("Erro ao obter cidades:", error)
@@ -116,8 +155,9 @@ export default function Signup() {
 
   const handleNext = (event: React.FormEvent) => {
     if (activeFieldset === 0) {
-      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      const regex = /^[^\s@]+[a-zA-Z0-9._-]+@[^\s@]+\.[^\s@]+$/
       const result = regex.test(email)
+
       if (!password || !confirmedPassword || !user || !email) {
         toast({
           variant: "destructive",
@@ -197,27 +237,56 @@ export default function Signup() {
     }
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
+  const uploadImageToFirebase = async (
+    file: File,
+    folder: string
+  ): Promise<{ url: string; name: string }> => {
+    // Gerar um nome aleatório para o arquivo
+    const randomFileName =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15) +
+      "_" +
+      file.name
+
+    // Criar uma referência para o arquivo no Firebase Storage
+    const fileRef = fb.storage().ref().child(`${folder}/${randomFileName}`)
+
+    // Fazer o upload do arquivo
+    await fileRef.put(file)
+
+    // Obter a URL de download
+    const downloadURL = await fileRef.getDownloadURL()
+
+    return { url: downloadURL, name: randomFileName }
   }
 
-  const handleFileChangeCover = (
+  const handleFileChangeCapa = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewCover(reader.result as string)
+      try {
+        const result = await uploadImageToFirebase(file, "capa")
+        setPreviewImage(result.url)
+        setCapaName(result.url)
+      } catch (error) {
+        console.error("Erro ao fazer upload da imagem:", error)
       }
-      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleFileChangeCover = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      try {
+        const result = await uploadImageToFirebase(file, "cover")
+        setPreviewCover(result.url)
+        setCoverName(result.url)
+      } catch (error) {
+        console.error("Erro ao fazer upload da imagem:", error)
+      }
     }
   }
 
@@ -272,7 +341,7 @@ export default function Signup() {
               className={`${activeFieldset === 0 ? "visibel" : "hidden"}`}
             >
               <Label className="text-zinc-400" htmlFor="user">
-                Usuário
+                Nome
               </Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -285,7 +354,7 @@ export default function Signup() {
                   type="text"
                   id="user"
                   value={user}
-                  placeholder="Digite seu usuário"
+                  placeholder="Digite seu nome"
                 />
               </div>
               <Label className="text-zinc-400" htmlFor="user">
@@ -587,7 +656,7 @@ export default function Signup() {
                 <Input
                   {...register("fotoPerfil", { required: true })}
                   type="file"
-                  onChange={handleFileChange}
+                  onChange={handleFileChangeCapa}
                   accept="image/jpeg, image/png"
                   className="w-auto rounded-xl text-sm border border-gray-200 bg-slate-50 cursor-pointer placeholder:text-gray-500"
                   id="foto-perfil"

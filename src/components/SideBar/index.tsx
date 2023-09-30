@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
-  ChatCircleText,
   House,
   Moon,
   SidebarSimple,
@@ -19,15 +18,14 @@ import {
 import { Button } from "../ui/button"
 import { useAuth } from "../../context/AuthProvider/useAuth"
 import { InfoUser } from "../../context/AuthProvider/type"
-import axios from "axios"
 import { getUserLocalStorage } from "../../context/AuthProvider/uitl"
 import { Skeleton } from "../ui/skeleton"
+import { fetchDataUser } from "../../context/hooks/getData"
 
 export function SideBar() {
   const location = useLocation()
   const currentRouteRef = useRef<{ current: string } | null>(null)
   const [home, setHome] = useState(false)
-  const [message, setMessage] = useState(false)
   const [toggle, setToggle] = useState<boolean>(false)
   const [user, setUser] = useState<InfoUser | null>(null)
   const [theme, setTheme] = useState(
@@ -35,7 +33,8 @@ export function SideBar() {
   )
   const navigate = useNavigate()
   const auth = useAuth()
-  const { email } = getUserLocalStorage()
+  const data = getUserLocalStorage()
+  const email = data[0]
 
   const handleResize = () => {
     if (window.innerWidth < 900) {
@@ -48,17 +47,21 @@ export function SideBar() {
   const handleSetTheme = () => {
     if (theme === "light") {
       setTheme("dark")
+      document.querySelector("html")?.setAttribute("data-mode", "dark")
     }
     if (theme === "dark") {
       setTheme("light")
+      document.querySelector("html")?.setAttribute("data-mode", "light")
     }
   }
 
   useEffect(() => {
-    const theme: string = "";
+    const theme: string = "light"
     localStorage.setItem("theme", theme)
     const localTheme: string | null = localStorage.getItem("theme")
-    document.querySelector("html")?.setAttribute("data-mode", localTheme || "")
+    document
+      .querySelector("html")
+      ?.setAttribute("data-mode", localTheme || "light")
   }, [theme])
 
   useEffect(() => {
@@ -71,13 +74,11 @@ export function SideBar() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.post("http://localhost:8800/user/", {
-          email,
-        })
-        setUser(response.data)
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error)
+      const data = await fetchDataUser(email)
+      if (data) {
+        setUser(data as InfoUser)
+      } else {
+        setUser(null)
       }
     }
 
@@ -90,27 +91,6 @@ export function SideBar() {
     switch (currentPath) {
       case "/":
         setHome(true)
-        setMessage(false)
-        break
-      case "/search":
-        setHome(false)
-        setMessage(false)
-        break
-      case "/new-post":
-        setHome(false)
-        setMessage(false)
-        break
-      case "/favoritos":
-        setHome(false)
-        setMessage(false)
-        break
-      case "/conversas":
-        setHome(false)
-        setMessage(true)
-        break
-      default:
-        setHome(false)
-        setMessage(false)
         break
     }
   }, [location.pathname])
@@ -154,21 +134,6 @@ export function SideBar() {
                 />
               )}
             </span>
-            <span
-              onClick={() => navigate("/conversas")}
-              className={`flex gap-4 p-2 rounded-xl items-center justify-center ${
-                message ? "bg-secondary-40" : ""
-              } text-white text-xl cursor-pointer hover:bg-secondary-40`}
-            >
-              {message ? (
-                <ChatCircleText weight="fill" size={20} />
-              ) : (
-                <ChatCircleText
-                  size={20}
-                  className=" dark:text-secondary-40 dark:hover:text-secondary-20"
-                />
-              )}
-            </span>
           </div>
         </div>
         <Sheet>
@@ -177,7 +142,7 @@ export function SideBar() {
               <AvatarFallback>
                 <Skeleton className="w-10 h-10 rounded-full bg-secondary-40" />
               </AvatarFallback>
-              <AvatarImage src={user?.u_foto} alt="Pedro Lucas" />
+              <AvatarImage src={user?.fotoPerfil} alt="Pedro Lucas" />
             </Avatar>
           </SheetTrigger>
           <SheetContent
@@ -237,19 +202,6 @@ export function SideBar() {
             )}
             Inicio
           </span>
-          <span
-            onClick={() => navigate("/conversas")}
-            className={`flex gap-4 p-2 rounded-xl items-center ${
-              message ? "bg-secondary-40" : ""
-            } text-white text-lg cursor-pointer hover:bg-secondary-40`}
-          >
-            {message ? (
-              <ChatCircleText weight="fill" size={20} />
-            ) : (
-              <ChatCircleText size={20} className=" dark:text-secondary-20" />
-            )}
-            Conversar
-          </span>
         </div>
       </div>
       <div className="flex items-center gap-4 p-3">
@@ -259,7 +211,7 @@ export function SideBar() {
               <AvatarFallback>
                 <Skeleton className="w-10 h-10 rounded-full bg-secondary-40" />
               </AvatarFallback>
-              <AvatarImage src={user?.u_foto} alt="Pedro Lucas" />
+              <AvatarImage src={user?.fotoPerfil} alt="Pedro Lucas" />
             </Avatar>
           </SheetTrigger>
           <SheetContent
@@ -288,7 +240,7 @@ export function SideBar() {
           </SheetContent>
         </Sheet>
         <span className="text-white font-semibold text-xl line-clamp-1">
-          {user?.u_name}
+          {user?.user}
         </span>
       </div>
     </div>

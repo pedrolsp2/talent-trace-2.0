@@ -11,12 +11,9 @@ import Message from "./pages/message"
 import NotFound from "./components/NotFound"
 import SignUpOlheiro from "./pages/SignUpOlheiro"
 import MobileSignUpOlheiro from "./pages/mobile/SignUpOlheiro"
+import { ViewPost } from "./pages/viewPost"
 
 function isMobileDevice() {
-  console.log(
-    typeof window.orientation !== "undefined" ||
-      navigator.userAgent.indexOf("IEMobile") !== -1
-  )
   return (
     typeof window.orientation !== "undefined" ||
     navigator.userAgent.indexOf("IEMobile") !== -1
@@ -33,8 +30,8 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/conversas",
-        element: <Message />,
+        path: "/view-post/:id",
+        element: <ViewPost />,
       },
     ],
   },
