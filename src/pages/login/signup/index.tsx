@@ -73,8 +73,8 @@ export default function Signup() {
   const [idade, setIdade] = useState("")
   const [peso, setPeso] = useState("")
   const [posicao, setPosicao] = useState("")
-  const [capaName, setCapaName] = useState<string | null>(null)
-  const [coverName, setCoverName] = useState<string | null>(null)
+  const [capaFile, setCapaFile] = useState<File | null>(null)
+  const [coverFile, setCoverFile] = useState<File | null>(null)
 
   const [perna, setPerna] = useState("")
   const [confirmedPassword, setConfirmedPassword] = useState("")
@@ -95,14 +95,26 @@ export default function Signup() {
   const onSubmit = async (data: FormValues) => {
     const id = Math.floor(Math.random() * 10000)
     try {
+      let capaURL = ""
+      let coverURL = ""
+
+      if (capaFile) {
+        const resultCapa = await uploadImageToFirebase(capaFile, "capa")
+        capaURL = resultCapa.url
+      }
+
+      if (coverFile) {
+        const resultCover = await uploadImageToFirebase(coverFile, "cover")
+        coverURL = resultCover.url
+      }
       await firebase.firestore().collection("users").add({
         id_user: id,
         altura: data.altura,
         cidade: data.cidade,
         email: data.email,
         estado: data.estado,
-        fotoCapa: coverName,
-        fotoPerfil: capaName,
+        fotoCapa: coverURL,
+        fotoPerfil: capaURL,
         idade: data.idade,
         password: data.password,
         perna: data.perna,
@@ -264,33 +276,23 @@ export default function Signup() {
     return { url: downloadURL, name: randomFileName }
   }
 
-  const handleFileChangeCapa = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChangeCapa = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      try {
-        const result = await uploadImageToFirebase(file, "capa")
-        setPreviewImage(result.url)
-        setCapaName(result.url)
-      } catch (error) {
-        console.error("Erro ao fazer upload da imagem:", error)
-      }
+      setCapaFile(file)
+      const fileURL = URL.createObjectURL(file)
+      setPreviewImage(fileURL)
     }
   }
 
-  const handleFileChangeCover = async (
+  const handleFileChangeCover = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0]
     if (file) {
-      try {
-        const result = await uploadImageToFirebase(file, "cover")
-        setPreviewCover(result.url)
-        setCoverName(result.url)
-      } catch (error) {
-        console.error("Erro ao fazer upload da imagem:", error)
-      }
+      setCoverFile(file)
+      const fileURL = URL.createObjectURL(file)
+      setPreviewCover(fileURL)
     }
   }
 

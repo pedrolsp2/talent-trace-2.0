@@ -13,11 +13,15 @@ export function AvatarUser(props: IAvatar) {
   const data = getUserLocalStorage()
   const email = data[0]
   const [user, setUser] = useState<InfoUser | null>(null)
+  const [isOlheiro, setIsOlheiro] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchDataUser(email)
       if (data) {
+        if(data.cref){
+          setIsOlheiro(true)
+        }
         setUser(data as InfoUser)
       } else {
         setUser(null)
@@ -28,7 +32,9 @@ export function AvatarUser(props: IAvatar) {
 
   return (
     <Avatar
-      className={props.size ? `w-${props.size} h-${props.size}` : "w-12 h-12"}
+      className={`${
+        props.size ? `w-${props.size} h-${props.size}` : "w-12 h-12"
+      } ${isOlheiro && "border border-primary-50"}`}
     >
       <AvatarFallback>
         <Skeleton className="w-10 h-10 rounded-full bg-secondary-40" />

@@ -19,14 +19,17 @@ import {
   Image,
   CalendarDays,
 } from "lucide-react"
-
+import { useNavigate } from "react-router-dom"
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { Button } from "../../components/ui/button"
+import firebase from "../../services/firebase/config"
+import { firebase as fb } from "../../services/firebase/firebasestorageconfig"
+import { toast } from "../../components/ui/use-toast"
 
 type FormValues = {
-  nome: string
+  user: string
   email: string
   password: string
   confirmedPassword: string
@@ -45,7 +48,7 @@ export default function SignUpOlheiro() {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [previewCover, setPreviewCover] = useState<string | null>(null)
   const [activeFieldset, setActiveFieldset] = useState(0)
-
+  const navigate = useNavigate();
   const [nome, setNome] = useState("")
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
@@ -53,11 +56,87 @@ export default function SignUpOlheiro() {
   const [cpf, setCpf] = useState("")
   const [cref, setCref] = useState("")
   const [data, setData] = useState("")
+  const [capaFile, setCapaFile] = useState<File | null>(null)
+  const [coverFile, setCoverFile] = useState<File | null>(null)
 
   const { register, handleSubmit } = useForm<FormValues>()
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data)
+  const onSubmit = async (data: FormValues) => {
+    const id = Math.floor(Math.random() * 10000)
+    try {
+      let capaURL = ""
+      let coverURL = ""
+
+      if (capaFile) {
+        const resultCapa = await uploadImageToFirebase(capaFile, "capa")
+        capaURL = resultCapa.url
+      }
+
+      if (coverFile) {
+        const resultCover = await uploadImageToFirebase(coverFile, "cover")
+        coverURL = resultCover.url
+      }
+      await firebase.firestore().collection("users").add({
+        id_user: id,
+        email: data.email,
+        fotoCapa: coverURL,
+        fotoPerfil: capaURL,
+        password: data.password,
+        user: data.user,
+        cpf: data.cpf,
+        cref: data.cref,
+        dataNascimento: data.dataNascimento,
+      })
+      toast({
+        variant: "default",
+        title: "Sucesso!",
+        description: "Dados inseridos com sucesso!",
+      })
+      navigate("/login")
+    } catch (error) {
+      console.error("Erro ao inserir os dados:", error)
+      toast({
+        variant: "destructive",
+        title: "Erro!",
+        description: "Erro ao inserir os dados. Por favor, tente novamente.",
+      })
+    }
+  }
+
+  const uploadImageToFirebase = async (
+    file: File,
+    folder: string
+  ): Promise<{ url: string; name: string }> => {
+    const randomFileName =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15) +
+      "_" +
+      file.name
+    const fileRef = fb.storage().ref().child(`${folder}/${randomFileName}`)
+    await fileRef.put(file)
+    const downloadURL = await fileRef.getDownloadURL()
+
+    return { url: downloadURL, name: randomFileName }
+  }
+
+  const handleFileChangeCapa = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setCapaFile(file)
+      const fileURL = URL.createObjectURL(file)
+      setPreviewImage(fileURL)
+    }
+  }
+
+  const handleFileChangeCover = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setCoverFile(file)
+      const fileURL = URL.createObjectURL(file)
+      setPreviewCover(fileURL)
+    }
   }
 
   const handlePrev = (event: React.FormEvent) => {
@@ -71,30 +150,6 @@ export default function SignUpOlheiro() {
     event.preventDefault()
     if (activeFieldset >= 0) {
       setActiveFieldset((prev) => prev + 1)
-    }
-  }
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const handleFileChangeCover = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewCover(reader.result as string)
-      }
-      reader.readAsDataURL(file)
     }
   }
 
@@ -192,11 +247,11 @@ export default function SignUpOlheiro() {
                   <User2 size={28} className="text-gray-400" />
                 </span>
                 <Input
-                  {...register("nome", { required: true })}
+                  {...register("user", { required: true })}
                   onChange={(e) => setNome(e.target.value)}
                   className="rounded-xl pl-12 mb-3 h-14 text-base border border-gray-200 bg-slate-50 placeholder:text-gray-500"
                   type="text"
-                  id="nome"
+                  id="user"
                   value={nome}
                   placeholder="Digite seu nome"
                 />
@@ -345,7 +400,7 @@ export default function SignUpOlheiro() {
                 <Input
                   {...register("fotoPerfil", { required: true })}
                   type="file"
-                  onChange={handleFileChange}
+                  onChange={handleFileChangeCapa}
                   accept="image/jpeg, image/png"
                   className="w-auto rounded-xl text-sm border border-gray-200 bg-slate-50 cursor-pointer placeholder:text-gray-500"
                   id="foto-perfil"

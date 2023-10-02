@@ -47,11 +47,17 @@ export default function Home() {
       <Separator />
       <div className="divide-y divide-slate-200 dark:divide-zinc-900">
         {posts &&
-          posts.map((item) => (
-            <div key={item.id_post}>
-              <Post value={item} />
-            </div>
-          ))}
+          [...posts]
+            .sort((a, b) => {
+              const dateA = a.dataPost ? new Date(a.dataPost).getTime() : 0
+              const dateB = b.dataPost ? new Date(b.dataPost).getTime() : 0
+              return dateA - dateB
+            })
+            .map((item) => (
+              <div key={item.id_post}>
+                <Post value={item} fetch={fetchData} />
+              </div>
+            ))}
       </div>
     </>
   )

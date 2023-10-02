@@ -111,7 +111,7 @@ export default function Signin() {
               </span>
               <Input
                 className={`pl-12 rounded-xl mb-3 h-14 text-base placeholder:text-gray-500 ${borderUser}`}
-                type="text"
+                type="email"
                 id="user"
                 placeholder="Digite seu e-mail"
                 onChange={(e) => setUser(e.target.value)}

@@ -5,23 +5,27 @@ export interface IUser {
 
 export interface InfoUser {
   id_user: number
-  idade: string
+  idade?: string
   email: string
   fotoPerfil: string
   fotoCapa: string
-  estado: string
+  estado?: string
   user: string
-  perna: string
-  peso: string
-  cidade: string
-  posicao: string
+  perna?: string
+  peso?: string
+  cidade?: string
+  posicao?: string
   password: string
-  altura: string
+  altura?: string
+  cpf?: string
+  cref?: string
+  dataNascimento?: string
 }
 
 export interface IPost {
   value: PostProps
   answer?: boolean
+  fetch?: ()=> void;
 }
 
 export interface PostProps {
@@ -34,6 +38,9 @@ export interface PostProps {
   content: string
   n_likes?: number
   n_comement?: number
+  cref?: number
+  image?: string
+  dataPost?: string;
 }
 
 export interface IChat {

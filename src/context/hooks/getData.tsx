@@ -55,19 +55,30 @@ export const fetchDataUser = async (email: string) => {
   }
 }
 
-export const fetchNewPost = async (value: InfoUser, content: string) => {
+export const fetchNewPost = async (
+  value: InfoUser,
+  content: string,
+  image?: string
+) => {
   const id = Math.floor(Math.random() * 10000)
+  const data = new Date()
   try {
-    await firebase.firestore().collection("post").add({
-      content: content,
-      email_user: value.email,
-      foto_user: value.fotoPerfil,
-      id_post: id,
-      id_user: value.id_user,
-      n_comement: 0,
-      n_likes: 0,
-      nome_user: value.user,
-    })
+    await firebase
+      .firestore()
+      .collection("post")
+      .add({
+        content: content,
+        email_user: value.email,
+        foto_user: value.fotoPerfil,
+        id_post: id,
+        id_user: value.id_user,
+        n_comement: 0,
+        n_likes: 0,
+        nome_user: value.user,
+        cref: value.cref,
+        dataPost: data,
+        image: image || null,
+      })
     toast({
       variant: "default",
       title: "Sucesso!",
@@ -86,19 +97,25 @@ export const fetchNewPost = async (value: InfoUser, content: string) => {
 export const fetchNewAnswers = async (
   value: InfoUser,
   content: string,
-  post: PostProps
+  post: PostProps,
+  image?: string
 ) => {
   try {
-    await firebase.firestore().collection("answers").add({
-      content: content,
-      email_user: value.email,
-      foto_user: value.fotoPerfil,
-      id_post: post.id_post,
-      id_user: value.id_user,
-      n_comement: post.n_comement,
-      n_likes: post.n_likes,
-      nome_user: value.user,
-    })
+    await firebase
+      .firestore()
+      .collection("answers")
+      .add({
+        content: content,
+        email_user: value.email,
+        foto_user: value.fotoPerfil,
+        id_post: post.id_post,
+        id_user: value.id_user,
+        n_comement: post.n_comement,
+        n_likes: post.n_likes,
+        nome_user: value.user,
+        cref: value.cref,
+        image: image || null,
+      })
     toast({
       variant: "default",
       title: "Sucesso!",
@@ -112,6 +129,29 @@ export const fetchNewAnswers = async (
       description: "Erro ao inserir os dados. Por favor, tente novamente.",
     })
   }
+}
+
+export const fetchDeletePost = async (id_post: number) => {
+  await firebase
+    .firestore()
+    .collection("post")
+    .where("id_post", "==", id_post)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((documentSnapshot) => {
+        documentSnapshot.ref
+          .delete()
+          .then(() => {
+            console.log("Documento deletado com sucesso!")
+          })
+          .catch((error) => {
+            console.error("Erro ao deletar documento: ", error)
+          })
+      })
+    })
+    .catch((error) => {
+      console.error("Erro ao buscar documento: ", error)
+    })
 }
 
 export const fetchNewMessage = async (
@@ -130,16 +170,6 @@ export const fetchNewMessage = async (
     return response.data
   } catch (error) {
     console.error("Erro ao inserir dados:", error)
-    return null
-  }
-}
-
-export const fetchDeletePost = async (id_post: number) => {
-  try {
-    const response = await axios.delete(`http://localhost:8800/post/${id_post}`)
-    return response.data
-  } catch (error) {
-    console.error("Erro ao excluir dados:", error)
     return null
   }
 }

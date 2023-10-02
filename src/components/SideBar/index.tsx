@@ -1,10 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import {
-  House,
-  Moon,
-  SidebarSimple,
-  Sun,
-} from "@phosphor-icons/react"
+import { House, Moon, SidebarSimple, Sun } from "@phosphor-icons/react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -21,9 +16,11 @@ import { InfoUser } from "../../context/AuthProvider/type"
 import { getUserLocalStorage } from "../../context/AuthProvider/uitl"
 import { Skeleton } from "../ui/skeleton"
 import { fetchDataUser } from "../../context/hooks/getData"
+import { BadgeCheck } from "lucide-react"
 
 export function SideBar() {
   const location = useLocation()
+  const [isOlheiro, setIsOlheiro] = useState(false)
   const currentRouteRef = useRef<{ current: string } | null>(null)
   const [home, setHome] = useState(false)
   const [toggle, setToggle] = useState<boolean>(false)
@@ -76,6 +73,9 @@ export function SideBar() {
     const fetchData = async () => {
       const data = await fetchDataUser(email)
       if (data) {
+        if (data.cref) {
+          setIsOlheiro(true)
+        }
         setUser(data as InfoUser)
       } else {
         setUser(null)
@@ -138,7 +138,11 @@ export function SideBar() {
         </div>
         <Sheet>
           <SheetTrigger>
-            <Avatar className="w-10 h-10">
+            <Avatar
+              className={`w-10 h-10 ${
+                isOlheiro && "border-2 border-primary-50"
+              }`}
+            >
               <AvatarFallback>
                 <Skeleton className="w-10 h-10 rounded-full bg-secondary-40" />
               </AvatarFallback>
@@ -207,7 +211,11 @@ export function SideBar() {
       <div className="flex items-center gap-4 p-3">
         <Sheet>
           <SheetTrigger>
-            <Avatar className="w-10 h-10">
+            <Avatar
+              className={`w-10 h-10 ${
+                isOlheiro && "border-2 border-primary-50"
+              }`}
+            >
               <AvatarFallback>
                 <Skeleton className="w-10 h-10 rounded-full bg-secondary-40" />
               </AvatarFallback>
@@ -239,8 +247,9 @@ export function SideBar() {
             </SheetDescription>
           </SheetContent>
         </Sheet>
-        <span className="text-white font-semibold text-xl line-clamp-1">
+        <span className="text-white font-semibold text-xl line-clamp-1 flex items-center gap-1">
           {user?.user}
+          {isOlheiro && <BadgeCheck size={18} color="#14AF6C" />}
         </span>
       </div>
     </div>

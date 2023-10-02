@@ -17,18 +17,25 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { fetchDeletePost } from "../../context/hooks/getData"
+import { BadgeCheck } from "lucide-react"
+import { toast } from "../ui/use-toast"
 
 export function Post(props: IPost) {
   const data = getUserLocalStorage()
   const email = data[0]
-  
+
   function handleSettings(id: number) {
     fetchDeletePost(id)
-      .then((res) => {
-        console.log(res)
+      .then(() => {
+        toast({
+          variant: "default",
+          title: "Sucesso!",
+          description: "Sucesso ao excluir",
+        })
+        props?.fetch && props.fetch()
       })
       .catch((error) => {
-        console.error("Erro ao obter cidades:", error)
+        console.error("Erro ao obter dados:", error)
       })
   }
 
@@ -40,7 +47,14 @@ export function Post(props: IPost) {
         </Avatar>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-1">
-            <span className="font-bold">{props?.value.nome_user}</span>
+            <span
+              className={`font-bold flex gap-1 items-center ${
+                props?.value.cref && "text-primary-50"
+              }`}
+            >
+              {props?.value.nome_user}
+              {props?.value.cref && <BadgeCheck size={14} color="#14AF6C" />}
+            </span>
             <DropdownMenu>
               <DropdownMenuTrigger className="ml-auto">
                 {email == props?.value?.email_user && (
@@ -65,6 +79,11 @@ export function Post(props: IPost) {
           <Link to={`/view-post/${props?.value.id_post}`} className="p-1">
             {props?.value.content}
           </Link>
+          {props?.value.image && (
+            <div className="w-72 h-72">
+              <img src={props?.value.image} alt="Selected" />
+            </div>
+          )}
           <div className="pt-3 flex items-center">
             <div className="flex gap-12">
               {props?.answer ? undefined : (
