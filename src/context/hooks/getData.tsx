@@ -102,7 +102,7 @@ export const fetchNewPost = async (
         n_comement: 0,
         n_likes: 0,
         nome_user: value.user,
-        cref: value.cref,
+        cref: value.cref || null,
         dataPost: data,
         username: value.username,
         image: image || null,
@@ -142,7 +142,7 @@ export const fetchNewAnswers = async (
         n_comement: post.n_comement,
         n_likes: post.n_likes,
         nome_user: value.user,
-        cref: value.cref,
+        cref: value.cref || null,
         image: image || null,
       })
     toast({

@@ -34,10 +34,12 @@ import {
   Ruler,
   Split,
   User2,
+  UserCheck,
 } from "lucide-react"
 
 type FormValues = {
   user: string
+  username: string
   email: string
   password: string
   confirmedPassword: string
@@ -80,6 +82,7 @@ export default function Signup() {
   const [confirmedPassword, setConfirmedPassword] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState("")
+  const [username, setUsername] = useState("")
   const [inputPassword, setInputPassword] = useState("password")
   const [inputConfirmed, setInputConfirmed] = useState("password")
   const [email, setEmail] = useState("")
@@ -121,6 +124,7 @@ export default function Signup() {
         peso: data.peso,
         posicao: data.posicao,
         user: data.user,
+        username: data.username,
       })
       toast({
         variant: "default",
@@ -346,22 +350,42 @@ export default function Signup() {
             <fieldset
               className={`${activeFieldset === 0 ? "visibel" : "hidden"}`}
             >
-              <Label className="text-zinc-400" htmlFor="user">
-                Nome
-              </Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                  <User2 size={28} className="text-gray-400" />
-                </span>
-                <Input
-                  {...register("user", { required: true })}
-                  onChange={(e) => setUser(e.target.value)}
-                  className="rounded-xl pl-12 mb-3 h-14 text-base border border-gray-200 bg-slate-50 placeholder:text-gray-500"
-                  type="text"
-                  id="user"
-                  value={user}
-                  placeholder="Digite seu nome"
-                />
+              <div className="flex gap-2">
+                <div className="relative">
+                  <Label className="text-zinc-400" htmlFor="user">
+                    Nome
+                  </Label>
+                  <span className="absolute left-3 top-[56%] transform -translate-y-1/2">
+                    <User2 size={28} className="text-gray-400" />
+                  </span>
+                  <Input
+                    {...register("user", { required: true })}
+                    onChange={(e) => setUser(e.target.value)}
+                    className="rounded-xl pl-12 mb-3 h-14 text-base border border-gray-200 bg-slate-50 placeholder:text-gray-500"
+                    type="text"
+                    id="user"
+                    value={user}
+                    placeholder="Digite seu nome"
+                  />
+                </div>
+
+                <div className="relative">
+                  <Label className="text-zinc-400" htmlFor="user">
+                    Usuário
+                  </Label>
+                  <span className="absolute left-3 top-[56%] transform -translate-y-1/2">
+                    <UserCheck size={28} className="text-gray-400" />
+                  </span>
+                  <Input
+                    {...register("username", { required: true })}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="rounded-xl pl-12 mb-3 h-14 text-base border border-gray-200 bg-slate-50 placeholder:text-gray-500"
+                    type="text"
+                    id="username"
+                    value={username}
+                    placeholder="Digite seu usuário"
+                  />
+                </div>
               </div>
               <Label className="text-zinc-400" htmlFor="user">
                 E-mail

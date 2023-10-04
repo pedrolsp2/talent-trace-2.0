@@ -33,11 +33,13 @@ import {
   Ruler,
   Split,
   User2,
+  UserCheck,
 } from "lucide-react"
 import axios from "axios"
 
 type FormValues = {
   user: string
+  username: string
   email: string
   password: string
   confirmedPassword: string
@@ -73,6 +75,7 @@ export default function MobileSignup() {
   const [idade, setIdade] = useState("")
   const [peso, setPeso] = useState("")
   const [posicao, setPosicao] = useState("")
+  const [username, setUsername] = useState("")
   const [perna, setPerna] = useState("")
   const [confirmedPassword, setConfirmedPassword] = useState("")
   const [password, setPassword] = useState("")
@@ -109,6 +112,7 @@ export default function MobileSignup() {
         peso: data.peso,
         posicao: data.posicao,
         user: data.user,
+        username: data.username,
       })
       toast({
         variant: "default",
@@ -353,6 +357,23 @@ export default function MobileSignup() {
                   type="text"
                   id="user"
                   value={user}
+                  placeholder="Digite seu usuário"
+                />
+              </div>
+              <Label className="text-zinc-400" htmlFor="user">
+                Usuário
+              </Label>
+              <div className="relative">
+                <span className="absolute left-3 top-[56%] transform -translate-y-1/2">
+                  <UserCheck size={28} className="text-gray-400" />
+                </span>
+                <Input
+                  {...register("username", { required: true })}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="rounded-xl pl-12 mb-3 h-14 text-base border border-gray-200 bg-slate-50 placeholder:text-gray-500"
+                  type="text"
+                  id="username"
+                  value={username}
                   placeholder="Digite seu usuário"
                 />
               </div>

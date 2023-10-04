@@ -16,6 +16,7 @@ import {
   UserSquare,
   Image,
   CalendarDays,
+  UserCheck,
 } from "lucide-react"
 
 import {
@@ -29,6 +30,7 @@ import { Button } from "../../../components/ui/button"
 
 type FormValues = {
   nome: string
+  username: string
   email: string
   password: string
   confirmedPassword: string
@@ -49,6 +51,7 @@ export default function MobileSignUpOlheiro() {
   const [activeFieldset, setActiveFieldset] = useState(0)
 
   const [nome, setNome] = useState("")
+  const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
   const [confirmaSenha, setConfirmaSenha] = useState("")
@@ -185,6 +188,21 @@ export default function MobileSignUpOlheiro() {
                   id="nome"
                   value={nome}
                   placeholder="Digite seu nome"
+                />
+              </div>
+              <div className="relative">
+                <Label className="text-zinc-400">Usuário</Label>
+                <span className="absolute left-3 top-[65%] transform -translate-y-1/2">
+                  <UserCheck size={28} className="text-gray-400" />
+                </span>
+                <Input
+                  {...register("username", { required: true })}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="rounded-xl pl-12 mb-3 h-14 text-base border border-gray-200 bg-slate-50 placeholder:text-gray-500"
+                  type="text"
+                  id="username"
+                  value={username}
+                  placeholder="Digite seu usuario"
                 />
               </div>
               <div className="relative">
