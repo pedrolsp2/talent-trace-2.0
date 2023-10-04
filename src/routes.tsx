@@ -11,6 +11,7 @@ import NotFound from "./components/NotFound"
 import SignUpOlheiro from "./pages/SignUpOlheiro"
 import MobileSignUpOlheiro from "./pages/mobile/SignUpOlheiro"
 import { ViewPost } from "./pages/viewPost"
+import { User } from "./pages/user"
 
 function isMobileDevice() {
   return (
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
       {
         path: "/view-post/:id",
         element: <ViewPost />,
+      },
+      {
+        path: "/user/:username",
+        element: <User />,
       },
     ],
   },

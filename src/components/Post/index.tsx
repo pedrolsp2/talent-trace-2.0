@@ -42,9 +42,11 @@ export function Post(props: IPost) {
   return (
     <div className="px-5 py-6 flex flex-col border-b border-slate-200 dark:border-zinc-900">
       <div className="grid grid-cols-[auto,1fr] gap-3">
-        <Avatar>
-          <AvatarImage src={props?.value.foto_user} />
-        </Avatar>
+        <Link to={`/user/${props?.value.username}`}>
+          <Avatar>
+            <AvatarImage src={props?.value.foto_user} />
+          </Avatar>
+        </Link>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-1">
             <span
@@ -54,6 +56,9 @@ export function Post(props: IPost) {
             >
               {props?.value.nome_user}
               {props?.value.cref && <BadgeCheck size={14} color="#14AF6C" />}
+              <span className="text-zinc-400 font-normal text-xs">
+                @{props?.value.username}
+              </span>
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger className="ml-auto">
@@ -76,14 +81,17 @@ export function Post(props: IPost) {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <Link to={`/view-post/${props?.value.id_post}`} className="p-1">
+          <Link
+            to={`/view-post/${props?.value.id_post}`}
+            className="p-1 flex flex-col gap-1"
+          >
             {props?.value.content}
+            {props?.value.image && (
+              <div className="w-72">
+                <img src={props?.value.image} alt="Selected" />
+              </div>
+            )}
           </Link>
-          {props?.value.image && (
-            <div className="w-72 h-72">
-              <img src={props?.value.image} alt="Selected" />
-            </div>
-          )}
           <div className="pt-3 flex items-center">
             <div className="flex gap-12">
               {props?.answer ? undefined : (

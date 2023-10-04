@@ -20,12 +20,13 @@ export interface InfoUser {
   cpf?: string
   cref?: string
   dataNascimento?: string
+  username: string
 }
 
 export interface IPost {
   value: PostProps
   answer?: boolean
-  fetch?: ()=> void;
+  fetch?: () => void
 }
 
 export interface PostProps {
@@ -40,7 +41,8 @@ export interface PostProps {
   n_comement?: number
   cref?: number
   image?: string
-  dataPost?: string;
+  dataPost?: string
+  username: string
 }
 
 export interface IChat {

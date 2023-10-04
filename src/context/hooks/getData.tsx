@@ -27,6 +27,19 @@ export const fetchPost = async (id: number) => {
   }
 }
 
+export const fetchPostUser = async (id: string) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection("post")
+    .where("id_user", "==", id)
+    .get()
+  if (!userDoc.empty) {
+    return userDoc.docs.map((doc) => doc.data())
+  } else {
+    return []
+  }
+}
+
 export const fetchAnswers = async (id: number) => {
   const userDoc = await firebase
     .firestore()
@@ -55,6 +68,20 @@ export const fetchDataUser = async (email: string) => {
   }
 }
 
+export const fetchDataUsername = async (username: string) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection("users")
+    .where("username", "==", username)
+    .get()
+  if (!userDoc.empty) {
+    return userDoc.docs[0].data()
+  } else {
+    console.error("Erro ao buscar dados:")
+    return null
+  }
+}
+
 export const fetchNewPost = async (
   value: InfoUser,
   content: string,
@@ -77,6 +104,7 @@ export const fetchNewPost = async (
         nome_user: value.user,
         cref: value.cref,
         dataPost: data,
+        username: value.username,
         image: image || null,
       })
     toast({
@@ -107,6 +135,7 @@ export const fetchNewAnswers = async (
       .add({
         content: content,
         email_user: value.email,
+        username: value.username,
         foto_user: value.fotoPerfil,
         id_post: post.id_post,
         id_user: value.id_user,
@@ -132,26 +161,34 @@ export const fetchNewAnswers = async (
 }
 
 export const fetchDeletePost = async (id_post: number) => {
-  await firebase
-    .firestore()
-    .collection("post")
-    .where("id_post", "==", id_post)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((documentSnapshot) => {
-        documentSnapshot.ref
-          .delete()
-          .then(() => {
-            console.log("Documento deletado com sucesso!")
-          })
-          .catch((error) => {
-            console.error("Erro ao deletar documento: ", error)
-          })
+  const answersRef = firebase.firestore().collection("answers")
+  const answersSnapshot = await answersRef.where("id_post", "==", id_post).get()
+
+  if (!answersSnapshot.empty) {
+    answersSnapshot.forEach((documentSnapshot) => {
+      documentSnapshot.ref
+        .delete()
+        .then(() => {
+          console.log("Documento deletado com sucesso em 'answers'!")
+        })
+        .catch((error) => {
+          console.error("Erro ao deletar documento em 'answers': ", error)
+        })
+    })
+  }
+  const postRef = firebase.firestore().collection("post")
+  const postSnapshot = await postRef.where("id_post", "==", id_post).get()
+
+  postSnapshot.forEach((documentSnapshot) => {
+    documentSnapshot.ref
+      .delete()
+      .then(() => {
+        console.log("Documento deletado com sucesso em 'post'!")
       })
-    })
-    .catch((error) => {
-      console.error("Erro ao buscar documento: ", error)
-    })
+      .catch((error) => {
+        console.error("Erro ao deletar documento em 'post': ", error)
+      })
+  })
 }
 
 export const fetchNewMessage = async (

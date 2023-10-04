@@ -32,6 +32,15 @@ export function SideBar() {
   const auth = useAuth()
   const data = getUserLocalStorage()
   const email = data[0]
+  const [userData, setUserData] = useState<InfoUser | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchDataUser(email || "")
+      setUserData((data as InfoUser) || null)
+    }
+    fetchData()
+  }, [email])
 
   const handleResize = () => {
     if (window.innerWidth < 900) {
@@ -126,10 +135,10 @@ export function SideBar() {
               } text-white text-xl cursor-pointer hover:bg-secondary-40`}
             >
               {home ? (
-                <House weight="fill" size={20} />
+                <House weight="fill" size={24} />
               ) : (
                 <House
-                  size={20}
+                  size={24}
                   className=" dark:text-secondary-40 dark:hover:text-secondary-20"
                 />
               )}
@@ -171,6 +180,9 @@ export function SideBar() {
                 />
               )}
               <Button onClick={handleLogout}>Sair</Button>
+              <Button onClick={() => navigate(`/user/${userData?.username}`)}>
+                Editar Perfil
+              </Button>
             </SheetDescription>
           </SheetContent>
         </Sheet>
@@ -180,7 +192,7 @@ export function SideBar() {
 
   return (
     <div
-      className="w-[16rem] dark:bg-dark-TT2 bg-secondary-50 flex flex-col justify-between h-screen sticky top-0"
+      className="w-[14rem] dark:bg-dark-TT2 bg-secondary-50 flex flex-col justify-between h-screen sticky top-0"
       id="side-bar"
     >
       <div className="py-4">
@@ -200,11 +212,11 @@ export function SideBar() {
             } text-white text-lg cursor-pointer hover:bg-secondary-40`}
           >
             {home ? (
-              <House weight="fill" size={20} />
+              <House weight="fill" size={22} />
             ) : (
-              <House size={20} className=" dark:text-secondary-20" />
+              <House size={22} className=" dark:text-secondary-20" />
             )}
-            Inicio
+            <span className="text-base">Inicio</span>
           </span>
         </div>
       </div>
@@ -244,12 +256,15 @@ export function SideBar() {
                 />
               )}
               <Button onClick={handleLogout}>Sair</Button>
+              <Button onClick={() => navigate(`/user/${userData?.username}`)}>
+                Editar Perfil
+              </Button>
             </SheetDescription>
           </SheetContent>
         </Sheet>
-        <span className="text-white font-semibold text-xl line-clamp-1 flex items-center gap-1">
+        <span className="text-white font-semibold text-lg line-clamp-1 flex items-center gap-1">
           {user?.user}
-          {isOlheiro && <BadgeCheck size={18} color="#14AF6C" />}
+          {isOlheiro && <BadgeCheck size={16} color="#14AF6C" />}
         </span>
       </div>
     </div>

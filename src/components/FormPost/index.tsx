@@ -176,7 +176,7 @@ export function FormPost(props: IForm) {
             onChange={handleNewContent}
           />
           {imageUrl && (
-            <div className="w-72 h-72">
+            <div className="w-72">
               <img src={imageUrl} alt="Selected" />
             </div>
           )}
