@@ -1,4 +1,5 @@
 import { Notebook, Sparkle, UserSquare } from "@phosphor-icons/react"
+import { SlackIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 
@@ -13,11 +14,13 @@ export function Header() {
     "/": <Sparkle size={28} />,
     "/view-post": <Notebook size={28} />,
     "/user": <UserSquare size={28} />,
+    "/comunidades": <SlackIcon size={28} />,
   }
   const pages: Record<string, string> = {
     "/": "Home",
     "/view-post": "Post",
     "/user": "Perfil do usuário",
+    "/comunidades": "Comunidade",
   }
 
   useEffect(() => {
@@ -46,7 +49,7 @@ export function Header() {
   }, [location.pathname])
 
   return (
-    <div className="border-x border-slate-200 dark:border-zinc-900 flex items-center justify-between px-5 py-6">
+    <div className="border-x border-slate-200 dark:border-zinc-900 flex items-center justify-between px-5 py-6 bg-white">
       <span className="font-bold">{page}</span>
       <span className="text-secondary-40">{icon}</span>
     </div>

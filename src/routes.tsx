@@ -12,6 +12,7 @@ import SignUpOlheiro from "./pages/SignUpOlheiro"
 import MobileSignUpOlheiro from "./pages/mobile/SignUpOlheiro"
 import { ViewPost } from "./pages/viewPost"
 import { User } from "./pages/user"
+import { Comunidades } from "./pages/comunidades"
 
 function isMobileDevice() {
   return (
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
       {
         path: "/user/:username",
         element: <User />,
+      },
+      {
+        path: "/comunidades",
+        element: <Comunidades />,
       },
     ],
   },

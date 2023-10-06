@@ -16,11 +16,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import { fetchDeletePost } from "../../context/hooks/getData"
+import {
+  fetchCountLike,
+  fetchDeleteAnswer,
+  fetchDeletePost,
+  fetchLike,
+} from "../../context/hooks/getData"
 import { BadgeCheck } from "lucide-react"
 import { toast } from "../ui/use-toast"
+import { useEffect, useState } from "react"
 
 export function Post(props: IPost) {
+  const [isLiked, setIsLiked] = useState(false)
+  const [countLike, setCountLike] = useState(0)
   const data = getUserLocalStorage()
   const email = data[0]
 
@@ -38,6 +46,36 @@ export function Post(props: IPost) {
         console.error("Erro ao obter dados:", error)
       })
   }
+
+  function handleAnswer(id: number) {
+    fetchDeleteAnswer(id)
+      .then(() => {
+        toast({
+          variant: "default",
+          title: "Sucesso!",
+          description: "Sucesso ao excluir",
+        })
+        props?.fetch && props.fetch()
+      })
+      .catch((error) => {
+        console.error("Erro ao obter dados:", error)
+      })
+    props?.fetch && props.fetch()
+  }
+
+  useEffect(() => {
+    async function checkLikedStatus() {
+      const count = await fetchCountLike(props.value.id_post)
+      setCountLike(count)
+      const postData = await fetchLike(props.value.id_user)
+      const hasLiked = postData.some(
+        (post) => post.id_user === props.value.id_user
+      )
+      setIsLiked(hasLiked)
+    }
+
+    checkLikedStatus()
+  }, [props.value.id_post, props.value.id_user])
 
   return (
     <div className="px-5 py-6 flex flex-col border-b border-slate-200 dark:border-zinc-900">
@@ -72,12 +110,21 @@ export function Post(props: IPost) {
               <DropdownMenuContent className="bg-zinc-100 dark:bg-dark-TT dark:text-zinc-100 dark:border-dark-TT2">
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-zinc-200 dark:bg-dark-TT2" />
-                <DropdownMenuItem
-                  onClick={() => handleSettings(props?.value?.id_post)}
-                  className="cursor-pointer"
-                >
-                  Deletar post
-                </DropdownMenuItem>
+                {props.answer ? (
+                  <DropdownMenuItem
+                    onClick={() => handleAnswer(props?.value?.id_answers || 0)}
+                    className="cursor-pointer"
+                  >
+                    Deletar comentário
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onClick={() => handleSettings(props?.value?.id_post)}
+                    className="cursor-pointer"
+                  >
+                    Deletar post
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -103,8 +150,14 @@ export function Post(props: IPost) {
                 </>
               )}
               <span className="flex items-center justify-center gap-2 text-zinc-500">
-                <Heart size={24} className="cursor-pointer" />
-                <span className="text-base">{props?.value.n_likes}</span>
+                <Heart
+                  size={24}
+                  weight={`${isLiked ? "fill" : "regular"}`}
+                  className={`cursor-pointer ${
+                    isLiked ? "text-red-500" : "text-zinc-500"
+                  }`}
+                />
+                <span className="text-base">{countLike}</span>
               </span>
             </div>
             <ShareNetwork

@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { Post } from "../../components/Post"
 
 export function User() {
+  const [isMobile, setIsMobile] = useState(false)
   const { username } = useParams<{ username: string }>()
   const [userData, setUserData] = useState<InfoUser | null>(null)
   const [posts, setPosts] = useState<PostProps[]>([])
@@ -33,9 +34,20 @@ export function User() {
   }, [username])
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth > 600)
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
+
+  useEffect(() => {
     const fetchPost = async () => {
       if (userData?.id_user) {
-        const dataPosts = await fetchPostUser(String(userData?.id_user))
+        const dataPosts = await fetchPostUser(userData?.id_user)
         setPosts(dataPosts as PostProps[])
       }
     }
@@ -66,9 +78,11 @@ export function User() {
         {userData?.email === email && (
           <Button className="flex justify-center items-center gap-2.5 py-2 px-3 rounded bg-primary-50 hover:bg-primary-40">
             <FileEdit size={24} color="#fff" />
-            <div className="text-white text-sm font-bold leading-[100%]">
-              Editar perfil
-            </div>
+            {isMobile && (
+              <div className="text-white text-sm font-bold leading-[100%]">
+                Editar Perfil
+              </div>
+            )}
           </Button>
         )}
       </div>
@@ -78,25 +92,28 @@ export function User() {
           Atividades
         </div>
       </div>
-      <div className="flex items-start gap-8 self-stretch p-4 justify-center bg-zinc-100">
+      <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100">
         <div className="flex justify-center items-center gap-2">
           <BookDownIcon size={20} className="text-primary-50" />
           <div className="text-[#444] text-base leading-[normal]">
             4 {userData?.cref ? "novas comunidades" : "posts novos"}
           </div>
         </div>
+
         <div className="flex justify-center items-center gap-2">
           <Heart size={20} className="text-primary-50" />
           <div className="text-[#444] text-base leading-[normal]">
             50 likes recebidos
           </div>
         </div>
+
         <div className="flex justify-center items-center gap-2">
           <Footprints size={20} className="text-primary-50" />
           <div className="text-[#444] text-base leading-[normal]">
             4 {userData?.cref ? "peneiras criadas" : "peneiras participadas"}
           </div>
         </div>
+
         <div className="flex justify-center items-center gap-2">
           <Sticker size={20} className="text-primary-50" />
           <div className="text-[#444] text-base leading-[normal]">
@@ -104,6 +121,7 @@ export function User() {
           </div>
         </div>
       </div>
+
       <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150">
         <ClipboardEdit size={24} className="text-primary-50" />
         <div className="text-[#b3b3b3] text-base leading-[normal] ">

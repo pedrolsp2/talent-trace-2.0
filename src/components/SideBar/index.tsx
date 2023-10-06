@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { House, Moon, SidebarSimple, Sun } from "@phosphor-icons/react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import {
   Sheet,
@@ -16,13 +16,14 @@ import { InfoUser } from "../../context/AuthProvider/type"
 import { getUserLocalStorage } from "../../context/AuthProvider/uitl"
 import { Skeleton } from "../ui/skeleton"
 import { fetchDataUser } from "../../context/hooks/getData"
-import { BadgeCheck } from "lucide-react"
+import { BadgeCheck, SlackIcon } from "lucide-react"
 
 export function SideBar() {
   const location = useLocation()
   const [isOlheiro, setIsOlheiro] = useState(false)
   const currentRouteRef = useRef<{ current: string } | null>(null)
   const [home, setHome] = useState(false)
+  const [comunidades, setComunidades] = useState(false)
   const [toggle, setToggle] = useState<boolean>(false)
   const [user, setUser] = useState<InfoUser | null>(null)
   const [theme, setTheme] = useState(
@@ -100,6 +101,11 @@ export function SideBar() {
     switch (currentPath) {
       case "/":
         setHome(true)
+        setComunidades(false)
+        break
+      case "/comunidades":
+        setHome(false)
+        setComunidades(true)
         break
     }
   }, [location.pathname])
@@ -138,6 +144,24 @@ export function SideBar() {
                 <House weight="fill" size={24} />
               ) : (
                 <House
+                  size={24}
+                  className=" dark:text-secondary-40 dark:hover:text-secondary-20"
+                />
+              )}
+            </span>
+            <span
+              onClick={() => navigate("/comunidades")}
+              className={`flex gap-4 p-2 rounded-xl items-center justify-center ${
+                comunidades ? "bg-secondary-40" : ""
+              } text-white text-xl cursor-pointer hover:bg-secondary-40`}
+            >
+              {comunidades ? (
+                <SlackIcon
+                  size={24}
+                  className=" dark:text-secondary-30 dark:hover:text-secondary-10"
+                />
+              ) : (
+                <SlackIcon
                   size={24}
                   className=" dark:text-secondary-40 dark:hover:text-secondary-20"
                 />
@@ -218,8 +242,20 @@ export function SideBar() {
             )}
             <span className="text-base">Inicio</span>
           </span>
+          <div className="flex flex-col items-start gap-2.5 self-stretch mt-2">
+            <Link
+              to="/comunidades"
+              className="flex items-start gap-2.5 self-stretch py-1 px-0 border-b border-b-[#4a1ecb] text-white text-sm leading-[normal] cursor-pointer"
+            >
+              Comunidades
+            </Link>
+            <div className="flex items-start gap-2.5 pb-0 text-[#a5a5a5] text-xs leading-[normal]">
+              Minha comunidades
+            </div>
+          </div>
         </div>
       </div>
+
       <div className="flex items-center gap-4 p-3">
         <Sheet>
           <SheetTrigger>

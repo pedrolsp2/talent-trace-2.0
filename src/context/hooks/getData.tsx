@@ -1,5 +1,4 @@
-import axios from "axios"
-import { IChat, IMessage, InfoUser, PostProps } from "../AuthProvider/type"
+import { InfoUser, PostProps } from "../AuthProvider/type"
 import firebase from "../../../src/services/firebase/config"
 import { toast } from "../../components/ui/use-toast"
 
@@ -27,7 +26,7 @@ export const fetchPost = async (id: number) => {
   }
 }
 
-export const fetchPostUser = async (id: string) => {
+export const fetchPostUser = async (id: number) => {
   const userDoc = await firebase
     .firestore()
     .collection("post")
@@ -128,11 +127,14 @@ export const fetchNewAnswers = async (
   post: PostProps,
   image?: string
 ) => {
+  const id = Math.floor(Math.random() * 10000)
+  const data = new Date()
   try {
     await firebase
       .firestore()
       .collection("answers")
       .add({
+        id_answers: id,
         content: content,
         email_user: value.email,
         username: value.username,
@@ -142,9 +144,35 @@ export const fetchNewAnswers = async (
         n_comement: post.n_comement,
         n_likes: post.n_likes,
         nome_user: value.user,
+        dataPost: data,
         cref: value.cref || null,
         image: image || null,
       })
+
+    const userDoc = await firebase
+      .firestore()
+      .collection("post")
+      .where("id_post", "==", post.id_post)
+      .limit(1) // Fetch only one matching document, since we expect only one match
+      .get()
+
+    if (!userDoc.empty) {
+      const doc = userDoc.docs[0]
+      const id = doc.id
+      const data = doc.data()
+
+      await firebase
+        .firestore()
+        .collection("post")
+        .doc(id)
+        .update({
+          n_comement: firebase.firestore.FieldValue.increment(1),
+        })
+      console.log(data.n_comement)
+    } else {
+      console.log("vazio")
+    }
+
     toast({
       variant: "default",
       title: "Sucesso!",
@@ -161,21 +189,6 @@ export const fetchNewAnswers = async (
 }
 
 export const fetchDeletePost = async (id_post: number) => {
-  const answersRef = firebase.firestore().collection("answers")
-  const answersSnapshot = await answersRef.where("id_post", "==", id_post).get()
-
-  if (!answersSnapshot.empty) {
-    answersSnapshot.forEach((documentSnapshot) => {
-      documentSnapshot.ref
-        .delete()
-        .then(() => {
-          console.log("Documento deletado com sucesso em 'answers'!")
-        })
-        .catch((error) => {
-          console.error("Erro ao deletar documento em 'answers': ", error)
-        })
-    })
-  }
   const postRef = firebase.firestore().collection("post")
   const postSnapshot = await postRef.where("id_post", "==", id_post).get()
 
@@ -191,53 +204,46 @@ export const fetchDeletePost = async (id_post: number) => {
   })
 }
 
-export const fetchNewMessage = async (
-  id_chat: number,
-  content: string,
-  data_message: string,
-  id_user_friend: number
-) => {
-  try {
-    const response = await axios.post("http://localhost:8800/newMessage/", {
-      id_chat: id_chat,
-      content: content,
-      data_message: data_message,
-      id_user_friend: id_user_friend,
-    })
-    return response.data
-  } catch (error) {
-    console.error("Erro ao inserir dados:", error)
-    return null
+export const fetchDeleteAnswer = async (id_answers: number) => {
+  const postRef = firebase.firestore().collection("answers")
+  const postSnapshot = await postRef.where("id_answers", "==", id_answers).get()
+
+  postSnapshot.forEach((documentSnapshot) => {
+    documentSnapshot.ref
+      .delete()
+      .then(() => {
+        console.log("Documento deletado com sucesso em 'post'!")
+      })
+      .catch((error) => {
+        console.error("Erro ao deletar documento em 'post': ", error)
+      })
+  })
+}
+
+export const fetchLike = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection("liked")
+    .where("id_user", "==", id)
+    .get()
+  if (!userDoc.empty) {
+    return userDoc.docs.map((doc) => doc.data())
+  } else {
+    return []
   }
 }
 
-export const fetchChat = async (id_user: number) => {
-  try {
-    const response = await axios.post<IChat[]>("http://localhost:8800/chat", {
-      id_user,
-    })
-    return response.data
-  } catch (error) {
-    console.error("Erro ao buscar dados:", error)
-    return null
-  }
-}
-
-export const fetchMessage = async (
-  id_user_sender: number,
-  id_user_receiver: number
-) => {
-  try {
-    const response = await axios.post<IMessage[]>(
-      "http://localhost:8800/message",
-      {
-        id_user_sender: id_user_sender,
-        id_user_receiver: id_user_receiver,
-      }
-    )
-    return response.data
-  } catch (error) {
-    console.error("Erro ao buscar dados:", error)
-    return null
+export const fetchCountLike = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection("liked")
+    .where("id_post", "==", id)
+    .get()
+  if (!userDoc.empty) {
+    const doc = userDoc.docs.map((doc) => doc.data())
+    console.log(doc.length)
+    return doc.length
+  } else {
+    return 0
   }
 }
