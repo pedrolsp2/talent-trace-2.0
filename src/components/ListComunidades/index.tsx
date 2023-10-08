@@ -1,16 +1,9 @@
-import { UserCheck } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-
-interface PList {
-  nome: string
-  ft_olheiro: string
-  tipo: string
-  n_membros: number
-  descricao: string
-}
+import { UserCheck } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { ComunidadeProps } from '../../context/AuthProvider/type';
 
 interface value {
-  value: PList
+  value: ComunidadeProps;
 }
 
 export function ListComunidades(props: value) {
@@ -45,16 +38,14 @@ export function ListComunidades(props: value) {
         <div className="flex justify-between">
           <Avatar>
             <AvatarFallback>TT</AvatarFallback>
-            <AvatarImage src={props.value.ft_olheiro} />
+            <AvatarImage src={props.value.fotoOlheiro} />
           </Avatar>
           <div className="flex items-center gap-2">
             <UserCheck size={24} color="#8D8D8D" />
-            <div className="text-[#888]  text-xs ">
-              {props.value.n_membros} membros
-            </div>
+            <div className="text-[#888]  text-xs ">8 membros</div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -3,11 +3,11 @@ import {
   DotsThreeVertical,
   Heart,
   ShareNetwork,
-} from "@phosphor-icons/react"
-import { Avatar, AvatarImage } from "../ui/avatar"
-import { IPost } from "../../context/AuthProvider/type"
-import { Link } from "react-router-dom"
-import { getUserLocalStorage } from "../../context/AuthProvider/uitl"
+} from '@phosphor-icons/react';
+import { Avatar, AvatarImage } from '../ui/avatar';
+import { IPost, InfoUser } from '../../context/AuthProvider/type';
+import { Link } from 'react-router-dom';
+import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,67 +15,116 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu"
+} from '../ui/dropdown-menu';
 import {
   fetchCountLike,
+  fetchDataUser,
   fetchDeleteAnswer,
   fetchDeletePost,
   fetchLike,
-} from "../../context/hooks/getData"
-import { BadgeCheck } from "lucide-react"
-import { toast } from "../ui/use-toast"
-import { useEffect, useState } from "react"
+  handleLike,
+} from '../../context/hooks/getData';
+import { BadgeCheck } from 'lucide-react';
+import { toast } from '../ui/use-toast';
+import { useEffect, useState } from 'react';
 
 export function Post(props: IPost) {
-  const [isLiked, setIsLiked] = useState(false)
-  const [countLike, setCountLike] = useState(0)
-  const data = getUserLocalStorage()
-  const email = data[0]
+  const [isLiked, setIsLiked] = useState(false);
+  const [userData, setUserData] = useState<InfoUser | null>(null);
+  const [countLike, setCountLike] = useState(0);
+  const data = getUserLocalStorage();
+  const email = data[0];
+
+  const fetchData = async () => {
+    try {
+      const userData = await fetchDataUser(email);
+      if (userData && userData.id_user) {
+        setUserData(userData as InfoUser);
+      } else {
+        console.error(
+          'Propriedade id_user não encontrada nos dados do usuário.'
+        );
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados do usuário:', error);
+    }
+  };
 
   function handleSettings(id: number) {
     fetchDeletePost(id)
       .then(() => {
         toast({
-          variant: "default",
-          title: "Sucesso!",
-          description: "Sucesso ao excluir",
-        })
-        props?.fetch && props.fetch()
+          variant: 'default',
+          title: 'Sucesso!',
+          description: 'Sucesso ao excluir',
+        });
+        props?.fetch && props.fetch();
       })
       .catch((error) => {
-        console.error("Erro ao obter dados:", error)
-      })
+        console.error('Erro ao obter dados:', error);
+      });
   }
 
   function handleAnswer(id: number) {
     fetchDeleteAnswer(id)
       .then(() => {
         toast({
-          variant: "default",
-          title: "Sucesso!",
-          description: "Sucesso ao excluir",
-        })
-        props?.fetch && props.fetch()
+          variant: 'default',
+          title: 'Sucesso!',
+          description: 'Sucesso ao excluir',
+        });
+        props?.fetch && props.fetch();
       })
       .catch((error) => {
-        console.error("Erro ao obter dados:", error)
-      })
-    props?.fetch && props.fetch()
+        console.error('Erro ao obter dados:', error);
+      });
+    props?.fetch && props.fetch();
+  }
+
+  async function handleNewLike(id: number) {
+    if (userData) {
+      await handleLike(
+        {
+          content_post: props.value.content,
+          cref: userData.cref,
+          fotoUser: userData.fotoPerfil,
+          id_sendLike: userData.id_user,
+          id_user: props.value.id_user,
+          image: props.value.image,
+          nomeUser: userData.user,
+          username: userData.username,
+        },
+        id
+      )
+        .then(() => {
+          toast({
+            variant: 'default',
+            title: 'Sucesso!',
+            description: 'Você deu like!',
+          });
+          props?.fetch && props.fetch();
+        })
+        .catch((error) => {
+          console.error('Erro ao obter dados:', error);
+        });
+      props?.fetch && props.fetch();
+    }
   }
 
   useEffect(() => {
+    fetchData();
     async function checkLikedStatus() {
-      const count = await fetchCountLike(props.value.id_post)
-      setCountLike(count)
-      const postData = await fetchLike(props.value.id_user)
+      const count = await fetchCountLike(props.value.id_post);
+      setCountLike(count);
+      const postData = await fetchLike(props.value.id_user);
       const hasLiked = postData.some(
         (post) => post.id_user === props.value.id_user
-      )
-      setIsLiked(hasLiked)
+      );
+      setIsLiked(hasLiked);
     }
 
-    checkLikedStatus()
-  }, [props.value.id_post, props.value.id_user])
+    checkLikedStatus();
+  }, [props.value.id_post, props.value.id_user]);
 
   return (
     <div className="px-5 py-6 flex flex-col border-b border-slate-200 dark:border-zinc-900">
@@ -89,7 +138,7 @@ export function Post(props: IPost) {
           <div className="flex items-center gap-1">
             <span
               className={`font-bold flex gap-1 items-center ${
-                props?.value.cref && "text-primary-50"
+                props?.value.cref && 'text-primary-50'
               }`}
             >
               {props?.value.nome_user}
@@ -152,9 +201,10 @@ export function Post(props: IPost) {
               <span className="flex items-center justify-center gap-2 text-zinc-500">
                 <Heart
                   size={24}
-                  weight={`${isLiked ? "fill" : "regular"}`}
+                  onClick={() => handleNewLike(props?.value.id_post)}
+                  weight={`${isLiked ? 'fill' : 'regular'}`}
                   className={`cursor-pointer ${
-                    isLiked ? "text-red-500" : "text-zinc-500"
+                    isLiked ? 'text-red-500' : 'text-zinc-500'
                   }`}
                 />
                 <span className="text-base">{countLike}</span>
@@ -168,5 +218,5 @@ export function Post(props: IPost) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,65 +1,82 @@
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { getUserLocalStorage } from "../../context/AuthProvider/uitl"
-import { InfoUser, PostProps } from "../../context/AuthProvider/type"
-import { fetchDataUsername, fetchPostUser } from "../../context/hooks/getData"
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
+import {
+  InfoUser,
+  LikeProps,
+  PostProps,
+} from '../../context/AuthProvider/type';
+import {
+  fetchAlertLiked,
+  fetchDataUsername,
+  fetchPostUser,
+} from '../../context/hooks/getData';
 
 import {
   AlignCenter,
+  Bell,
   BookDownIcon,
   ClipboardEdit,
   FileEdit,
   Footprints,
   Heart,
   Sticker,
-} from "lucide-react"
-import { Button } from "../../components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import { Post } from "../../components/Post"
+} from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../../components/ui/avatar';
+import { Post } from '../../components/Post';
+import { HoverCardLike } from '../../components/HoverCard';
 
 export function User() {
-  const [isMobile, setIsMobile] = useState(false)
-  const { username } = useParams<{ username: string }>()
-  const [userData, setUserData] = useState<InfoUser | null>(null)
-  const [posts, setPosts] = useState<PostProps[]>([])
-  const data = getUserLocalStorage()
-  const email = data[0]
+  const [isMobile, setIsMobile] = useState(false);
+  const { username } = useParams<{ username: string }>();
+  const [userData, setUserData] = useState<InfoUser | null>(null);
+  const [posts, setPosts] = useState<PostProps[]>([]);
+  const [likes, setLikes] = useState<LikeProps[]>([]);
+  const data = getUserLocalStorage();
+  const email = data[0];
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchDataUsername(username || "")
-      setUserData((data as InfoUser) || null)
-    }
-    fetchData()
-  }, [username])
+      const data = await fetchDataUsername(username || '');
+      const dataLike = await fetchAlertLiked(data?.id_user || 0);
+      setLikes((dataLike as LikeProps[]) || []);
+      setUserData((data as InfoUser) || null);
+    };
+    fetchData();
+  }, [username]);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth > 600)
-    }
-    handleResize()
-    window.addEventListener("resize", handleResize)
+      setIsMobile(window.innerWidth > 600);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchPost = async () => {
       if (userData?.id_user) {
-        const dataPosts = await fetchPostUser(userData?.id_user)
-        setPosts(dataPosts as PostProps[])
+        const dataPosts = await fetchPostUser(userData?.id_user);
+        setPosts(dataPosts as PostProps[]);
       }
-    }
-    fetchPost()
-  }, [userData])
+    };
+    fetchPost();
+  }, [userData]);
 
   if (!userData) {
-    return <h1>Nenhum usuario encontrado</h1>
+    return <h1>Nenhum usuario encontrado</h1>;
   }
 
   return (
-    <>
+    <div>
       <div className="flex justify-between items-center self-stretch py-6 px-4 border-b border-b-[#dedede]">
         <div className="flex items-center gap-3">
           <Avatar className="w-20 h-20">
@@ -71,7 +88,7 @@ export function User() {
               {userData?.user}
             </div>
             <div className="text-[#878787] font-semibold leading-[normal]">
-              {userData?.cref ? "Olheiro" : "Jogador"}
+              {userData?.cref ? 'Olheiro' : 'Jogador'}
             </div>
           </div>
         </div>
@@ -96,7 +113,7 @@ export function User() {
         <div className="flex justify-center items-center gap-2">
           <BookDownIcon size={20} className="text-primary-50" />
           <div className="text-[#444] text-base leading-[normal]">
-            4 {userData?.cref ? "novas comunidades" : "posts novos"}
+            4 {userData?.cref ? 'novas comunidades' : 'posts novos'}
           </div>
         </div>
 
@@ -110,17 +127,31 @@ export function User() {
         <div className="flex justify-center items-center gap-2">
           <Footprints size={20} className="text-primary-50" />
           <div className="text-[#444] text-base leading-[normal]">
-            4 {userData?.cref ? "peneiras criadas" : "peneiras participadas"}
+            4 {userData?.cref ? 'peneiras criadas' : 'peneiras participadas'}
           </div>
         </div>
 
         <div className="flex justify-center items-center gap-2">
           <Sticker size={20} className="text-primary-50" />
           <div className="text-[#444] text-base leading-[normal]">
-            6 {userData?.cref ? "feedbacks enviados" : "feedbacks recebidos"}
+            6 {userData?.cref ? 'feedbacks enviados' : 'feedbacks recebidos'}
           </div>
         </div>
       </div>
+      {userData?.email === email && (
+        <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150">
+          <Bell size={24} className="text-primary-50" />
+          <div className="text-[#b3b3b3] text-base leading-[normal] ">
+            Notificações
+          </div>
+        </div>
+      )}
+
+      {userData?.email === email &&
+        likes &&
+        likes.map((item) => (
+          <HoverCardLike key={item.content_post} value={item} />
+        ))}
 
       <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150">
         <ClipboardEdit size={24} className="text-primary-50" />
@@ -137,6 +168,6 @@ export function User() {
       ) : (
         <span>Sem publicações.</span>
       )}
-    </>
-  )
+    </div>
+  );
 }

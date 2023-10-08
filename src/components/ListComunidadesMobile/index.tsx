@@ -1,16 +1,9 @@
 import { UserCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-
-interface PList {
-  nome: string;
-  ft_olheiro: string;
-  tipo: string;
-  n_membros: number;
-  descricao: string;
-}
+import { ComunidadeProps } from '../../context/AuthProvider/type';
 
 interface value {
-  value: PList;
+  value: ComunidadeProps;
 }
 
 export function ListComunidadesMobile(props: value) {
@@ -46,7 +39,7 @@ export function ListComunidadesMobile(props: value) {
               <div className="flex items-center gap-1">
                 <UserCheck size={24} color="#8D8D8D" />
                 <div className="742_membros text-[#888] text-xs leading-[155.99%]">
-                  {props.value.n_membros} membros
+                  8 membros
                 </div>
               </div>
             </div>
@@ -54,7 +47,7 @@ export function ListComunidadesMobile(props: value) {
           <div className="frame_213 flex flex-col items-center">
             <Avatar>
               <AvatarFallback>TT</AvatarFallback>
-              <AvatarImage src={props.value.ft_olheiro} />
+              <AvatarImage src={props.value.fotoOlheiro} />
             </Avatar>
           </div>
         </div>
