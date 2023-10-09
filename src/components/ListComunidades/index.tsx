@@ -1,6 +1,7 @@
 import { UserCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ComunidadeProps } from '../../context/AuthProvider/type';
+import { BadgeType } from '../BadgeType';
 
 interface value {
   value: ComunidadeProps;
@@ -26,12 +27,7 @@ export function ListComunidades(props: value) {
             </svg>
             {props.value.nome}
           </span>
-          <div className="flex gap-1">
-            <div className="flex justify-center items-center gap-1 p-1 w-3 h-3 bg-[#5435ad]" />
-            <span className="text-[#999797]  text-xs font-semibold leading-[100%]">
-              {props.value.tipo}
-            </span>
-          </div>
+          <BadgeType variant="text" type={props.value.tipo} />
           <p className="text-[#666] p-2 text-sm">{props.value.descricao}</p>
         </div>
 

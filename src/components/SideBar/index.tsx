@@ -1,7 +1,7 @@
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { House, Moon, SidebarSimple, Sun } from "@phosphor-icons/react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useEffect, useRef, useState } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { House, Moon, SidebarSimple, Sun } from '@phosphor-icons/react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -9,113 +9,113 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet"
-import { Button } from "../ui/button"
-import { useAuth } from "../../context/AuthProvider/useAuth"
-import { InfoUser } from "../../context/AuthProvider/type"
-import { getUserLocalStorage } from "../../context/AuthProvider/uitl"
-import { Skeleton } from "../ui/skeleton"
-import { fetchDataUser } from "../../context/hooks/getData"
-import { BadgeCheck, SlackIcon } from "lucide-react"
+} from '../ui/sheet';
+import { Button } from '../ui/button';
+import { useAuth } from '../../context/AuthProvider/useAuth';
+import { InfoUser } from '../../context/AuthProvider/type';
+import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
+import { Skeleton } from '../ui/skeleton';
+import { fetchDataUser } from '../../context/hooks/getData';
+import { BadgeCheck, SlackIcon } from 'lucide-react';
 
 export function SideBar() {
-  const location = useLocation()
-  const [isOlheiro, setIsOlheiro] = useState(false)
-  const currentRouteRef = useRef<{ current: string } | null>(null)
-  const [home, setHome] = useState(false)
-  const [comunidades, setComunidades] = useState(false)
-  const [toggle, setToggle] = useState<boolean>(false)
-  const [user, setUser] = useState<InfoUser | null>(null)
+  const location = useLocation();
+  const [isOlheiro, setIsOlheiro] = useState(false);
+  const currentRouteRef = useRef<{ current: string } | null>(null);
+  const [home, setHome] = useState(false);
+  const [comunidades, setComunidades] = useState(false);
+  const [toggle, setToggle] = useState<boolean>(false);
+  const [user, setUser] = useState<InfoUser | null>(null);
   const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  )
-  const navigate = useNavigate()
-  const auth = useAuth()
-  const data = getUserLocalStorage()
-  const email = data[0]
-  const [userData, setUserData] = useState<InfoUser | null>(null)
+    localStorage.getItem('theme') ? localStorage.getItem('theme') : 'light'
+  );
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const data = getUserLocalStorage();
+  const email = data[0];
+  const [userData, setUserData] = useState<InfoUser | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchDataUser(email || "")
-      setUserData((data as InfoUser) || null)
-    }
-    fetchData()
-  }, [email])
+      const data = await fetchDataUser(email || '');
+      setUserData((data as InfoUser) || null);
+    };
+    fetchData();
+  }, [email]);
 
   const handleResize = () => {
     if (window.innerWidth < 900) {
-      setToggle(false)
+      setToggle(false);
     } else {
-      setToggle(true)
+      setToggle(true);
     }
-  }
+  };
 
   const handleSetTheme = () => {
-    if (theme === "light") {
-      setTheme("dark")
-      document.querySelector("html")?.setAttribute("data-mode", "dark")
+    if (theme === 'light') {
+      setTheme('dark');
+      document.querySelector('html')?.setAttribute('data-mode', 'dark');
     }
-    if (theme === "dark") {
-      setTheme("light")
-      document.querySelector("html")?.setAttribute("data-mode", "light")
+    if (theme === 'dark') {
+      setTheme('light');
+      document.querySelector('html')?.setAttribute('data-mode', 'light');
     }
-  }
+  };
 
   useEffect(() => {
-    const theme: string = "light"
-    localStorage.setItem("theme", theme)
-    const localTheme: string | null = localStorage.getItem("theme")
+    const theme: string = 'light';
+    localStorage.setItem('theme', theme);
+    const localTheme: string | null = localStorage.getItem('theme');
     document
-      .querySelector("html")
-      ?.setAttribute("data-mode", localTheme || "light")
-  }, [theme])
+      .querySelector('html')
+      ?.setAttribute('data-mode', localTheme || 'light');
+  }, [theme]);
 
   useEffect(() => {
-    window.addEventListener("resize", handleResize)
-    handleResize()
+    window.addEventListener('resize', handleResize);
+    handleResize();
     return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchDataUser(email)
+      const data = await fetchDataUser(email);
       if (data) {
         if (data.cref) {
-          setIsOlheiro(true)
+          setIsOlheiro(true);
         }
-        setUser(data as InfoUser)
+        setUser(data as InfoUser);
       } else {
-        setUser(null)
+        setUser(null);
       }
-    }
+    };
 
-    fetchData()
-  }, [email])
+    fetchData();
+  }, [email]);
 
   useEffect(() => {
-    currentRouteRef.current = { current: location.pathname }
-    const currentPath = currentRouteRef.current.current
+    currentRouteRef.current = { current: location.pathname };
+    const currentPath = currentRouteRef.current.current;
     switch (currentPath) {
-      case "/":
-        setHome(true)
-        setComunidades(false)
-        break
-      case "/comunidades":
-        setHome(false)
-        setComunidades(true)
-        break
+      case '/':
+        setHome(true);
+        setComunidades(false);
+        break;
+      case '/comunidades':
+        setHome(false);
+        setComunidades(true);
+        break;
     }
-  }, [location.pathname])
+  }, [location.pathname]);
 
   function handleLogout() {
     try {
-      auth.logout()
-      navigate("/login")
+      auth.logout();
+      navigate('/login');
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -135,9 +135,9 @@ export function SideBar() {
           </span>
           <div className="mt-8 flex flex-col gap-2">
             <span
-              onClick={() => navigate("/")}
+              onClick={() => navigate('/')}
               className={`flex gap-4 p-2 rounded-xl items-center justify-center ${
-                home ? "bg-secondary-40" : ""
+                home ? 'bg-secondary-40' : ''
               } text-white text-xl cursor-pointer hover:bg-secondary-40`}
             >
               {home ? (
@@ -150,9 +150,9 @@ export function SideBar() {
               )}
             </span>
             <span
-              onClick={() => navigate("/comunidades")}
+              onClick={() => navigate('/comunidades')}
               className={`flex gap-4 p-2 rounded-xl items-center justify-center ${
-                comunidades ? "bg-secondary-40" : ""
+                comunidades ? 'bg-secondary-40' : ''
               } text-white text-xl cursor-pointer hover:bg-secondary-40`}
             >
               {comunidades ? (
@@ -173,7 +173,7 @@ export function SideBar() {
           <SheetTrigger>
             <Avatar
               className={`w-10 h-10 ${
-                isOlheiro && "border-2 border-primary-50"
+                isOlheiro && 'border-2 border-primary-50'
               }`}
             >
               <AvatarFallback>
@@ -183,14 +183,14 @@ export function SideBar() {
             </Avatar>
           </SheetTrigger>
           <SheetContent
-            className="w-[400px] sm:w-[540px] bg-slate-50 dark:bg-dark-TT2 dark:border-x-dark-TT dark:text-zinc-50 text-zinc-900"
+            className="z-[999999999] w-[400px] sm:w-[540px] bg-slate-50 dark:bg-dark-TT2 dark:border-x-dark-TT dark:text-zinc-50 text-zinc-900"
             side="left"
           >
             <SheetHeader>
               <SheetTitle>Ações rapidas do perfil</SheetTitle>
             </SheetHeader>
             <SheetDescription>
-              {theme === "light" ? (
+              {theme === 'light' ? (
                 <Sun
                   size={20}
                   className="cursor-pointer h-10 w-10 bg-gray-300 border border-gray-200 dark:bg-dark-TT p-2 rounded-2xl"
@@ -211,7 +211,7 @@ export function SideBar() {
           </SheetContent>
         </Sheet>
       </div>
-    )
+    );
   }
 
   return (
@@ -230,9 +230,9 @@ export function SideBar() {
         </span>
         <div className="p-2 mt-8 flex flex-col gap-2">
           <span
-            onClick={() => navigate("/")}
+            onClick={() => navigate('/')}
             className={`flex gap-4 p-2 rounded-xl items-center ${
-              home ? "bg-secondary-40 " : ""
+              home ? 'bg-secondary-40 ' : ''
             } text-white text-lg cursor-pointer hover:bg-secondary-40`}
           >
             {home ? (
@@ -261,7 +261,7 @@ export function SideBar() {
           <SheetTrigger>
             <Avatar
               className={`w-10 h-10 ${
-                isOlheiro && "border-2 border-primary-50"
+                isOlheiro && 'border-2 border-primary-50'
               }`}
             >
               <AvatarFallback>
@@ -271,14 +271,14 @@ export function SideBar() {
             </Avatar>
           </SheetTrigger>
           <SheetContent
-            className="w-[400px] sm:w-[540px] bg-slate-50 dark:bg-dark-TT2 dark:border-x-dark-TT dark:text-zinc-50 text-zinc-900"
+            className="z-[999999999] w-[400px] sm:w-[540px] bg-slate-50 dark:bg-dark-TT2 dark:border-x-dark-TT dark:text-zinc-50 text-zinc-900"
             side="left"
           >
             <SheetHeader>
               <SheetTitle>Ações rapidas do perfil</SheetTitle>
             </SheetHeader>
             <SheetDescription>
-              {theme === "light" ? (
+              {theme === 'light' ? (
                 <Sun
                   size={20}
                   className="cursor-pointer h-10 w-10 bg-gray-300 border border-gray-200 dark:bg-dark-TT p-2 rounded-2xl"
@@ -304,5 +304,5 @@ export function SideBar() {
         </span>
       </div>
     </div>
-  )
+  );
 }

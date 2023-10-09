@@ -1,7 +1,31 @@
+import { fetchDataUser } from '../../context/hooks/getData';
+import { InfoUser } from '../../context/AuthProvider/type';
+import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import { Notebook, Sparkle, UserSquare } from '@phosphor-icons/react';
 import { BadgePlus, SlackIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
+import { Input } from '../ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 
 function isMobileDevice() {
   return (
@@ -17,6 +41,7 @@ export function Header() {
   const [page, setPage] = useState<string | null>(null);
   const viewPostRegex = /^\/view-post\/\d+$/;
   const userPostRegex = /^\/user\/[\w-]+$/;
+
   const icons: Record<string, JSX.Element> = {
     '/': <Sparkle size={28} />,
     '/view-post': <Notebook size={28} />,
@@ -29,6 +54,17 @@ export function Header() {
     '/user': 'Perfil do usuário',
     '/comunidades': 'Comunidade',
   };
+  const data = getUserLocalStorage();
+  const email = data[0];
+  const [userData, setUserData] = useState<InfoUser | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchDataUser(email || '');
+      setUserData((data as InfoUser) || null);
+    };
+    fetchData();
+  }, [email]);
 
   useEffect(() => {
     currentRouteRef.current = location.pathname;
@@ -93,14 +129,75 @@ export function Header() {
               Comunidades do momento
             </div>
           </div>
-          <button className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]">
-            <BadgePlus size={18} className="text-white" />
-            {!isMobileDevice() && (
-              <div className="text-[#e8f7f0] text-xs font-medium leading-[normal]">
-                Criar comunidade
-              </div>
-            )}
-          </button>
+          {userData?.cref && (
+            <Dialog>
+              <DialogTrigger className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]">
+                <BadgePlus size={18} className="text-white" />
+                {!isMobileDevice() && (
+                  <div className="text-[#e8f7f0] text-xs font-medium leading-[normal]">
+                    Criar comunidade
+                  </div>
+                )}
+              </DialogTrigger>
+              <DialogContent className="bg-white">
+                <DialogHeader>
+                  <DialogTitle>Nova comunidade</DialogTitle>
+                  <DialogDescription>
+                    Olheiro, crie comunidades para interagir com outros olheiros
+                    e jogadores.
+                  </DialogDescription>
+                  <Input
+                    type="text"
+                    placeholder="Qual o nome da sua comunidade?"
+                  />
+                  <div className="flex flex-col w-full p-2">
+                    <div className="grid grid-cols-[74px,1fr] items-center gap-4">
+                      <div className="w-20 h-20 rounded-full bg-slate-400">
+                        <img
+                          src="https://github.com/pedrolsp2.png"
+                          alt="Foto da comunidade"
+                          className="w-20 h-20 rounded-full"
+                        />
+                      </div>
+                      <span>Banner para sua comunidade</span>
+                    </div>
+                    <Textarea placeholder="De uma breve descrição de sobre o que é a comunidade" />
+                    <Select>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Do que se trata?" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup className="bg-white">
+                          <SelectLabel>Tipo</SelectLabel>
+                          <SelectItem
+                            className="cursor-pointer"
+                            value="peneiras"
+                          >
+                            Peneiras
+                          </SelectItem>
+                          <SelectItem
+                            className="cursor-pointer"
+                            value="curiosidades"
+                          >
+                            Curiosidades
+                          </SelectItem>
+                          <SelectItem
+                            className="cursor-pointer"
+                            value="treinos"
+                          >
+                            Treinos
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <DialogFooter>
+                    <Button>Criar</Button>
+                  </DialogFooter>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
     );
