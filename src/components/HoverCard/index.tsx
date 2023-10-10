@@ -13,19 +13,28 @@ interface value {
   value: LikeProps;
 }
 
+function isMobileDevice() {
+  return (
+    typeof window.orientation !== 'undefined' ||
+    navigator.userAgent.indexOf('IEMobile') !== -1
+  );
+}
+
 export function HoverCardLike(item: value) {
   return (
     <HoverCard>
-      <div className="flex flex-col gap-2 p-4 bg-[#fafafa] relative">
-        <Alert className="border border-primary-50 bg-[#fff] max-w-xl">
-          <Smile className="h-4 w-4" color="#14AF6C" />
-          <AlertTitle>Você recebeu uma curtida!</AlertTitle>
+      <div className="flex flex-col gap-2 p-4 bg-[#fafafa] relative dark:bg-dark-TT">
+        <Alert className="border border-primary-50 bg-[#fff] max-w-xl dark:bg-dark-TT2">
+          <Smile className="h-4 w-4" color="#290398" />
+          <AlertTitle className="dark:text-zinc-50">
+            Você recebeu uma curtida!
+          </AlertTitle>
           <AlertDescription className="flex items-center justify-between">
-            <span className="text-secondary-60">
+            <span className="text-secondary-60 dark:text-zinc-400">
               {item.value.cref ? 'O olheiro ' : 'O jogador '}
               <HoverCardTrigger>
                 {' '}
-                <span className="text-secondary-50 font-bold cursor-pointer">
+                <span className="text-zinc-50 font-bold cursor-pointer">
                   {item.value.username}{' '}
                 </span>
               </HoverCardTrigger>
@@ -43,8 +52,8 @@ export function HoverCardLike(item: value) {
               </HoverCardContent>
               curtiu seu post!
             </span>
-            <Trash className="text-primary-50 w-4 h-4 mt-[-15px] cursor-pointer" />
-            {item.value.image && (
+            <Trash className="text-secondary-50 w-4 h-4 mt-[-15px] cursor-pointer" />
+            {item.value.image && !isMobileDevice() && (
               <img
                 src={item.value.image}
                 alt="Foto do post"

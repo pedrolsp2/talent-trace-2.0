@@ -162,7 +162,7 @@ export function FormPost(props: IForm) {
   return (
     <form
       onSubmit={props?.answer ? handleNewAnswer : handleNewPost}
-      className="px-5 py-6 flex flex-col"
+      className="px-5 py-6 flex flex-col dark:bg-dark-TT"
     >
       <div className="grid grid-cols-[auto,1fr] gap-3">
         <AvatarUser />

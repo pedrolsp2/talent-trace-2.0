@@ -127,7 +127,7 @@ export function Post(props: IPost) {
   }, [props.value.id_post, props.value.id_user]);
 
   return (
-    <div className="px-5 py-6 flex flex-col border-b border-slate-200 dark:border-zinc-900">
+    <div className="px-5 py-6 flex flex-col border-b border-slate-200 dark:border-zinc-900 dark:bg-dark-TT">
       <div className="grid grid-cols-[auto,1fr] gap-3">
         <Link to={`/user/${props?.value.username}`}>
           <Avatar>
@@ -141,7 +141,11 @@ export function Post(props: IPost) {
                 props?.value.cref && 'text-primary-50'
               }`}
             >
-              <span className="dark:text-zinc-300">
+              <span
+                className={`${
+                  props?.value.cref ? 'text-primary-50' : 'dark:text-zinc-300'
+                }`}
+              >
                 {props?.value.nome_user}
               </span>
               {props?.value.cref && <BadgeCheck size={14} color="#14AF6C" />}

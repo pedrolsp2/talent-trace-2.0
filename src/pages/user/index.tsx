@@ -30,6 +30,19 @@ import {
 } from '../../components/ui/avatar';
 import { Post } from '../../components/Post';
 import { HoverCardLike } from '../../components/HoverCard';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '../../components/ui/accordion';
+
+function isMobileDevice() {
+  return (
+    typeof window.orientation !== 'undefined' ||
+    navigator.userAgent.indexOf('IEMobile') !== -1
+  );
+}
 
 export function User() {
   const [isMobile, setIsMobile] = useState(false);
@@ -77,7 +90,7 @@ export function User() {
 
   return (
     <div>
-      <div className="flex justify-between items-center self-stretch py-6 px-4 border-b border-b-[#dedede] dark:border-b-zinc-900">
+      <div className="flex justify-between items-center self-stretch py-6 px-4 border-b border-b-[#dedede] dark:border-b-zinc-900 dark:bg-dark-TT">
         <div className="flex items-center gap-3">
           <Avatar className="w-20 h-20">
             <AvatarFallback>IMG</AvatarFallback>
@@ -103,57 +116,128 @@ export function User() {
           </Button>
         )}
       </div>
-      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900">
-        <AlignCenter size={24} className="text-primary-50" />
-        <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal]">
-          Atividades
-        </div>
-      </div>
-      <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100 dark:bg-zinc-900">
-        <div className="flex justify-center items-center gap-2">
-          <BookDownIcon size={20} className="text-primary-50" />
-          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-            4 {userData?.cref ? 'novas comunidades' : 'posts novos'}
+      {!isMobileDevice() ? (
+        <>
+          <div className="flex items-center gap-3 self-stretch py-4 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT">
+            <AlignCenter size={24} className="text-primary-50" />
+            <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal]">
+              Atividades
+            </div>
           </div>
-        </div>
+          <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100 dark:bg-zinc-900">
+            <div className="flex justify-center items-center gap-2">
+              <BookDownIcon size={20} className="text-primary-50" />
+              <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                4 {userData?.cref ? 'novas comunidades' : 'posts novos'}
+              </div>
+            </div>
 
-        <div className="flex justify-center items-center gap-2">
-          <Heart size={20} className="text-primary-50" />
-          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-            50 likes recebidos
-          </div>
-        </div>
+            <div className="flex justify-center items-center gap-2">
+              <Heart size={20} className="text-primary-50" />
+              <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                50 likes recebidos
+              </div>
+            </div>
 
-        <div className="flex justify-center items-center gap-2">
-          <Footprints size={20} className="text-primary-50" />
-          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-            4 {userData?.cref ? 'peneiras criadas' : 'peneiras participadas'}
-          </div>
-        </div>
+            <div className="flex justify-center items-center gap-2">
+              <Footprints size={20} className="text-primary-50" />
+              <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                4{' '}
+                {userData?.cref ? 'peneiras criadas' : 'peneiras participadas'}
+              </div>
+            </div>
 
-        <div className="flex justify-center items-center gap-2">
-          <Sticker size={20} className="text-primary-50" />
-          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-            6 {userData?.cref ? 'feedbacks enviados' : 'feedbacks recebidos'}
+            <div className="flex justify-center items-center gap-2">
+              <Sticker size={20} className="text-primary-50" />
+              <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                6{' '}
+                {userData?.cref ? 'feedbacks enviados' : 'feedbacks recebidos'}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem
+              value="item-1"
+              className="w-full py-1 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT"
+            >
+              <AccordionTrigger>
+                <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] flex gap-3">
+                  <AlignCenter size={24} className="text-primary-50" />
+                  Atividades
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100 dark:bg-dark-TT">
+                  <div className="flex justify-center items-center gap-2">
+                    <BookDownIcon size={20} className="text-primary-50" />
+                    <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                      4 {userData?.cref ? 'novas comunidades' : 'posts novos'}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center items-center gap-2">
+                    <Heart size={20} className="text-primary-50" />
+                    <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                      50 likes recebidos
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center items-center gap-2">
+                    <Footprints size={20} className="text-primary-50" />
+                    <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                      4{' '}
+                      {userData?.cref
+                        ? 'peneiras criadas'
+                        : 'peneiras participadas'}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center items-center gap-2">
+                    <Sticker size={20} className="text-primary-50" />
+                    <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                      6{' '}
+                      {userData?.cref
+                        ? 'feedbacks enviados'
+                        : 'feedbacks recebidos'}
+                    </div>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </>
+      )}
       {userData?.email === email && (
-        <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900">
-          <Bell size={24} className="text-primary-50" />
-          <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
-            Notificações
-          </div>
-        </div>
+        <>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem
+              value="item-1"
+              className="w-full py-1 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT"
+            >
+              <AccordionTrigger>
+                <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900 dark:bg-dark-TT">
+                  <Bell size={24} className="text-primary-50" />
+                  <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
+                    Notificações
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                {userData?.email === email &&
+                  likes &&
+                  likes.map((item) => (
+                    <HoverCardLike key={item.content_post} value={item} />
+                  ))}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </>
       )}
 
-      {userData?.email === email &&
-        likes &&
-        likes.map((item) => (
-          <HoverCardLike key={item.content_post} value={item} />
-        ))}
-
-      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900">
+      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900 dark:bg-dark-TT">
         <ClipboardEdit size={24} className="text-primary-50" />
         <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
           Últimos posts
