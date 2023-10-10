@@ -9,7 +9,7 @@ interface value {
 export function ListComunidadesMobile(props: value) {
   return (
     <>
-      <div className="flex flex-col justify-center items-start w-full">
+      <div className="flex flex-col justify-center items-start w-full border border-zinc-200 rounded p-1 dark:border-zinc-800">
         <div className="flex justify-between items-center self-stretch py-0 px-3">
           <div className="flex flex-col items-start gap-1">
             <div className="flex items-center gap-2">
@@ -25,14 +25,14 @@ export function ListComunidadesMobile(props: value) {
                   fill="#666666"
                 />
               </svg>
-              <div className="text-[#3c3c3c] text-lg font-bold leading-[normal]">
+              <div className="text-[#3c3c3c] dark:text-zinc-300 text-lg font-bold leading-[normal]">
                 {props.value.nome}
               </div>
             </div>
             <div className="flex justify-between items-center self-stretch">
               <div className="flex items-start gap-1">
                 <div className="flex justify-center items-center gap-1 p-1 w-3 h-3 bg-[#5435ad]"></div>
-                <div className="text-[#999797] text-xs font-semibold leading-[100%]">
+                <div className="text-[#999797] text-xs dark:text-zinc-400 font-semibold leading-[100%]">
                   {props.value.tipo}
                 </div>
               </div>

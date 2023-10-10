@@ -77,17 +77,17 @@ export function User() {
 
   return (
     <div>
-      <div className="flex justify-between items-center self-stretch py-6 px-4 border-b border-b-[#dedede]">
+      <div className="flex justify-between items-center self-stretch py-6 px-4 border-b border-b-[#dedede] dark:border-b-zinc-900">
         <div className="flex items-center gap-3">
           <Avatar className="w-20 h-20">
             <AvatarFallback>IMG</AvatarFallback>
             <AvatarImage src={userData?.fotoPerfil} />
           </Avatar>
           <div className="flex flex-col items-start gap-1 h-[4.75rem]">
-            <div className="text-black text-2xl font-bold leading-[normal]">
+            <div className="text-black dark:text-zinc-300 text-2xl font-bold leading-[normal]">
               {userData?.user}
             </div>
-            <div className="text-[#878787] font-semibold leading-[normal]">
+            <div className="text-[#878787] font-light leading-[normal]">
               {userData?.cref ? 'Olheiro' : 'Jogador'}
             </div>
           </div>
@@ -103,45 +103,45 @@ export function User() {
           </Button>
         )}
       </div>
-      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-b border-b-zinc-150">
+      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900">
         <AlignCenter size={24} className="text-primary-50" />
-        <div className="text-[#b3b3b3] text-base leading-[normal]">
+        <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal]">
           Atividades
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100">
+      <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100 dark:bg-zinc-900">
         <div className="flex justify-center items-center gap-2">
           <BookDownIcon size={20} className="text-primary-50" />
-          <div className="text-[#444] text-base leading-[normal]">
+          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
             4 {userData?.cref ? 'novas comunidades' : 'posts novos'}
           </div>
         </div>
 
         <div className="flex justify-center items-center gap-2">
           <Heart size={20} className="text-primary-50" />
-          <div className="text-[#444] text-base leading-[normal]">
+          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
             50 likes recebidos
           </div>
         </div>
 
         <div className="flex justify-center items-center gap-2">
           <Footprints size={20} className="text-primary-50" />
-          <div className="text-[#444] text-base leading-[normal]">
+          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
             4 {userData?.cref ? 'peneiras criadas' : 'peneiras participadas'}
           </div>
         </div>
 
         <div className="flex justify-center items-center gap-2">
           <Sticker size={20} className="text-primary-50" />
-          <div className="text-[#444] text-base leading-[normal]">
+          <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
             6 {userData?.cref ? 'feedbacks enviados' : 'feedbacks recebidos'}
           </div>
         </div>
       </div>
       {userData?.email === email && (
-        <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150">
+        <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900">
           <Bell size={24} className="text-primary-50" />
-          <div className="text-[#b3b3b3] text-base leading-[normal] ">
+          <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
             Notificações
           </div>
         </div>
@@ -153,9 +153,9 @@ export function User() {
           <HoverCardLike key={item.content_post} value={item} />
         ))}
 
-      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150">
+      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900">
         <ClipboardEdit size={24} className="text-primary-50" />
-        <div className="text-[#b3b3b3] text-base leading-[normal] ">
+        <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
           Últimos posts
         </div>
       </div>

@@ -141,9 +141,11 @@ export function Post(props: IPost) {
                 props?.value.cref && 'text-primary-50'
               }`}
             >
-              {props?.value.nome_user}
+              <span className="dark:text-zinc-300">
+                {props?.value.nome_user}
+              </span>
               {props?.value.cref && <BadgeCheck size={14} color="#14AF6C" />}
-              <span className="text-zinc-400 font-normal text-xs">
+              <span className="text-zinc-500 font-normal text-xs">
                 @{props?.value.username}
               </span>
             </span>

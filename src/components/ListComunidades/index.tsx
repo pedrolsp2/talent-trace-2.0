@@ -10,9 +10,9 @@ interface value {
 export function ListComunidades(props: value) {
   return (
     <>
-      <div className="grid grid-cols-[75%,1fr] gap-x-12 items-center border border-[#fafafa] p-2">
+      <div className="grid grid-cols-[75%,1fr] gap-x-12 items-center border dark:border-zinc-800 border-[#fafafa] p-2 rounded">
         <div className="flex flex-col gap-2 p-1">
-          <span className="text-[#3c3c3c] text-lg font-bold leading-[normal] flex items-center gap-2">
+          <span className="text-[#3c3c3c] dark:text-zinc-300 text-lg font-bold leading-[normal] flex items-center gap-2">
             <svg
               width={22}
               height={17}
@@ -28,7 +28,9 @@ export function ListComunidades(props: value) {
             {props.value.nome}
           </span>
           <BadgeType variant="text" type={props.value.tipo} />
-          <p className="text-[#666] p-2 text-sm">{props.value.descricao}</p>
+          <p className="text-[#666] dark:text-zinc-400 p-2 text-sm">
+            {props.value.descricao}
+          </p>
         </div>
 
         <div className="flex justify-between">

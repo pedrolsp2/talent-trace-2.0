@@ -33,7 +33,7 @@ export function Comunidades() {
   }, []);
 
   return (
-    <div className="flex flex-col p-2 gap-4 bg-white">
+    <div className="flex flex-col p-2 gap-4 bg-white dark:bg-dark-TT">
       <div className="flex gap-2">
         {comunidade &&
           comunidade.map((card) => (

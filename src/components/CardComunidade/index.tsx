@@ -1,5 +1,5 @@
 import { ComunidadeProps } from '../../context/AuthProvider/type';
-import { Share2, UserCheck2 } from 'lucide-react';
+import { UserCheck2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface value {
@@ -9,7 +9,7 @@ interface value {
 export function CardComunidade(props: value) {
   return (
     <Link to={''} className="cursor-pointer">
-      <div className="inline-flex flex-col justify-between items-start p-3 w-44 h-[15rem] rounded-md border border-[#eeeeee]">
+      <div className="inline-flex flex-col justify-between items-start p-3 w-44 h-[15rem] rounded-md border border-[#eeeeee] dark:border-zinc-800">
         <div className="flex flex-col items-start gap-1">
           <div
             className="relative flex flex-col items-start"
@@ -21,14 +21,13 @@ export function CardComunidade(props: value) {
               className="w-40 h-20 rounded object-cover image-center"
             />
           </div>
-          <div className="flex justify-between items-center self-stretch mt-2">
-            <div className="text-[#3c3c3c] text-lg font-semibold leading-[101.49%]">
+          <div className="self-stretch mt-2">
+            <div className="text-[#3c3c3c] dark:text-zinc-300 text-lg font-semibold leading-[101.49%]">
               {props.value.nome}
             </div>
-            <Share2 size={16} color="#8D8D8D" className="cursor-pointer" />
           </div>
         </div>
-        <div className="text-[#8c8c8c] text-xs leading-[100%]">
+        <div className="text-[#8c8c8c] dark:text-zinc-400 text-xs leading-[100%]">
           {props.value.descricao}
         </div>
         <div className="flex items-center gap-2">

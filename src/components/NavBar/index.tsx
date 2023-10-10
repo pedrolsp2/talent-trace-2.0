@@ -1,7 +1,7 @@
 import logoImage from '../../assets/logo.svg';
-import { Menu } from 'lucide-react';
+import { Menu, Moon, Sun } from 'lucide-react';
 import { AvatarUser } from '../AvatarUser';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Sheet,
   SheetTrigger,
@@ -11,7 +11,57 @@ import {
   SheetDescription,
 } from '../ui/sheet';
 import { House } from '@phosphor-icons/react';
+import { Button } from '../ui/button';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthProvider/useAuth';
+
 export function Navbar() {
+  const [theme, setTheme] = useState<string>(
+    localStorage.getItem('theme') ? localStorage.getItem('theme')! : 'light'
+  );
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  const handleSetTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark');
+      localStorage.setItem('theme', 'dark');
+      document.querySelector('html')?.setAttribute('data-mode', 'dark');
+    } else if (theme === 'dark') {
+      setTheme('light');
+      localStorage.setItem('theme', 'light');
+      document.querySelector('html')?.setAttribute('data-mode', 'light');
+    }
+  };
+
+  function handleLogout() {
+    try {
+      auth.logout();
+      navigate('/login');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    const localTheme: string | null = localStorage.getItem('theme');
+    if (localTheme) {
+      setTheme(localTheme);
+    } else {
+      const userPrefersDark =
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (userPrefersDark) {
+        setTheme('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        setTheme('light');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+    document.querySelector('html')?.setAttribute('data-mode', theme);
+  }, []);
+
   return (
     <Sheet>
       <div className="w-full h-16 flex justify-between items-center px-3 bg-secondary-60/90 backdrop-blur-sm">
@@ -34,7 +84,7 @@ export function Navbar() {
         <SheetHeader>
           <SheetTitle className="text-left">Talent Trace</SheetTitle>
         </SheetHeader>
-        <SheetDescription>
+        <SheetDescription className="flex flex-col justify-between">
           <section className="w-full flex flex-col mt-12 gap-2">
             <Link to={`/`} className="flex items-center gap-2 p-2">
               <House size={32} className="text-white" />
@@ -51,6 +101,23 @@ export function Navbar() {
                 Minha comunidades
               </div>
             </div>
+          </section>
+          <section>
+            {' '}
+            {theme === 'light' ? (
+              <Sun
+                size={20}
+                className="cursor-pointer h-10 w-10 bg-gray-300 border border-gray-200 dark:bg-dark-TT p-2 rounded-2xl"
+                onClick={handleSetTheme}
+              />
+            ) : (
+              <Moon
+                size={20}
+                className="cursor-pointer h-10 w-10 bg-gray-300 border border-gray-200 dark:bg-dark-TT p-2 rounded-2xl"
+                onClick={handleSetTheme}
+              />
+            )}
+            <Button onClick={handleLogout}>Sair</Button>
           </section>
         </SheetDescription>
       </SheetContent>

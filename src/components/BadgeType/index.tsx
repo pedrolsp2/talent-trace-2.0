@@ -11,15 +11,15 @@ export function BadgeType({ variant, type }: BadgeTypeProps) {
 
   useEffect(() => {
     switch (type) {
-      case 'Peneira':
+      case 'Treinos':
         setBgColor('bg-primary-20');
         setTextColor('text-white');
         break;
-      case 'Curiosidades':
+      case 'Peneira':
         setBgColor('bg-secondary-40');
         setTextColor('text-white');
         break;
-      case 'Treinos':
+      case 'Curiosidades':
         setBgColor('bg-[#FFE576]');
         setTextColor('text-[#D7B21A]');
         break;

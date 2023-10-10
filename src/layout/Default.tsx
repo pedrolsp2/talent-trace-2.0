@@ -32,7 +32,7 @@ export function Default() {
       <SideBar />
       <div className="max-w-[1250px] w-full mx-auto px-5">
         <Header />
-        <div className="border border-slate-200 dark:border-zinc-900 bg-white">
+        <div className="border border-slate-200 dark:border-zinc-900 bg-white dark:bg-dark-TT">
           <Outlet />
         </div>
       </div>

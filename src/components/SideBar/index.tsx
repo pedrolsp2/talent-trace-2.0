@@ -26,9 +26,10 @@ export function SideBar() {
   const [comunidades, setComunidades] = useState(false);
   const [toggle, setToggle] = useState<boolean>(false);
   const [user, setUser] = useState<InfoUser | null>(null);
-  const [theme, setTheme] = useState(
-    localStorage.getItem('theme') ? localStorage.getItem('theme') : 'light'
+  const [theme, setTheme] = useState<string>(
+    localStorage.getItem('theme') ? localStorage.getItem('theme')! : 'light'
   );
+
   const navigate = useNavigate();
   const auth = useAuth();
   const data = getUserLocalStorage();
@@ -54,22 +55,33 @@ export function SideBar() {
   const handleSetTheme = () => {
     if (theme === 'light') {
       setTheme('dark');
+      localStorage.setItem('theme', 'dark');
       document.querySelector('html')?.setAttribute('data-mode', 'dark');
-    }
-    if (theme === 'dark') {
+    } else if (theme === 'dark') {
       setTheme('light');
+      localStorage.setItem('theme', 'light');
       document.querySelector('html')?.setAttribute('data-mode', 'light');
     }
   };
 
   useEffect(() => {
-    const theme: string = 'light';
-    localStorage.setItem('theme', theme);
     const localTheme: string | null = localStorage.getItem('theme');
-    document
-      .querySelector('html')
-      ?.setAttribute('data-mode', localTheme || 'light');
-  }, [theme]);
+    if (localTheme) {
+      setTheme(localTheme);
+    } else {
+      const userPrefersDark =
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (userPrefersDark) {
+        setTheme('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        setTheme('light');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+    document.querySelector('html')?.setAttribute('data-mode', theme);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('resize', handleResize);
@@ -245,7 +257,7 @@ export function SideBar() {
           <div className="flex flex-col items-start gap-2.5 self-stretch mt-2">
             <Link
               to="/comunidades"
-              className="flex items-start gap-2.5 self-stretch py-1 px-0 border-b border-b-[#4a1ecb] text-white text-sm leading-[normal] cursor-pointer"
+              className="flex items-start gap-2.5 self-stretch py-1 px-0 border-b border-b-secondary-40 text-white text-sm leading-[normal] cursor-pointer"
             >
               Comunidades
             </Link>
