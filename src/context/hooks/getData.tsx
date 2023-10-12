@@ -1,4 +1,9 @@
-import { InfoUser, LikeProps, PostProps } from '../AuthProvider/type';
+import {
+  ComunidadeProps,
+  InfoUser,
+  LikeProps,
+  PostProps,
+} from '../AuthProvider/type';
 import firebase from '../../../src/services/firebase/config';
 import { toast } from '../../components/ui/use-toast';
 
@@ -309,5 +314,45 @@ export const fetchComunidade = async () => {
   } else {
     console.error('Erro ao buscar dados.');
     return [];
+  }
+};
+
+export const handleNewComunidade = async (value: ComunidadeProps) => {
+  try {
+    await firebase.firestore().collection('comunidade').add({
+      banner: value.banner,
+      fotoOlheiro: value.fotoOlheiro,
+      descricao: value.descricao,
+      nome: value.nome,
+      nameURL: value.nameURL,
+      tipo: value.tipo,
+      id_comunidade: value.id_comunidade,
+      dataCriacao: value.dataCriacao,
+    });
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Dados inseridos com sucesso!',
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao inserir os dados. Por favor, tente novamente.',
+    });
+  }
+};
+
+export const fetchComunidadeName = async (name: string) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('comunidade')
+    .where('nameURL', '==', name)
+    .get();
+  if (!userDoc.empty) {
+    return userDoc.docs[0].data();
+  } else {
+    return null;
   }
 };

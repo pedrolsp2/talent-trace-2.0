@@ -62,6 +62,8 @@ export interface ComunidadeProps {
   id_comunidade: number;
   nome: string;
   tipo: 'Peneira' | 'Curiosidades' | 'Treinos';
+  dataCriacao: Date;
+  nameURL: string;
 }
 
 export interface IChat {

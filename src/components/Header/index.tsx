@@ -2,7 +2,6 @@ import { Notebook, Sparkle, UserSquare } from '@phosphor-icons/react';
 import { SlackIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ComunidadeHeader } from '../ComunidadeHeader';
 
 export function Header() {
   const location = useLocation();
@@ -22,7 +21,8 @@ export function Header() {
     '/': 'Home',
     '/view-post': 'Post',
     '/user': 'Perfil do usuário',
-    '/comunidades': 'Comunidade',
+    '/comunidades': 'Comunidades',
+    '/comunidade': 'Comunidade',
   };
 
   useEffect(() => {
@@ -50,8 +50,8 @@ export function Header() {
     }
   }, [location.pathname]);
 
-  if (page === 'Comunidade') {
-    return <ComunidadeHeader />;
+  if (page === 'Comunidade' || page === 'Comunidades' || null) {
+    return null;
   }
 
   return (

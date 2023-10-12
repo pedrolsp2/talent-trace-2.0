@@ -1,63 +1,68 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter } from 'react-router-dom';
 
-import Login from "./pages/login"
-import Home from "./pages/home"
-import MobileLogin from "./pages/mobile/login"
-import MobileSignup from "./pages/mobile/login/signup"
+import Login from './pages/login';
+import Home from './pages/home';
+import MobileLogin from './pages/mobile/login';
+import MobileSignup from './pages/mobile/login/signup';
 
-import { Default } from "./layout/Default"
-import { ProtectedLayout } from "./components/ProtectedLayout"
-import NotFound from "./components/NotFound"
-import SignUpOlheiro from "./pages/SignUpOlheiro"
-import MobileSignUpOlheiro from "./pages/mobile/SignUpOlheiro"
-import { ViewPost } from "./pages/viewPost"
-import { User } from "./pages/user"
-import { Comunidades } from "./pages/comunidades"
+import { Default } from './layout/Default';
+import { ProtectedLayout } from './components/ProtectedLayout';
+import NotFound from './components/NotFound';
+import SignUpOlheiro from './pages/SignUpOlheiro';
+import MobileSignUpOlheiro from './pages/mobile/SignUpOlheiro';
+import { ViewPost } from './pages/viewPost';
+import { User } from './pages/user';
+import { Comunidades } from './pages/comunidades';
+import { Comunidade } from './pages/comunidade';
 
 function isMobileDevice() {
   return (
-    typeof window.orientation !== "undefined" ||
-    navigator.userAgent.indexOf("IEMobile") !== -1
-  )
+    typeof window.orientation !== 'undefined' ||
+    navigator.userAgent.indexOf('IEMobile') !== -1
+  );
 }
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <ProtectedLayout children={<Default />}></ProtectedLayout>,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <Home />,
       },
       {
-        path: "/view-post/:id",
+        path: '/view-post/:id',
         element: <ViewPost />,
       },
       {
-        path: "/user/:username",
+        path: '/user/:username',
         element: <User />,
       },
       {
-        path: "/comunidades",
+        path: '/comunidades',
         element: <Comunidades />,
+      },
+      {
+        path: '/comunidade/:name',
+        element: <Comunidade />,
       },
     ],
   },
   {
-    path: "/login",
+    path: '/login',
     element: isMobileDevice() ? <MobileLogin /> : <Login />,
   },
   {
-    path: "/novo-olheiro",
+    path: '/novo-olheiro',
     element: isMobileDevice() ? <MobileSignUpOlheiro /> : <SignUpOlheiro />,
   },
   {
-    path: "/novo-jogador",
+    path: '/novo-jogador',
     element: isMobileDevice() ? <MobileSignup /> : <NotFound />,
   },
   {
-    path: "/*",
+    path: '/*',
     element: <NotFound />,
   },
-])
+]);

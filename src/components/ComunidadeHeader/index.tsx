@@ -1,29 +1,11 @@
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogHeader,
-  DialogFooter,
-} from '../ui/dialog';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectLabel,
-  SelectItem,
-} from '../ui/select';
-import { BadgePlus } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Textarea } from '../ui/textarea';
-import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
-import { useEffect, useState } from 'react';
-import { fetchDataUser } from '../../context/hooks/getData';
 import { InfoUser } from '../../context/AuthProvider/type';
+import { NovaComunidade } from '../NovaComunidade';
+import { NovoPost } from '../NovoPost';
+
+interface value {
+  userData: InfoUser;
+  new?: boolean;
+}
 
 function isMobileDevice() {
   return (
@@ -32,19 +14,7 @@ function isMobileDevice() {
   );
 }
 
-export function ComunidadeHeader() {
-  const data = getUserLocalStorage();
-  const email = data[0];
-  const [userData, setUserData] = useState<InfoUser | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchDataUser(email || '');
-      setUserData((data as InfoUser) || null);
-    };
-    fetchData();
-  }, [email]);
-
+export function ComunidadeHeader(props: value) {
   return (
     <div
       className={`flex flex-col items-start gap-2.5 self-stretch py-2 px-3 dark:bg-dark-TT2 border border-[#ececec] bg-neutral-50 dark:border-zinc-900 ${
@@ -82,68 +52,10 @@ export function ComunidadeHeader() {
             Comunidades do momento
           </div>
         </div>
-        {userData?.cref && (
-          <Dialog>
-            <DialogTrigger className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]">
-              <BadgePlus size={18} className="text-white" />
-              {!isMobileDevice() && (
-                <div className="text-[#e8f7f0] text-xs font-medium leading-[normal]">
-                  Criar comunidade
-                </div>
-              )}
-            </DialogTrigger>
-            <DialogContent className="bg-white">
-              <DialogHeader>
-                <DialogTitle>Nova comunidade</DialogTitle>
-                <DialogDescription>
-                  Olheiro, crie comunidades para interagir com outros olheiros e
-                  jogadores.
-                </DialogDescription>
-                <Input
-                  type="text"
-                  placeholder="Qual o nome da sua comunidade?"
-                />
-                <div className="flex flex-col w-full p-2">
-                  <div className="grid grid-cols-[74px,1fr] items-center gap-4">
-                    <div className="w-20 h-20 rounded-full bg-slate-400 dark:bg-dark-TT2">
-                      <img
-                        src="https://github.com/pedrolsp2.png"
-                        alt="Foto da comunidade"
-                        className="w-20 h-20 rounded-full"
-                      />
-                    </div>
-                    <span>Banner para sua comunidade</span>
-                  </div>
-                  <Textarea placeholder="De uma breve descrição de sobre o que é a comunidade" />
-                  <Select>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Do que se trata?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup className="bg-white">
-                        <SelectLabel>Tipo</SelectLabel>
-                        <SelectItem className="cursor-pointer" value="peneiras">
-                          Peneiras
-                        </SelectItem>
-                        <SelectItem
-                          className="cursor-pointer"
-                          value="curiosidades"
-                        >
-                          Curiosidades
-                        </SelectItem>
-                        <SelectItem className="cursor-pointer" value="treinos">
-                          Treinos
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <DialogFooter>
-                  <Button>Criar</Button>
-                </DialogFooter>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+        {props.userData.cref && props.new ? (
+          <NovoPost userData={props.userData} />
+        ) : (
+          <NovaComunidade userData={props.userData} />
         )}
       </div>
     </div>

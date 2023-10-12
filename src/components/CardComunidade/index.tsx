@@ -8,7 +8,7 @@ interface value {
 
 export function CardComunidade(props: value) {
   return (
-    <Link to={''} className="cursor-pointer">
+    <Link to={`/comunidade/${props.value.nameURL}`} className="cursor-pointer">
       <div className="inline-flex flex-col justify-between items-start p-3 w-44 h-[15rem] rounded-md border border-[#eeeeee] dark:border-zinc-800">
         <div className="flex flex-col items-start gap-1">
           <div
