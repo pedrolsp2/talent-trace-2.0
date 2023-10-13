@@ -1,18 +1,39 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { InfoUser, ComunidadeProps } from '../../context/AuthProvider/type';
+import { Link, useParams } from 'react-router-dom';
+import {
+  InfoUser,
+  ComunidadeProps,
+  ContentComunidade,
+} from '../../context/AuthProvider/type';
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import {
   fetchComunidadeName,
+  fetchContentComundiade,
   fetchDataUser,
   fetchUserComunidade,
 } from '../../context/hooks/getData';
-import { UserCheck } from 'lucide-react';
+import { Heart, UserCheck } from 'lucide-react';
 import { ComunidadeHeader } from '../../components/ComunidadeHeader';
+import { Skeleton } from '../../components/ui/skeleton';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../../components/ui/avatar';
+import { ChatCircle } from '@phosphor-icons/react';
+import { BadgeType } from '../../components/BadgeType';
+
+function isMobileDevice() {
+  return (
+    typeof window.orientation !== 'undefined' ||
+    navigator.userAgent.indexOf('IEMobile') !== -1
+  );
+}
 
 export const Comunidade = () => {
   const [comunidade, setComunidade] = useState<ComunidadeProps | null>(null);
   const [userData, setUserData] = useState<InfoUser | null>(null);
+  const [content, setContent] = useState<ContentComunidade[] | null>(null);
   const { name } = useParams<{ name: string }>();
   const [status, setStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +55,14 @@ export const Comunidade = () => {
         setUserData(dataUser as InfoUser);
       } else {
         setUserData(null);
+      }
+
+      const dataComunidade = await fetchContentComundiade(name || '');
+      if (dataComunidade) {
+        console.log(dataComunidade);
+        setContent(dataComunidade as ContentComunidade[]);
+      } else {
+        setContent(null);
       }
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
@@ -65,7 +94,88 @@ export const Comunidade = () => {
   if (isLoading) {
     return (
       <>
-        <h1>carregando</h1>
+        <Skeleton className="h-10 w-full dark:bg-dark-TT3 rounded-none bg-slate-100" />
+        <Skeleton className="flex justify-between items-center self-stretch py-1 px-8 border-b border-b-[#e8e8e8] dark:border-dark-TT">
+          <Skeleton className="flex justify-center items-center py-3 gap-4 px-0">
+            <Skeleton className="rounded-full w-20 h-20 dark:bg-dark-TT3 bg-slate-100" />
+            <Skeleton className="flex flex-col justify-between gap-1">
+              <Skeleton className="text-[#3c3c3c] dark:text-zinc-300 text-[2rem] font-semibold leading-[100%] h-6 w-48 dark:bg-dark-TT3 bg-slate-100"></Skeleton>
+              <Skeleton className="flex items-center gap-1 h-4 w-24 dark:bg-dark-TT3 bg-slate-100">
+                <Skeleton className="742_membros text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]"></Skeleton>
+              </Skeleton>
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
+        <Skeleton className="p-2 flex flex-col">
+          <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
+            <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
+            <Skeleton className="flex flex-col gap-5 px-2">
+              <Skeleton className="flex flex-col">
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
+              </Skeleton>
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
+        <Skeleton className="p-2 flex flex-col">
+          <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
+            <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
+            <Skeleton className="flex flex-col gap-5 px-2">
+              <Skeleton className="flex flex-col">
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
+              </Skeleton>
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
+        <Skeleton className="p-2 flex flex-col">
+          <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
+            <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
+            <Skeleton className="flex flex-col gap-5 px-2">
+              <Skeleton className="flex flex-col">
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
+              </Skeleton>
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
+        <Skeleton className="p-2 flex flex-col">
+          <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
+            <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
+            <Skeleton className="flex flex-col gap-5 px-2">
+              <Skeleton className="flex flex-col">
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
+              </Skeleton>
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
+        <Skeleton className="p-2 flex flex-col">
+          <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
+            <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
+            <Skeleton className="flex flex-col gap-5 px-2">
+              <Skeleton className="flex flex-col">
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
+              </Skeleton>
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
       </>
     );
   }
@@ -73,33 +183,159 @@ export const Comunidade = () => {
   return (
     <>
       {userData && userData.cref && (
-        <ComunidadeHeader userData={userData} new />
+        <ComunidadeHeader userData={userData} new key={userData.id_user} />
       )}
-      <div className="flex justify-between items-center self-stretch py-1 px-8 border-b border-b-[#e8e8e8] dark:border-dark-TT">
-        <div className="flex justify-center items-center py-3 gap-4 px-0">
-          <img
-            src={comunidade?.banner}
-            alt={comunidade?.nome}
-            className="rounded-full w-20 h-20"
-          />
-          <div className="flex flex-col justify-between gap-1">
-            <div className="text-[#3c3c3c] dark:text-zinc-300 text-[2rem] font-semibold leading-[100%]">
-              {comunidade?.nome}
-            </div>
-            <div className="flex items-center gap-1">
-              <UserCheck className="w-5 h-5 text-zinc-400" />
-              <div className="742_membros text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]">
-                742 membros
+
+      {isMobileDevice() ? (
+        <>
+          {' '}
+          <div className="flex flex-col p-1">
+            <div className="flex py-3 gap-4 px-0">
+              <img
+                src={comunidade?.banner}
+                alt={comunidade?.nome}
+                className="rounded-full w-12 h-12"
+              />
+              <div className="flex flex-col justify-between gap-1">
+                <div className="text-[#3c3c3c] dark:text-zinc-300 text-[1.5rem] font-semibold leading-[100%]">
+                  {comunidade?.nome}
+                </div>
+                <div className="flex items-center gap-1">
+                  <UserCheck className="w-5 h-5 text-zinc-400" />
+                  <div className="742_membros text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]">
+                    742 membros
+                  </div>
+                </div>
               </div>
             </div>
+
+            {!status ? (
+              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
+                Entrar
+              </button>
+            ) : (
+              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
+                Sair
+              </button>
+            )}
           </div>
-        </div>
-        {!status && (
-          <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-[#14af6c] text-white text-sm font-bold leading-[100%]">
-            Entrar
-          </button>
+        </>
+      ) : (
+        <>
+          {' '}
+          <div className="flex justify-between items-center self-stretch py-1 px-8">
+            <div className="flex justify-center items-center py-3 gap-4 px-0">
+              <img
+                src={comunidade?.banner}
+                alt={comunidade?.nome}
+                className="rounded-full w-20 h-20"
+              />
+              <div className="flex flex-col justify-between gap-1">
+                <div className="text-[#3c3c3c] dark:text-zinc-300 text-[2rem] font-semibold leading-[100%]">
+                  {comunidade?.nome}
+                </div>
+                <div className="flex items-center gap-1">
+                  <UserCheck className="w-5 h-5 text-zinc-400" />
+                  <div className="742_membros text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]">
+                    742 membros
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {!status ? (
+              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
+                Entrar
+              </button>
+            ) : (
+              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
+                Sair
+              </button>
+            )}
+          </div>
+        </>
+      )}
+
+      {content?.length == 0 && (
+        <>
+          <h1 className="text-center my-6">
+            Sem post nesta comunidade.
+            <Link to={`/comunidades`} className="text-primary-50">
+              {' '}
+              Voltar para comunidades
+            </Link>
+          </h1>
+        </>
+      )}
+      {content &&
+        content.map((item) =>
+          isMobileDevice() ? (
+            <>
+              <div className="flex flex-col gap-8 px-1 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
+                <div className="flex gap-2 w-full">
+                  <Avatar>
+                    <AvatarFallback>FT</AvatarFallback>
+                    <AvatarImage src={item.fotoOlheiro} />'
+                  </Avatar>
+                  <div className="flex flex-col  w-full">
+                    <span className="text-[#3c3c3c] dark:text-zinc-300 text-md">
+                      {item.nomeOlheiro}
+                    </span>
+                    <span className="text-[#3c3c3c] dark:text-zinc-200 font-semibold text-xl">
+                      {item.titulo}
+                    </span>
+                    <span className="ml-auto">
+                      <BadgeType type={item.tipo} variant="default" />
+                    </span>
+                  </div>
+                </div>
+                <p className="dark:text-zinc-400">{item.conteudo}</p>
+                <span className="ml-auto flex items-center gap-2">
+                  <Heart size={24} className="cursor-pointer text-zinc-500" />
+                  <ChatCircle
+                    size={24}
+                    className="cursor-pointer text-zinc-500"
+                  />
+                </span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="p-2 flex flex-col">
+                <div className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
+                  <Avatar>
+                    <AvatarFallback>FT</AvatarFallback>
+                    <AvatarImage src={item.fotoOlheiro} />'
+                  </Avatar>
+                  <div className="flex flex-col gap-5 px-2">
+                    <div className="flex flex-col">
+                      <span className="text-[#3c3c3c] dark:text-zinc-300 text-md">
+                        {item.nomeOlheiro}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#3c3c3c] dark:text-zinc-200 font-semibold text-xl">
+                          {item.titulo}
+                        </span>
+                        <BadgeType type={item.tipo} variant="default" />
+                      </div>
+                    </div>
+                    <p className="dark:text-zinc-400">{item.conteudo}</p>
+                    <span className="ml-auto flex items-center gap-2">
+                      <Heart
+                        size={24}
+                        className="cursor-pointer text-zinc-500"
+                      />
+                      <ChatCircle
+                        size={24}
+                        className="cursor-pointer text-zinc-500"
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )
         )}
-      </div>
     </>
   );
 };

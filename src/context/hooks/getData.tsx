@@ -1,5 +1,6 @@
 import {
   ComunidadeProps,
+  ContentComunidade,
   InfoUser,
   LikeProps,
   PostProps,
@@ -369,4 +370,45 @@ export const fetchUserComunidade = async (
     .get();
 
   return !userDoc.empty;
+};
+
+export const fetchContentComundiade = async (name: string) => {
+  const postsCollection = await firebase
+    .firestore()
+    .collection('contentComunidade')
+    .where('nameURL', '==', name)
+    .get();
+
+  if (!postsCollection.empty) {
+    return postsCollection.docs.map((doc) => doc.data());
+  } else {
+    console.error('Erro ao buscar dados.');
+    return [];
+  }
+};
+
+export const handleNewContentComundiade = async (value: ContentComunidade) => {
+  try {
+    await firebase.firestore().collection('contentComunidade').add({
+      nameURL: value.nameURL,
+      conteudo: value.conteudo,
+      titulo: value.titulo,
+      tipo: value.tipo,
+      nomeOlheiro: value.nomeOlheiro,
+      fotoOlheiro: value.fotoOlheiro,
+      img: value.img,
+    });
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Dados inseridos com sucesso!',
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao inserir os dados. Por favor, tente novamente.',
+    });
+  }
 };

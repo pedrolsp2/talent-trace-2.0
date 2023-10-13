@@ -12,10 +12,11 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { useForm } from 'react-hook-form';
 import { BadgePlus } from 'lucide-react';
-import { ComunidadeProps, InfoUser } from '../../context/AuthProvider/type';
-import { handleNewComunidade } from '../../context/hooks/getData';
+import { ContentComunidade, InfoUser } from '../../context/AuthProvider/type';
+import { handleNewContentComundiade } from '../../context/hooks/getData';
 import { useToast } from '../ui/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 interface value {
   userData: InfoUser;
@@ -28,71 +29,39 @@ function isMobileDevice() {
   );
 }
 
-interface AccentsMapType {
-  [key: string]: string;
-}
-
 export const NovoPost = (props: value) => {
-  const { register, handleSubmit } = useForm<ComunidadeProps>();
-  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<ContentComunidade>();
+  const [status, setStatus] = useState<boolean>(false);
   const { toast } = useToast();
+  const { name } = useParams<{ name: string }>();
 
-  const accentsMap: AccentsMapType = {
-    a: '[àáâãäå]',
-    e: '[èéêë]',
-    i: '[ìíîï]',
-    o: '[òóôõö]',
-    u: '[ùúûü]',
-    c: 'ç',
-    n: 'ñ',
-    z: 'źžż',
-    s: 'ßšś',
-    l: 'ł',
-    r: 'ř',
-    y: 'ýÿ',
-    t: 'ť',
-  };
-
-  function transformString(str: string): string {
-    let newStr = str.toLowerCase();
-    for (const letter in accentsMap) {
-      const regex = new RegExp(accentsMap[letter], 'g');
-      newStr = newStr.replace(regex, letter);
-    }
-    return newStr.replace(/\s+/g, '-');
-  }
-
-  const onSubmit = async (data: ComunidadeProps) => {
-    const id = Math.floor(Math.random() * 10000);
-    const dataCr = new Date();
-    const nameURL = transformString(data.nome);
-
+  const onSubmit = async (data: ContentComunidade) => {
     try {
-      handleNewComunidade({
-        banner: 'https://github.com/pedrolsp2.png',
-        fotoOlheiro: props.userData.fotoPerfil || '',
-        descricao: data.descricao,
-        nome: data.nome,
+      handleNewContentComundiade({
+        nameURL: name || '',
+        conteudo: data.conteudo,
+        titulo: data.titulo,
         tipo: data.tipo,
-        id_comunidade: id,
-        dataCriacao: dataCr,
-        nameURL: nameURL,
+        nomeOlheiro: props.userData.user,
+        fotoOlheiro: props.userData.fotoPerfil,
+        img: data.img || '',
       });
       toast({
         variant: 'default',
         title: 'Sucesso!',
         description: 'Post cadastrado com sucesso.',
       });
-      setTimeout(() => {
-        navigate('/comunidade/' + nameURL);
-      }, 2000);
+      setStatus(false);
     } catch (error) {
       console.error('Erro ao inserir:', error);
     }
   };
   return (
-    <Dialog>
-      <DialogTrigger className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]">
+    <Dialog open={status}>
+      <DialogTrigger
+        onClick={() => setStatus(true)}
+        className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]"
+      >
         {props.userData.cref && (
           <>
             <BadgePlus size={18} className="text-white" />
@@ -113,29 +82,17 @@ export const NovoPost = (props: value) => {
           </DialogDescription>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Input
-              {...register('nome', { required: true })}
-              id="nome"
+              {...register('titulo', { required: true })}
+              id="titulo"
               type="text"
-              placeholder="Qual o nome da sua comunidade?"
+              placeholder="Titulo do post"
               className="dark:text-zinc-300"
             />
             <div className="flex flex-col w-full p-2">
-              <div className="grid grid-cols-[74px,1fr] items-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-slate-400 dark:bg-dark-TT2">
-                  <img
-                    src="https://github.com/pedrolsp2.png"
-                    alt="Foto da comunidade"
-                    className="w-20 h-20 rounded-full"
-                  />
-                </div>
-                <span className="dark:text-zinc-300">
-                  Banner para sua comunidade
-                </span>
-              </div>
               <Textarea
-                {...register('descricao', { required: true })}
-                id="descricao"
-                placeholder="De uma breve descrição de sobre o que é a comunidade"
+                {...register('conteudo', { required: true })}
+                id="conteudo"
+                placeholder="Conteudo do post"
                 className="dark:text-zinc-300"
               />
               <select {...register('tipo', { required: true })} name="tipo">

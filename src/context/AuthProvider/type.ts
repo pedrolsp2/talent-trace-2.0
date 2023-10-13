@@ -85,6 +85,16 @@ export interface IMessage {
   content?: string;
 }
 
+export interface ContentComunidade {
+  nameURL: string;
+  conteudo: string;
+  titulo: string;
+  tipo: 'Peneiras' | 'Curiosidades' | 'Treinos';
+  nomeOlheiro: string;
+  fotoOlheiro: string;
+  img?: string;
+}
+
 export interface IContext extends IUser {
   authenticate: (email: string, password: string) => Promise<void>;
   logout: () => void;
