@@ -356,3 +356,17 @@ export const fetchComunidadeName = async (name: string) => {
     return null;
   }
 };
+
+export const fetchUserComunidade = async (
+  name: string,
+  id: number
+): Promise<boolean> => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('userComunidade')
+    .where('nameURL', '==', name)
+    .where('id_user', '==', id)
+    .get();
+
+  return !userDoc.empty;
+};

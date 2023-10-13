@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 interface BadgeTypeProps {
   variant: 'default' | 'text';
-  type: 'Peneira' | 'Curiosidades' | 'Treinos';
+  type: 'Peneiras' | 'Curiosidades' | 'Treinos';
 }
 
 export function BadgeType({ variant, type }: BadgeTypeProps) {
@@ -15,7 +15,7 @@ export function BadgeType({ variant, type }: BadgeTypeProps) {
         setBgColor('bg-primary-20');
         setTextColor('text-white');
         break;
-      case 'Peneira':
+      case 'Peneiras':
         setBgColor('bg-secondary-40');
         setTextColor('text-white');
         break;

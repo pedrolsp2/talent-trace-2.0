@@ -1,6 +1,7 @@
 import { UserCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ComunidadeProps } from '../../context/AuthProvider/type';
+import { Link } from 'react-router-dom';
 
 interface value {
   value: ComunidadeProps;
@@ -8,7 +9,7 @@ interface value {
 
 export function ListComunidadesMobile(props: value) {
   return (
-    <>
+    <Link to={`/comunidade/${props.value.nameURL}`}>
       <div className="flex flex-col justify-center items-start w-full border border-zinc-200 rounded p-1 dark:border-zinc-800">
         <div className="flex justify-between items-center self-stretch py-0 px-3">
           <div className="flex flex-col items-start gap-1">
@@ -44,7 +45,7 @@ export function ListComunidadesMobile(props: value) {
               </div>
             </div>
           </div>
-          <div className="frame_213 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <Avatar>
               <AvatarFallback>TT</AvatarFallback>
               <AvatarImage src={props.value.fotoOlheiro} />
@@ -53,6 +54,6 @@ export function ListComunidadesMobile(props: value) {
         </div>
         <p className="text-[#666] p-2 text-sm">{props.value.descricao}</p>
       </div>
-    </>
+    </Link>
   );
 }

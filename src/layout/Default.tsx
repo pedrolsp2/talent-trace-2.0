@@ -19,7 +19,7 @@ export function Default() {
         </div>
         <div className="w-full mx-auto px-1">
           <Header />
-          <div className="border border-slate-200 dark:border-zinc-900 bg-white">
+          <div className="border border-slate-200 dark:border-zinc-900 bg-white dark:bg-dark-TT dark:min-h-screen">
             <Outlet />
           </div>
         </div>
@@ -28,7 +28,7 @@ export function Default() {
   }
 
   return (
-    <div className="grid grid-cols-[auto,1fr] dark:bg-dark-TT bg-slate-50 dark:text-zinc-50 text-zinc-900">
+    <div className="grid grid-cols-[auto,1fr] dark:bg-dark-T bg-slate-50 dark:text-zinc-50 text-zinc-900">
       <SideBar />
       <div className="max-w-[1250px] w-full mx-auto px-5">
         <Header />

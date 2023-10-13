@@ -2,6 +2,7 @@ import { UserCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ComunidadeProps } from '../../context/AuthProvider/type';
 import { BadgeType } from '../BadgeType';
+import { Link } from 'react-router-dom';
 
 interface value {
   value: ComunidadeProps;
@@ -9,7 +10,7 @@ interface value {
 
 export function ListComunidades(props: value) {
   return (
-    <>
+    <Link to={`/comunidade/${props.value.nameURL}`}>
       <div className="grid grid-cols-[75%,1fr] gap-x-12 items-center border dark:border-zinc-800 border-[#fafafa] p-2 rounded">
         <div className="flex flex-col gap-2 p-1">
           <span className="text-[#3c3c3c] dark:text-zinc-300 text-lg font-bold leading-[normal] flex items-center gap-2">
@@ -44,6 +45,6 @@ export function ListComunidades(props: value) {
           </div>
         </div>
       </div>
-    </>
+    </Link>
   );
 }

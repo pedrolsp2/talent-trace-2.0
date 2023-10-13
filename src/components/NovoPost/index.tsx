@@ -93,11 +93,15 @@ export const NovoPost = (props: value) => {
   return (
     <Dialog>
       <DialogTrigger className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]">
-        <BadgePlus size={18} className="text-white" />
-        {!isMobileDevice() && (
-          <div className="text-[#e8f7f0] text-xs font-medium leading-[normal]">
-            Novo Post
-          </div>
+        {props.userData.cref && (
+          <>
+            <BadgePlus size={18} className="text-white" />
+            {!isMobileDevice() && (
+              <div className="text-[#e8f7f0] text-xs font-medium leading-[normal]">
+                Novo Post
+              </div>
+            )}
+          </>
         )}
       </DialogTrigger>
       <DialogContent className="bg-white dark:bg-dark-TT dark:border-dark-TT2">

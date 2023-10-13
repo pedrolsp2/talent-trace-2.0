@@ -1,6 +1,9 @@
+import { fetchUserComunidade } from '../../context/hooks/getData';
 import { InfoUser } from '../../context/AuthProvider/type';
 import { NovaComunidade } from '../NovaComunidade';
 import { NovoPost } from '../NovoPost';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 interface value {
   userData: InfoUser;
@@ -15,6 +18,21 @@ function isMobileDevice() {
 }
 
 export function ComunidadeHeader(props: value) {
+  const { name } = useParams<{ name: string }>();
+  const [status, setStatus] = useState(false);
+
+  useEffect(() => {
+    async function fetchStatus() {
+      const result = await fetchUserComunidade(
+        name || '',
+        props.userData.id_user
+      );
+      setStatus(result);
+    }
+
+    fetchStatus();
+  }, [name, status]);
+
   return (
     <div
       className={`flex flex-col items-start gap-2.5 self-stretch py-2 px-3 dark:bg-dark-TT2 border border-[#ececec] bg-neutral-50 dark:border-zinc-900 ${
@@ -52,11 +70,12 @@ export function ComunidadeHeader(props: value) {
             Comunidades do momento
           </div>
         </div>
-        {props.userData.cref && props.new ? (
-          <NovoPost userData={props.userData} />
-        ) : (
-          <NovaComunidade userData={props.userData} />
-        )}
+        {props.userData?.cref &&
+          (props.new ? (
+            status && <NovoPost userData={props.userData} />
+          ) : (
+            <NovaComunidade userData={props.userData} />
+          ))}
       </div>
     </div>
   );

@@ -69,6 +69,7 @@ module.exports = {
         'primary-80': '#076636',
         'primary-90': '#025D24',
         'dark-TT': '#121214',
+        'dark-T': '#111111',
         'dark-TT2': '#19191B',
         'dark-TT3': '#252525',
       },

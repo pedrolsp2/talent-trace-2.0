@@ -53,7 +53,7 @@ export function Comunidades() {
     <>
       {comunidade && userData && <ComunidadeHeader userData={userData} />}
       <div className="flex flex-col p-2 gap-4 bg-white dark:bg-dark-TT">
-        <div className="flex gap-2">
+        <div className="flex justify-center gap-2">
           {itemsToDisplay &&
             itemsToDisplay.map((card) => (
               <CardComunidade key={card.nome} value={card} />

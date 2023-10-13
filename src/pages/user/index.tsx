@@ -218,11 +218,14 @@ export function User() {
               className="w-full py-1 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT"
             >
               <AccordionTrigger>
-                <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900 dark:bg-dark-TT">
+                <div className="flex items-center gap-3 self-stretch py-4 px-3dark:bg-dark-TT relative">
                   <Bell size={24} className="text-primary-50" />
                   <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
                     Notificações
                   </div>
+                  {likes && (
+                    <div className="w-2 h-2 rounded-full bg-secondary-30"></div>
+                  )}
                 </div>
               </AccordionTrigger>
               <AccordionContent>

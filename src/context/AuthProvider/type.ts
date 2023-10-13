@@ -61,7 +61,7 @@ export interface ComunidadeProps {
   descricao: string;
   id_comunidade: number;
   nome: string;
-  tipo: 'Peneira' | 'Curiosidades' | 'Treinos';
+  tipo: 'Peneiras' | 'Curiosidades' | 'Treinos';
   dataCriacao: Date;
   nameURL: string;
 }
