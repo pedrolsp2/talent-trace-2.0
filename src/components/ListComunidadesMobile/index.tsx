@@ -2,12 +2,23 @@ import { UserCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ComunidadeProps } from '../../context/AuthProvider/type';
 import { Link } from 'react-router-dom';
+import { countUserComunidade } from '../../context/hooks/getData';
+import { useEffect, useState } from 'react';
 
 interface value {
   value: ComunidadeProps;
 }
 
 export function ListComunidadesMobile(props: value) {
+  const [count, setCount] = useState(0);
+  async function Count() {
+    const count = await countUserComunidade(props.value.nameURL || '');
+    setCount(count);
+  }
+
+  useEffect(() => {
+    Count();
+  }, [props.value.nameURL]);
   return (
     <Link to={`/comunidade/${props.value.nameURL}`}>
       <div className="flex flex-col justify-center items-start w-full border border-zinc-200 rounded p-1 dark:border-zinc-800">
@@ -39,8 +50,8 @@ export function ListComunidadesMobile(props: value) {
               </div>
               <div className="flex items-center gap-1">
                 <UserCheck size={24} color="#8D8D8D" />
-                <div className="742_membros text-[#888] text-xs leading-[155.99%]">
-                  8 membros
+                <div className="text-[#888] text-xs leading-[155.99%]">
+                  {count} membros
                 </div>
               </div>
             </div>

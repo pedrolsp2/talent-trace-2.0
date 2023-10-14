@@ -3,12 +3,23 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ComunidadeProps } from '../../context/AuthProvider/type';
 import { BadgeType } from '../BadgeType';
 import { Link } from 'react-router-dom';
+import { countUserComunidade } from '../../context/hooks/getData';
+import { useEffect, useState } from 'react';
 
 interface value {
   value: ComunidadeProps;
 }
 
 export function ListComunidades(props: value) {
+  const [count, setCount] = useState(0);
+  async function Count() {
+    const count = await countUserComunidade(props.value.nameURL || '');
+    setCount(count);
+  }
+
+  useEffect(() => {
+    Count();
+  }, [props.value.nameURL]);
   return (
     <Link to={`/comunidade/${props.value.nameURL}`}>
       <div className="grid grid-cols-[75%,1fr] gap-x-12 items-center border dark:border-zinc-800 border-[#fafafa] p-2 rounded">
@@ -41,7 +52,7 @@ export function ListComunidades(props: value) {
           </Avatar>
           <div className="flex items-center gap-2">
             <UserCheck size={24} color="#8D8D8D" />
-            <div className="text-[#888]  text-xs ">8 membros</div>
+            <div className="text-[#888]  text-xs ">{count} membros</div>
           </div>
         </div>
       </div>

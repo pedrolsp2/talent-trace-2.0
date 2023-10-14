@@ -1,5 +1,7 @@
 import { ComunidadeProps } from '../../context/AuthProvider/type';
 import { UserCheck2 } from 'lucide-react';
+import { countUserComunidade } from '../../context/hooks/getData';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 interface value {
@@ -7,6 +9,16 @@ interface value {
 }
 
 export function CardComunidade(props: value) {
+  const [count, setCount] = useState(0);
+  async function Count() {
+    const count = await countUserComunidade(props.value.nameURL || '');
+    setCount(count);
+  }
+
+  useEffect(() => {
+    Count();
+  }, [props.value.nameURL]);
+
   return (
     <Link to={`/comunidade/${props.value.nameURL}`} className="cursor-pointer">
       <div className="inline-flex flex-col justify-between items-start p-3 w-44 h-[15rem] rounded-md border border-[#eeeeee] dark:border-zinc-800">
@@ -32,7 +44,7 @@ export function CardComunidade(props: value) {
         </div>
         <div className="flex items-center gap-2">
           <UserCheck2 size={24} color="#8D8D8D" className="cursor-pointer" />
-          <div className="text-[#888] text-xs">8 membros</div>
+          <div className="text-[#888] text-xs">{count} membros</div>
         </div>
       </div>
     </Link>

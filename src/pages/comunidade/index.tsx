@@ -7,10 +7,12 @@ import {
 } from '../../context/AuthProvider/type';
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import {
+  countUserComunidade,
   fetchComunidadeName,
   fetchContentComundiade,
   fetchDataUser,
   fetchUserComunidade,
+  userNewComunidade,
 } from '../../context/hooks/getData';
 import { Heart, UserCheck } from 'lucide-react';
 import { ComunidadeHeader } from '../../components/ComunidadeHeader';
@@ -22,6 +24,7 @@ import {
 } from '../../components/ui/avatar';
 import { ChatCircle } from '@phosphor-icons/react';
 import { BadgeType } from '../../components/BadgeType';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 function isMobileDevice() {
   return (
@@ -33,13 +36,32 @@ function isMobileDevice() {
 export const Comunidade = () => {
   const [comunidade, setComunidade] = useState<ComunidadeProps | null>(null);
   const [userData, setUserData] = useState<InfoUser | null>(null);
-  const [content, setContent] = useState<ContentComunidade[] | null>(null);
+  const [count, setCount] = useState(0);
   const { name } = useParams<{ name: string }>();
   const [status, setStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const data = getUserLocalStorage();
-  const email = data[0];
+  const strogae = getUserLocalStorage();
+  const email = strogae[0];
+
+  const fetchComunidades = async (): Promise<ContentComunidade[]> => {
+    const dataComunidade = await fetchContentComundiade(name || '');
+    if (dataComunidade) {
+      return dataComunidade as ContentComunidade[];
+    } else {
+      return [];
+    }
+  };
+
+  const { data } = useQuery({
+    queryKey: ['comunidade_contet'],
+    queryFn: fetchComunidades,
+  });
+
+  const { mutate } = useMutation(
+    () => userNewComunidade(userData?.id_user || 0, name || ''),
+    { onSuccess: () => fetchStatus() }
+  );
 
   const fetchData = async () => {
     try {
@@ -56,18 +78,22 @@ export const Comunidade = () => {
       } else {
         setUserData(null);
       }
-
-      const dataComunidade = await fetchContentComundiade(name || '');
-      if (dataComunidade) {
-        console.log(dataComunidade);
-        setContent(dataComunidade as ContentComunidade[]);
-      } else {
-        setContent(null);
-      }
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
     }
   };
+
+  async function fetchStatus() {
+    const result = await fetchUserComunidade(
+      name || '',
+      userData?.id_user || 0
+    );
+    setStatus(result);
+    setIsLoading(false);
+
+    const count = await countUserComunidade(name || '');
+    setCount(count);
+  }
 
   useEffect(() => {
     fetchData();
@@ -77,14 +103,6 @@ export const Comunidade = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    async function fetchStatus() {
-      const result = await fetchUserComunidade(
-        name || '',
-        userData?.id_user || 0
-      );
-      setStatus(result);
-      setIsLoading(false);
-    }
 
     if (userData) {
       fetchStatus();
@@ -101,7 +119,7 @@ export const Comunidade = () => {
             <Skeleton className="flex flex-col justify-between gap-1">
               <Skeleton className="text-[#3c3c3c] dark:text-zinc-300 text-[2rem] font-semibold leading-[100%] h-6 w-48 dark:bg-dark-TT3 bg-slate-100"></Skeleton>
               <Skeleton className="flex items-center gap-1 h-4 w-24 dark:bg-dark-TT3 bg-slate-100">
-                <Skeleton className="742_membros text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]"></Skeleton>
+                <Skeleton className="text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]"></Skeleton>
               </Skeleton>
             </Skeleton>
           </Skeleton>
@@ -182,9 +200,18 @@ export const Comunidade = () => {
 
   return (
     <>
-      {userData && userData.cref && (
-        <ComunidadeHeader userData={userData} new key={userData.id_user} />
-      )}
+      {userData &&
+        userData.cref &&
+        (status ? (
+          <ComunidadeHeader
+            userData={userData}
+            new
+            status
+            key={userData.id_user}
+          />
+        ) : (
+          <ComunidadeHeader userData={userData} new key={userData.id_user} />
+        ))}
 
       {isMobileDevice() ? (
         <>
@@ -202,15 +229,18 @@ export const Comunidade = () => {
                 </div>
                 <div className="flex items-center gap-1">
                   <UserCheck className="w-5 h-5 text-zinc-400" />
-                  <div className="742_membros text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]">
-                    742 membros
+                  <div className="text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]">
+                    {count} membros
                   </div>
                 </div>
               </div>
             </div>
 
             {!status ? (
-              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
+              <button
+                className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]"
+                onClick={() => mutate()}
+              >
                 Entrar
               </button>
             ) : (
@@ -236,15 +266,18 @@ export const Comunidade = () => {
                 </div>
                 <div className="flex items-center gap-1">
                   <UserCheck className="w-5 h-5 text-zinc-400" />
-                  <div className="742_membros text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]">
-                    742 membros
+                  <div className=" text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]">
+                    {count} membros
                   </div>
                 </div>
               </div>
             </div>
 
             {!status ? (
-              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
+              <button
+                className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]"
+                onClick={() => mutate()}
+              >
                 Entrar
               </button>
             ) : (
@@ -256,7 +289,7 @@ export const Comunidade = () => {
         </>
       )}
 
-      {content?.length == 0 && (
+      {data?.length == 0 && (
         <>
           <h1 className="text-center my-6">
             Sem post nesta comunidade.
@@ -267,8 +300,8 @@ export const Comunidade = () => {
           </h1>
         </>
       )}
-      {content &&
-        content.map((item) =>
+      {data &&
+        data.map((item) =>
           isMobileDevice() ? (
             <>
               <div className="flex flex-col gap-8 px-1 py-3 w-full border border-zinc-100 dark:border-dark-TT2">

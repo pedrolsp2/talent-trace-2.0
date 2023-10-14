@@ -412,3 +412,39 @@ export const handleNewContentComundiade = async (value: ContentComunidade) => {
     });
   }
 };
+
+export const userNewComunidade = async (id_user: number, nameURL: string) => {
+  try {
+    await firebase.firestore().collection('userComunidade').add({
+      id_user: id_user,
+      nameURL: nameURL,
+    });
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Bem vindo!',
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao entrar. Por favor, tente novamente.',
+    });
+  }
+};
+
+export const countUserComunidade = async (nameURL: string) => {
+  const postsCollection = await firebase
+    .firestore()
+    .collection('userComunidade')
+    .where('nameURL', '==', nameURL)
+    .get();
+
+  if (!postsCollection.empty) {
+    return postsCollection.docs.map((doc) => doc.data()).length;
+  } else {
+    console.error('Erro ao buscar dados.');
+    return 0;
+  }
+};

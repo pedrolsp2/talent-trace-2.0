@@ -14,10 +14,8 @@ import { useForm } from 'react-hook-form';
 import { BadgePlus } from 'lucide-react';
 import { ContentComunidade, InfoUser } from '../../context/AuthProvider/type';
 import { handleNewContentComundiade } from '../../context/hooks/getData';
-import { useToast } from '../ui/use-toast';
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface value {
   userData: InfoUser;
@@ -33,10 +31,15 @@ function isMobileDevice() {
 
 export const NovoPost = (props: value) => {
   const { register, handleSubmit } = useForm<ContentComunidade>();
-  const [status, setStatus] = useState<boolean>(false);
-  const { toast } = useToast();
   const { name } = useParams<{ name: string }>();
+
   const queryClient = useQueryClient();
+
+  const { isLoading, mutate } = useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['comunidade_contet']);
+    },
+  });
 
   const onSubmit = async (data: ContentComunidade) => {
     try {
@@ -49,24 +52,18 @@ export const NovoPost = (props: value) => {
         fotoOlheiro: props.userData.fotoPerfil,
         img: data.img || '',
       });
-      toast({
-        variant: 'default',
-        title: 'Sucesso!',
-        description: 'Post cadastrado com sucesso.',
-      });
-      setStatus(false);
-      props.fetch && props.fetch();
-      queryClient.invalidateQueries(['posts']);
+      mutate();
+      queryClient.invalidateQueries(['comunidade_contet']);
     } catch (error) {
       console.error('Erro ao inserir:', error);
     }
   };
+  if (isLoading) {
+    return <p>Carregando...</p>;
+  }
   return (
-    <Dialog open={status}>
-      <DialogTrigger
-        onClick={() => setStatus(true)}
-        className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]"
-      >
+    <Dialog>
+      <DialogTrigger className="flex items-center gap-2.5 py-1 px-2 rounded border border-[#129f62] bg-[#14af6c]">
         {props.userData.cref && (
           <>
             <BadgePlus size={18} className="text-white" />
