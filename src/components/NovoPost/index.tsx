@@ -17,9 +17,11 @@ import { handleNewContentComundiade } from '../../context/hooks/getData';
 import { useToast } from '../ui/use-toast';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface value {
   userData: InfoUser;
+  fetch?: () => void;
 }
 
 function isMobileDevice() {
@@ -34,6 +36,7 @@ export const NovoPost = (props: value) => {
   const [status, setStatus] = useState<boolean>(false);
   const { toast } = useToast();
   const { name } = useParams<{ name: string }>();
+  const queryClient = useQueryClient();
 
   const onSubmit = async (data: ContentComunidade) => {
     try {
@@ -52,6 +55,8 @@ export const NovoPost = (props: value) => {
         description: 'Post cadastrado com sucesso.',
       });
       setStatus(false);
+      props.fetch && props.fetch();
+      queryClient.invalidateQueries(['posts']);
     } catch (error) {
       console.error('Erro ao inserir:', error);
     }

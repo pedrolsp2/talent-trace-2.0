@@ -6,6 +6,7 @@ import { fetchComunidade, fetchDataUser } from '../../context/hooks/getData';
 import { ComunidadeProps, InfoUser } from '../../context/AuthProvider/type';
 import { ComunidadeHeader } from '../../components/ComunidadeHeader';
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
+import { useQuery } from '@tanstack/react-query';
 
 function isMobileDevice() {
   return (
@@ -15,23 +16,30 @@ function isMobileDevice() {
 }
 
 export function Comunidades() {
-  const [comunidade, setComunidade] = useState<ComunidadeProps[] | null>(null);
   const [userData, setUserData] = useState<InfoUser | null>(null);
 
-  const data = getUserLocalStorage();
-  const email = data[0];
+  const fetchComunidades = async (): Promise<ComunidadeProps[]> => {
+    const data = await fetchComunidade();
+    if (data) {
+      return data as ComunidadeProps[];
+    } else {
+      return [];
+    }
+  };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['comunidades'],
+    queryFn: fetchComunidades,
+  });
+
+  const storage = getUserLocalStorage();
+  const email = storage[0];
   const itemsToDisplay = isMobileDevice()
-    ? comunidade?.slice(0, 2)
-    : comunidade?.slice(0, 5);
+    ? data?.slice(0, 2)
+    : data?.slice(0, 5);
 
   async function fetchData() {
     try {
-      const postData = await fetchComunidade();
-      if (postData) {
-        setComunidade(postData as ComunidadeProps[]);
-      } else {
-        setComunidade(null);
-      }
       const userData = await fetchDataUser(email);
       if (userData && userData.id_user) {
         setUserData(userData as InfoUser);
@@ -49,9 +57,15 @@ export function Comunidades() {
     fetchData();
   }, [email]);
 
+  if (isLoading) {
+    return <p>Carregando...</p>;
+  }
+
   return (
     <>
-      {comunidade && userData && <ComunidadeHeader userData={userData} />}
+      {data && userData && (
+        <ComunidadeHeader userData={userData} fetch={fetchComunidades} />
+      )}
       <div className="flex flex-col p-2 gap-4 bg-white dark:bg-dark-TT">
         <div className="flex justify-center gap-2">
           {itemsToDisplay &&
@@ -59,8 +73,8 @@ export function Comunidades() {
               <CardComunidade key={card.nome} value={card} />
             ))}
         </div>
-        {itemsToDisplay &&
-          itemsToDisplay.map((card) => (
+        {data &&
+          data.map((card) => (
             <div key={card.nome}>
               {isMobileDevice() ? (
                 <ListComunidadesMobile value={card} />

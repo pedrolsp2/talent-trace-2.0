@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 interface value {
   userData: InfoUser;
   new?: boolean;
+  fetch?: () => void;
 }
 
 function isMobileDevice() {
@@ -72,7 +73,7 @@ export function ComunidadeHeader(props: value) {
         </div>
         {props.userData?.cref &&
           (props.new ? (
-            status && <NovoPost userData={props.userData} />
+            status && <NovoPost userData={props.userData} fetch={props.fetch} />
           ) : (
             <NovaComunidade userData={props.userData} />
           ))}
