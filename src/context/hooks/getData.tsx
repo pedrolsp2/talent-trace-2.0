@@ -228,17 +228,37 @@ export const fetchDeleteAnswer = async (id_answers: number) => {
   });
 };
 
-export const fetchLike = async (id: number) => {
+export const fetchLike = async (id_user: number, id_post: number) => {
   const userDoc = await firebase
     .firestore()
     .collection('liked')
-    .where('id_user', '==', id)
+    .where('id_user', '==', id_user)
+    .where('id_post', '==', id_post)
     .get();
   if (!userDoc.empty) {
-    return userDoc.docs.map((doc) => doc.data());
+    return true;
   } else {
-    return [];
+    return false;
   }
+};
+
+export const fetchDeleteLike = async (id_post: number, id_user: number) => {
+  const postRef = firebase.firestore().collection('liked');
+  const postSnapshot = await postRef
+    .where('id_user', '==', id_user)
+    .where('id_post', '==', id_post)
+    .get();
+
+  postSnapshot.forEach((documentSnapshot) => {
+    documentSnapshot.ref
+      .delete()
+      .then(() => {
+        console.log("Documento deletado com sucesso em 'post'!");
+      })
+      .catch((error) => {
+        console.error("Erro ao deletar documento em 'post': ", error);
+      });
+  });
 };
 
 export const fetchCountLike = async (id: number) => {
@@ -270,7 +290,11 @@ export const fetchAlertLiked = async (id: number) => {
   }
 };
 
-export const handleLike = async (value: LikeProps, id: number) => {
+export const handleLike = async (
+  value: LikeProps,
+  id: number,
+  id_user: number
+) => {
   try {
     await firebase
       .firestore()
@@ -286,7 +310,7 @@ export const handleLike = async (value: LikeProps, id: number) => {
         username: value.username,
       });
     await firebase.firestore().collection('liked').add({
-      id_user: value.id_user,
+      id_user: id_user,
       id_post: id,
     });
     toast({

@@ -12,6 +12,7 @@ import { InfoUser, PostProps } from '../../context/AuthProvider/type';
 import { useParams } from 'react-router-dom';
 import { Image } from 'lucide-react';
 import { firebase as fb } from '../../services/firebase/firebasestorageconfig';
+import { useQueryClient } from '@tanstack/react-query';
 
 type IForm = {
   value: InfoUser | null;
@@ -28,6 +29,7 @@ export function FormPost(props: IForm) {
   const [isLoading, setIsLoading] = useState(false);
   const [caracter, setCaracter] = useState(255);
   const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
 
   function handleNewContent(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const content = e.target.value;
@@ -103,12 +105,7 @@ export function FormPost(props: IForm) {
         setNewContent('');
         setImageUrl(null);
         setIsLoading(false);
-        toast({
-          variant: 'default',
-          title: 'Sucesso!',
-          description: 'Post cadastrado com sucesso.',
-        });
-        props?.fetch && props.fetch();
+        queryClient.invalidateQueries({ queryKey: ['post'] });
       } catch (error) {
         console.error('Erro ao inserir:', error);
         setIsLoading(false);
@@ -141,12 +138,7 @@ export function FormPost(props: IForm) {
         setNewContent('');
         setImageUrl(null);
         setIsLoading(false);
-        toast({
-          variant: 'default',
-          title: 'Sucesso!',
-          description: 'Post cadastrado com sucesso.',
-        });
-        props?.fetch && props.fetch();
+        queryClient.invalidateQueries({ queryKey: ['post'] });
       } catch (error) {
         console.error('Erro ao inserir:', error);
         setIsLoading(false);

@@ -20,6 +20,7 @@ import {
   fetchCountLike,
   fetchDataUser,
   fetchDeleteAnswer,
+  fetchDeleteLike,
   fetchDeletePost,
   fetchLike,
   handleLike,
@@ -27,13 +28,15 @@ import {
 import { BadgeCheck } from 'lucide-react';
 import { toast } from '../ui/use-toast';
 import { useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function Post(props: IPost) {
-  const [isLiked, setIsLiked] = useState(false);
   const [userData, setUserData] = useState<InfoUser | null>(null);
   const [countLike, setCountLike] = useState(0);
-  const data = getUserLocalStorage();
-  const email = data[0];
+  const strogae = getUserLocalStorage();
+  const email = strogae[0];
+
+  const queryClient = useQueryClient();
 
   const fetchData = async () => {
     try {
@@ -50,8 +53,8 @@ export function Post(props: IPost) {
     }
   };
 
-  function handleSettings(id: number) {
-    fetchDeletePost(id)
+  async function handleSettings(id: number) {
+    await fetchDeletePost(id)
       .then(() => {
         toast({
           variant: 'default',
@@ -82,46 +85,69 @@ export function Post(props: IPost) {
   }
 
   async function handleNewLike(id: number) {
-    if (userData) {
-      await handleLike(
-        {
-          content_post: props.value.content,
-          cref: userData.cref,
-          fotoUser: userData.fotoPerfil,
-          id_sendLike: userData.id_user,
-          id_user: props.value.id_user,
-          image: props.value.image,
-          nomeUser: userData.user,
-          username: userData.username,
-        },
-        id
-      )
-        .then(() => {
-          toast({
-            variant: 'default',
-            title: 'Sucesso!',
-            description: 'Você deu like!',
+    if (data) {
+      if (userData) {
+        await fetchDeleteLike(id, userData?.id_user || 0);
+      }
+    } else {
+      if (userData) {
+        await handleLike(
+          {
+            content_post: props.value.content,
+            cref: userData.cref,
+            fotoUser: userData.fotoPerfil,
+            id_sendLike: userData.id_user,
+            id_user: props.value.id_user,
+            image: props.value.image,
+            nomeUser: userData.user,
+            username: userData.username,
+          },
+          id,
+          userData.id_user || 0
+        )
+          .then(() => {
+            toast({
+              variant: 'default',
+              title: 'Sucesso!',
+              description: 'Você deu like!',
+            });
+            props?.fetch && props.fetch();
+          })
+          .catch((error) => {
+            console.error('Erro ao obter dados:', error);
           });
-          props?.fetch && props.fetch();
-        })
-        .catch((error) => {
-          console.error('Erro ao obter dados:', error);
-        });
-      props?.fetch && props.fetch();
+      }
     }
   }
 
+  async function checkLikedStatus() {
+    const count = await fetchCountLike(props.value.id_post);
+    setCountLike(count);
+    if (userData?.id_user) {
+      const like = await fetchLike(userData?.id_user || 0, props.value.id_post);
+      console.log(like);
+      return like;
+    }
+  }
+
+  const { data } = useQuery({
+    queryKey: ['like'],
+    queryFn: checkLikedStatus,
+  });
+
+  const { mutate, isLoading } = useMutation(
+    () => handleNewLike(props.value.id_post),
+    {
+      onSuccess: () => checkLikedStatus(),
+    }
+  );
+
+  const query = useMutation(() => handleSettings(props.value.id_post), {
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['post'] }),
+  });
+
   useEffect(() => {
     fetchData();
-    async function checkLikedStatus() {
-      const count = await fetchCountLike(props.value.id_post);
-      setCountLike(count);
-      const postData = await fetchLike(props.value.id_user);
-      const hasLiked = postData.some(
-        (post) => post.id_user === props.value.id_user
-      );
-      setIsLiked(hasLiked);
-    }
 
     checkLikedStatus();
   }, [props.value.id_post, props.value.id_user]);
@@ -174,7 +200,7 @@ export function Post(props: IPost) {
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem
-                    onClick={() => handleSettings(props?.value?.id_post)}
+                    onClick={() => query.mutate()}
                     className="cursor-pointer"
                   >
                     Deletar post
@@ -207,11 +233,11 @@ export function Post(props: IPost) {
               <span className="flex items-center justify-center gap-2 text-zinc-500">
                 <Heart
                   size={24}
-                  onClick={() => handleNewLike(props?.value.id_post)}
-                  weight={`${isLiked ? 'fill' : 'regular'}`}
+                  onClick={() => mutate()}
+                  weight={`${data ? 'fill' : 'regular'}`}
                   className={`cursor-pointer ${
-                    isLiked ? 'text-red-500' : 'text-zinc-500'
-                  }`}
+                    data ? 'text-red-500' : 'text-zinc-500'
+                  } ${isLoading ? 'animate-bounce' : ''}`}
                 />
                 <span className="text-base">{countLike}</span>
               </span>
