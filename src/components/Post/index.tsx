@@ -28,10 +28,11 @@ import {
 import { BadgeCheck } from 'lucide-react';
 import { toast } from '../ui/use-toast';
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function Post(props: IPost) {
   const [userData, setUserData] = useState<InfoUser | null>(null);
+  const [data, setData] = useState<boolean>(false);
   const [countLike, setCountLike] = useState(0);
   const strogae = getUserLocalStorage();
   const email = strogae[0];
@@ -103,7 +104,8 @@ export function Post(props: IPost) {
             username: userData.username,
           },
           id,
-          userData.id_user || 0
+          userData.id_user || 0,
+          props.value.id_user
         )
           .then(() => {
             toast({
@@ -123,17 +125,9 @@ export function Post(props: IPost) {
   async function checkLikedStatus() {
     const count = await fetchCountLike(props.value.id_post);
     setCountLike(count);
-    if (userData?.id_user) {
-      const like = await fetchLike(userData?.id_user || 0, props.value.id_post);
-      console.log(like);
-      return like;
-    }
+    const like = await fetchLike(userData?.id_user || 0, props.value.id_post);
+    setData(like);
   }
-
-  const { data } = useQuery({
-    queryKey: ['like'],
-    queryFn: checkLikedStatus,
-  });
 
   const { mutate, isLoading } = useMutation(
     () => handleNewLike(props.value.id_post),

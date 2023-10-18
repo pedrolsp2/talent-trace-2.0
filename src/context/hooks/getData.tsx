@@ -293,7 +293,8 @@ export const fetchAlertLiked = async (id: number) => {
 export const handleLike = async (
   value: LikeProps,
   id: number,
-  id_user: number
+  id_user: number,
+  id_user_revice: number
 ) => {
   try {
     await firebase
@@ -312,6 +313,7 @@ export const handleLike = async (
     await firebase.firestore().collection('liked').add({
       id_user: id_user,
       id_post: id,
+      id_revice: id_user_revice,
     });
     toast({
       variant: 'default',
@@ -352,6 +354,7 @@ export const handleNewComunidade = async (value: ComunidadeProps) => {
       nameURL: value.nameURL,
       tipo: value.tipo,
       id_comunidade: value.id_comunidade,
+      id_olheiro: value.id_olheiro,
       dataCriacao: value.dataCriacao,
     });
     toast({
@@ -470,5 +473,73 @@ export const countUserComunidade = async (nameURL: string) => {
   } else {
     console.error('Erro ao buscar dados.');
     return 0;
+  }
+};
+
+export const getInfoProfile = async (id_user: number) => {
+  const array = [];
+
+  const comDoc = await firebase
+    .firestore()
+    .collection('comunidade')
+    .where('id_olheiro', '==', id_user)
+    .get();
+  if (!comDoc.empty) {
+    const value = comDoc.docs.map((doc) => doc.data()).length;
+    array.push({
+      comunidades: value,
+    });
+  } else {
+    array.push({
+      comunidades: 0,
+    });
+  }
+
+  const likesDoc = await firebase
+    .firestore()
+    .collection('liked')
+    .where('id_revice', '==', id_user)
+    .get();
+  if (!likesDoc.empty) {
+    const value = likesDoc.docs.map((doc) => doc.data()).length;
+    array.push({
+      likes: value,
+    });
+  } else {
+    array.push({
+      likes: 0,
+    });
+  }
+
+  const postDocs = await firebase
+    .firestore()
+    .collection('post')
+    .where('id_user', '==', id_user)
+    .get();
+  if (!postDocs.empty) {
+    const value = postDocs.docs.map((doc) => doc.data()).length;
+    array.push({
+      posts: value,
+    });
+  } else {
+    array.push({
+      posts: 0,
+    });
+  }
+
+  return array;
+};
+
+export const fetchPeneiras = async () => {
+  const postsCollection = await firebase
+    .firestore()
+    .collection('listPeneira')
+    .get();
+
+  if (!postsCollection.empty) {
+    return postsCollection.docs.map((doc) => doc.data());
+  } else {
+    console.error('Erro ao buscar dados.');
+    return [];
   }
 };

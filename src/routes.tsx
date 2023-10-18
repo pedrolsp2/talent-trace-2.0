@@ -14,6 +14,7 @@ import { ViewPost } from './pages/viewPost';
 import { User } from './pages/user';
 import { Comunidades } from './pages/comunidades';
 import { Comunidade } from './pages/comunidade';
+import { Peneiras } from './pages/peneiras';
 
 function isMobileDevice() {
   return (
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: '/comunidade/:name',
         element: <Comunidade />,
+      },
+      {
+        path: '/peneiras',
+        element: <Peneiras />,
       },
     ],
   },

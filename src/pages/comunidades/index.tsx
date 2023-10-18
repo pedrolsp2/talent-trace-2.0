@@ -7,6 +7,8 @@ import { ComunidadeProps, InfoUser } from '../../context/AuthProvider/type';
 import { ComunidadeHeader } from '../../components/ComunidadeHeader';
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import { useQuery } from '@tanstack/react-query';
+import Lottie from 'lottie-react';
+import animation from '../../assets/animation.json';
 
 function isMobileDevice() {
   return (
@@ -58,7 +60,11 @@ export function Comunidades() {
   }, [email]);
 
   if (isLoading) {
-    return <p>Carregando...</p>;
+    return (
+      <div className="w-12 h-12 mx-auto my-8">
+        <Lottie animationData={animation} loop={true} />
+      </div>
+    );
   }
 
   return (

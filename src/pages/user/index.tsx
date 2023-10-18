@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import {
+  IInfoProfile,
   InfoUser,
   LikeProps,
   PostProps,
@@ -10,6 +11,7 @@ import {
   fetchAlertLiked,
   fetchDataUsername,
   fetchPostUser,
+  getInfoProfile,
 } from '../../context/hooks/getData';
 
 import {
@@ -36,6 +38,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '../../components/ui/accordion';
+import { useQuery } from '@tanstack/react-query';
 
 function isMobileDevice() {
   return (
@@ -50,8 +53,39 @@ export function User() {
   const [userData, setUserData] = useState<InfoUser | null>(null);
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [likes, setLikes] = useState<LikeProps[]>([]);
-  const data = getUserLocalStorage();
-  const email = data[0];
+  const stroage = getUserLocalStorage();
+  const email = stroage[0];
+
+  const fetchInfo = async (): Promise<IInfoProfile> => {
+    const data = await getInfoProfile(userData?.id_user || 0);
+    if (data) {
+      const infoArray = data.map((item) => ({
+        comunidades: item.comunidades || 0,
+        likes: item.likes || 0,
+        posts: item.posts || 0,
+      }));
+      const infoProfile = infoArray.reduce(
+        (acc, item) => ({
+          comunidades: acc.comunidades + item.comunidades,
+          likes: acc.likes + item.likes,
+          posts: acc.posts + item.posts,
+        }),
+        { comunidades: 0, likes: 0, posts: 0 }
+      );
+
+      return infoProfile;
+    }
+    return {
+      comunidades: 0,
+      likes: 0,
+      posts: 0,
+    };
+  };
+
+  const { data } = useQuery({
+    queryKey: ['infoUser'],
+    queryFn: fetchInfo,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +98,7 @@ export function User() {
   }, [username]);
 
   useEffect(() => {
+    fetchInfo();
     const handleResize = () => {
       setIsMobile(window.innerWidth > 600);
     };
@@ -128,14 +163,15 @@ export function User() {
             <div className="flex justify-center items-center gap-2">
               <BookDownIcon size={20} className="text-primary-50" />
               <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-                4 {userData?.cref ? 'novas comunidades' : 'posts novos'}
+                {userData.cref ? data?.comunidades : data?.posts}{' '}
+                {userData?.cref ? 'novas comunidades' : 'posts novos'}
               </div>
             </div>
 
             <div className="flex justify-center items-center gap-2">
               <Heart size={20} className="text-primary-50" />
               <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-                50 likes recebidos
+                {data?.likes} likes recebidos
               </div>
             </div>
 
@@ -146,14 +182,15 @@ export function User() {
                 {userData?.cref ? 'peneiras criadas' : 'peneiras participadas'}
               </div>
             </div>
-
-            <div className="flex justify-center items-center gap-2">
-              <Sticker size={20} className="text-primary-50" />
-              <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-                6{' '}
-                {userData?.cref ? 'feedbacks enviados' : 'feedbacks recebidos'}
+            {userData.cref && (
+              <div className="flex justify-center items-center gap-2">
+                <Sticker size={20} className="text-primary-50" />
+                <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                  {data?.posts}{' '}
+                  {userData?.cref ? 'posts enviados' : 'posts recebidos'}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </>
       ) : (
@@ -174,14 +211,15 @@ export function User() {
                   <div className="flex justify-center items-center gap-2">
                     <BookDownIcon size={20} className="text-primary-50" />
                     <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-                      4 {userData?.cref ? 'novas comunidades' : 'posts novos'}
+                      {data?.posts}{' '}
+                      {userData?.cref ? 'novas comunidades' : 'posts novos'}
                     </div>
                   </div>
 
                   <div className="flex justify-center items-center gap-2">
                     <Heart size={20} className="text-primary-50" />
                     <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-                      50 likes recebidos
+                      {data?.likes} likes recebidos
                     </div>
                   </div>
 
@@ -194,16 +232,15 @@ export function User() {
                         : 'peneiras participadas'}
                     </div>
                   </div>
-
-                  <div className="flex justify-center items-center gap-2">
-                    <Sticker size={20} className="text-primary-50" />
-                    <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
-                      6{' '}
-                      {userData?.cref
-                        ? 'feedbacks enviados'
-                        : 'feedbacks recebidos'}
+                  {userData.cref && (
+                    <div className="flex justify-center items-center gap-2">
+                      <Sticker size={20} className="text-primary-50" />
+                      <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
+                        {data?.posts}{' '}
+                        {userData?.cref ? 'posts enviados' : 'posts recebidos'}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </AccordionContent>
             </AccordionItem>

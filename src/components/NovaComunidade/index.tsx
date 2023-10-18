@@ -74,6 +74,7 @@ export const NovaComunidade = (props: value) => {
         descricao: data.descricao,
         nome: data.nome,
         tipo: data.tipo,
+        id_olheiro: props.userData.id_user,
         id_comunidade: id,
         dataCriacao: dataCr,
         nameURL: nameURL,

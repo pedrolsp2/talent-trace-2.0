@@ -60,6 +60,7 @@ export interface ComunidadeProps {
   fotoOlheiro: string;
   descricao: string;
   id_comunidade: number;
+  id_olheiro: number;
   nome: string;
   tipo: 'Peneiras' | 'Curiosidades' | 'Treinos';
   dataCriacao: Date;
@@ -93,6 +94,25 @@ export interface ContentComunidade {
   nomeOlheiro: string;
   fotoOlheiro: string;
   img?: string;
+}
+
+export interface IPeneira {
+  cidade: string;
+  dataCriação: Date;
+  dataPeneira: Date;
+  descricaoPeneira: string;
+  fotoOlheiro: string;
+  id_peneira: number;
+  idadeMaxima: number;
+  idadeMinima: number;
+  nomePeneira: string;
+  tipoDesejo: string;
+}
+
+export interface IInfoProfile {
+  comunidades: number;
+  likes: number;
+  posts: number;
 }
 
 export interface IContext extends IUser {
