@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 interface BadgeTypeProps {
-  variant: 'default' | 'text';
+  variant: 'default' | 'text' | 'menu';
   type: 'Peneiras' | 'Curiosidades' | 'Treinos';
 }
 
@@ -33,6 +33,13 @@ export function BadgeType({ variant, type }: BadgeTypeProps) {
       >
         {type}
       </div>
+    );
+  }
+  if (variant === 'menu') {
+    return (
+      <div
+        className={`flex justify-center items-center gap-1 p-1 w-3 h-3 ${bgColor} ${textColor}`}
+      ></div>
     );
   }
   return (

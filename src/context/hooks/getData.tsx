@@ -440,11 +440,18 @@ export const handleNewContentComundiade = async (value: ContentComunidade) => {
   }
 };
 
-export const userNewComunidade = async (id_user: number, nameURL: string) => {
+export const userNewComunidade = async (
+  id_user: number,
+  nameURL: string,
+  type: string,
+  nome: string
+) => {
   try {
     await firebase.firestore().collection('userComunidade').add({
       id_user: id_user,
       nameURL: nameURL,
+      tipo: type,
+      nome: nome,
     });
     toast({
       variant: 'default',
@@ -540,6 +547,19 @@ export const fetchPeneiras = async () => {
     return postsCollection.docs.map((doc) => doc.data());
   } else {
     console.error('Erro ao buscar dados.');
+    return [];
+  }
+};
+
+export const fetchMyCom = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('userComunidade')
+    .where('id_user', '==', id)
+    .get();
+  if (!userDoc.empty) {
+    return userDoc.docs.map((doc) => doc.data());
+  } else {
     return [];
   }
 };

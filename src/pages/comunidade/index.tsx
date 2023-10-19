@@ -24,7 +24,7 @@ import {
 } from '../../components/ui/avatar';
 import { ChatCircle } from '@phosphor-icons/react';
 import { BadgeType } from '../../components/BadgeType';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 function isMobileDevice() {
   return (
@@ -40,6 +40,7 @@ export const Comunidade = () => {
   const { name } = useParams<{ name: string }>();
   const [status, setStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const strogae = getUserLocalStorage();
   const email = strogae[0];
@@ -59,8 +60,16 @@ export const Comunidade = () => {
   });
 
   const { mutate } = useMutation(
-    () => userNewComunidade(userData?.id_user || 0, name || ''),
-    { onSuccess: () => fetchStatus() }
+    () =>
+      userNewComunidade(
+        userData?.id_user || 0,
+        name || '',
+        comunidade?.tipo || '',
+        comunidade?.nome || ''
+      ),
+    {
+      onSuccess: () => fetchStatus(),
+    }
   );
 
   const fetchData = async () => {
@@ -93,6 +102,7 @@ export const Comunidade = () => {
 
     const count = await countUserComunidade(name || '');
     setCount(count);
+    queryClient.invalidateQueries({ queryKey: ['menu-comunidade'] });
   }
 
   useEffect(() => {

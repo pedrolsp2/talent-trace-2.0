@@ -15,34 +15,59 @@ import { useAuth } from '../../context/AuthProvider/useAuth';
 import { InfoUser } from '../../context/AuthProvider/type';
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import { Skeleton } from '../ui/skeleton';
-import { fetchDataUser } from '../../context/hooks/getData';
+import { fetchDataUser, fetchMyCom } from '../../context/hooks/getData';
 import { BadgeCheck, SlackIcon } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { BadgeType } from '../BadgeType';
+
+type IComunidade = {
+  nameURL: string;
+  nome: string;
+  tipo: 'Peneiras' | 'Curiosidades' | 'Treinos';
+};
 
 export function SideBar() {
   const location = useLocation();
-  const [isOlheiro, setIsOlheiro] = useState(false);
   const currentRouteRef = useRef<{ current: string } | null>(null);
   const [home, setHome] = useState(false);
   const [comunidades, setComunidades] = useState(false);
   const [toggle, setToggle] = useState<boolean>(false);
-  const [user, setUser] = useState<InfoUser | null>(null);
   const [theme, setTheme] = useState<string>(
     localStorage.getItem('theme') ? localStorage.getItem('theme')! : 'light'
   );
 
   const navigate = useNavigate();
   const auth = useAuth();
-  const data = getUserLocalStorage();
-  const email = data[0];
-  const [userData, setUserData] = useState<InfoUser | null>(null);
+  const storoga = getUserLocalStorage();
+  const email = storoga[0];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchDataUser(email || '');
-      setUserData((data as InfoUser) || null);
-    };
-    fetchData();
-  }, [email]);
+  const fetchData = async (): Promise<InfoUser | null> => {
+    const data = await fetchDataUser(email || '');
+    if (data) {
+      return data as InfoUser;
+    } else {
+      return null;
+    }
+  };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['sidebar-userData'],
+    queryFn: fetchData,
+  });
+
+  const fetchCom = async (): Promise<IComunidade[]> => {
+    const comunidades = await fetchMyCom(data?.id_user || 0);
+    if (comunidades) {
+      return comunidades as IComunidade[];
+    } else {
+      return [];
+    }
+  };
+
+  const { data: menuComunidade } = useQuery({
+    queryKey: ['menu-comunidade'],
+    queryFn: fetchCom,
+  });
 
   const handleResize = () => {
     if (window.innerWidth < 900) {
@@ -92,22 +117,6 @@ export function SideBar() {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchDataUser(email);
-      if (data) {
-        if (data.cref) {
-          setIsOlheiro(true);
-        }
-        setUser(data as InfoUser);
-      } else {
-        setUser(null);
-      }
-    };
-
-    fetchData();
-  }, [email]);
-
-  useEffect(() => {
     currentRouteRef.current = { current: location.pathname };
     const currentPath = currentRouteRef.current.current;
     switch (currentPath) {
@@ -129,6 +138,15 @@ export function SideBar() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  if (isLoading) {
+    return (
+      <Skeleton
+        className="w-[14rem] dark:bg-dark-TT2 bg-secondary-50 flex flex-col justify-between items-center h-screen sticky top-0 py-2"
+        id="side-bar"
+      ></Skeleton>
+    );
   }
 
   if (!toggle) {
@@ -185,13 +203,13 @@ export function SideBar() {
           <SheetTrigger>
             <Avatar
               className={`w-10 h-10 ${
-                isOlheiro && 'border-2 border-primary-50'
+                data?.cref && 'border-2 border-primary-50'
               }`}
             >
               <AvatarFallback>
                 <Skeleton className="w-10 h-10 rounded-full bg-secondary-40" />
               </AvatarFallback>
-              <AvatarImage src={user?.fotoPerfil} alt="Pedro Lucas" />
+              <AvatarImage src={data?.fotoPerfil} alt="Pedro Lucas" />
             </Avatar>
           </SheetTrigger>
           <SheetContent
@@ -216,7 +234,7 @@ export function SideBar() {
                 />
               )}
               <Button onClick={handleLogout}>Sair</Button>
-              <Button onClick={() => navigate(`/user/${userData?.username}`)}>
+              <Button onClick={() => navigate(`/user/${data?.username}`)}>
                 Editar Perfil
               </Button>
             </SheetDescription>
@@ -264,6 +282,15 @@ export function SideBar() {
             <div className="flex items-start gap-2.5 pb-0 text-[#a5a5a5] text-xs leading-[normal]">
               Minha comunidades
             </div>
+            <div className="flex flex-col my-2 px-2">
+              {menuComunidade &&
+                menuComunidade.map((item) => (
+                  <span className="flex items-center gap-2" key={item.nameURL}>
+                    <BadgeType type={item.tipo} variant="menu" />
+                    <span className="line-clamp-1">{item.nome}</span>
+                  </span>
+                ))}
+            </div>
           </div>
         </div>
       </div>
@@ -273,13 +300,13 @@ export function SideBar() {
           <SheetTrigger>
             <Avatar
               className={`w-10 h-10 ${
-                isOlheiro && 'border-2 border-primary-50'
+                data?.cref && 'border-2 border-primary-50'
               }`}
             >
               <AvatarFallback>
                 <Skeleton className="w-10 h-10 rounded-full bg-secondary-40" />
               </AvatarFallback>
-              <AvatarImage src={user?.fotoPerfil} alt="Pedro Lucas" />
+              <AvatarImage src={data?.fotoPerfil} alt="Pedro Lucas" />
             </Avatar>
           </SheetTrigger>
           <SheetContent
@@ -304,15 +331,15 @@ export function SideBar() {
                 />
               )}
               <Button onClick={handleLogout}>Sair</Button>
-              <Button onClick={() => navigate(`/user/${userData?.username}`)}>
+              <Button onClick={() => navigate(`/user/${data?.username}`)}>
                 Editar Perfil
               </Button>
             </SheetDescription>
           </SheetContent>
         </Sheet>
         <span className="text-white font-semibold text-lg line-clamp-1 flex items-center gap-1">
-          {user?.user}
-          {isOlheiro && <BadgeCheck size={16} color="#14AF6C" />}
+          {data?.user}
+          {data?.cref && <BadgeCheck size={16} color="#14AF6C" />}
         </span>
       </div>
     </div>
