@@ -385,6 +385,19 @@ export const fetchComunidadeName = async (name: string) => {
   }
 };
 
+export const fetchComunidadeNames = async (name: string) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('comunidade')
+    .where('nome', '==', name)
+    .get();
+  if (!userDoc.empty) {
+    return userDoc.docs[0].data();
+  } else {
+    return null;
+  }
+};
+
 export const fetchUserComunidade = async (
   name: string,
   id: number
@@ -556,6 +569,19 @@ export const fetchMyCom = async (id: number) => {
     .firestore()
     .collection('userComunidade')
     .where('id_user', '==', id)
+    .get();
+  if (!userDoc.empty) {
+    return userDoc.docs.map((doc) => doc.data());
+  } else {
+    return [];
+  }
+};
+
+export const fetchPeneira = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('listPeneira')
+    .where('id_peneira', '==', id)
     .get();
   if (!userDoc.empty) {
     return userDoc.docs.map((doc) => doc.data());

@@ -12,7 +12,7 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('global')!).render(
   <QueryClientProvider client={queryClient}>
-    <ReactQueryDevtools initialIsOpen={true} position="top-right" />
+    <ReactQueryDevtools initialIsOpen={true} position="top-left" />
     <React.StrictMode>
       <AuthProvider>
         <RouterProvider router={router} />

@@ -97,16 +97,20 @@ export interface ContentComunidade {
 }
 
 export interface IPeneira {
-  cidade: string;
-  dataCriação: Date;
-  dataPeneira: Date;
   descricaoPeneira: string;
-  fotoOlheiro: string;
-  id_peneira: number;
-  idadeMaxima: number;
   idadeMinima: number;
   nomePeneira: string;
   tipoDesejo: string;
+  horario: { seconds: number; nanoseconds: number };
+  fotoOlheiro: string;
+  id_peneira: number;
+  nomeLocal: string;
+  dataPeneira: { seconds: number; nanoseconds: number };
+  cidade: string;
+  local: string;
+  idadeMaxima: number;
+  nomeOlheiro: string;
+  dataCriação: { seconds: number; nanoseconds: number };
 }
 
 export interface IInfoProfile {

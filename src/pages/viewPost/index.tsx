@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   fetchAnswers,
   fetchDataUser,
@@ -11,63 +10,61 @@ import { ChatCircle, Heart, ShareNetwork, Swap } from '@phosphor-icons/react';
 import { Post } from '../../components/Post';
 import { Separator } from '../../components/Separator';
 import { FormPost } from '../../components/FormPost';
+import { useQuery } from '@tanstack/react-query';
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 
 export function ViewPost() {
-  const [dataFetched, setDataFetched] = useState(false);
   const { id } = useParams<{ id: string }>();
-  const [isLoading, setIsLoading] = useState(false);
-  const [post, setPost] = useState<PostProps | null>(null);
-  const [answ, setAnsw] = useState<PostProps[]>([]);
-  const [userData, setUserData] = useState<InfoUser | null>(null);
   const data = getUserLocalStorage();
   const email = data[0];
 
-  const fetchData = async () => {
-    try {
-      const postData = await fetchPost(Number(id));
-      if (postData) {
-        setPost(postData as PostProps);
-      }
-
-      const answers = await fetchAnswers(Number(id));
-      setAnsw(answers as PostProps[]);
-
-      const userData = await fetchDataUser(email);
-      if (userData && userData.id_user) {
-        setUserData(userData as InfoUser);
-      } else {
-        console.error('Property id_user not found in user data.');
-      }
-
-      setIsLoading(true);
-      setDataFetched(true);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+  const fetchDUser = async (): Promise<InfoUser> => {
+    const postData = await fetchDataUser(email);
+    if (postData) {
+      return postData as InfoUser;
+    } else {
+      throw new Error('Usuário não encontrado');
     }
   };
 
-  const updateAnswers = async () => {
-    try {
-      const answers = await fetchAnswers(Number(id));
-      setAnsw(answers as PostProps[]);
-    } catch (error) {
-      console.error('Error updating answers:', error);
+  const fetchDataPost = async (): Promise<PostProps> => {
+    const postData = await fetchPost(Number(id));
+    if (postData) {
+      return postData as PostProps;
+    } else {
+      throw new Error('Usuário não encontrado');
     }
   };
 
-  useEffect(() => {
-    if (!dataFetched) {
-      fetchData();
-      setDataFetched(true);
+  const fetchDataAnswers = async (): Promise<PostProps[]> => {
+    const postData = await fetchAnswers(Number(id));
+    if (postData) {
+      return postData as PostProps[];
+    } else {
+      return [];
     }
-  }, []);
+  };
 
-  if (!isLoading) {
+  const { data: post, isLoading } = useQuery({
+    queryKey: [`post${id}`],
+    queryFn: fetchDataPost,
+  });
+
+  const { data: answ } = useQuery({
+    queryKey: [`answers${id}`],
+    queryFn: fetchDataAnswers,
+  });
+
+  const { data: userData } = useQuery({
+    queryKey: [`answersUser${id}`],
+    queryFn: fetchDUser,
+  });
+
+  if (isLoading) {
     return (
-      <div className="px-5 py-6 flex flex-col">
+      <div className="flex flex-col px-5 py-6">
         <div className="grid grid-cols-[auto,1fr] gap-3">
-          <Skeleton className="w-12 h-12 bg-slate-300 dark:bg-dark-TT3 rounded-full" />
+          <Skeleton className="w-12 h-12 rounded-full bg-slate-300 dark:bg-dark-TT3" />
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-1">
               <span className="font-bold">
@@ -77,12 +74,12 @@ export function ViewPost() {
                 <Skeleton className="w-[5rem] h-3 bg-slate-300 dark:bg-dark-TT3" />
               </small>
             </div>
-            <div className="p-1 flex gap-1 flex-col">
+            <div className="flex flex-col gap-1 p-1">
               <Skeleton className="w-full h-5 bg-slate-300 dark:bg-dark-TT3" />
               <Skeleton className="w-full h-5 bg-slate-300 dark:bg-dark-TT3" />
               <Skeleton className="w-full h-5 bg-slate-300 dark:bg-dark-TT3" />
             </div>
-            <div className="pt-3 flex items-center">
+            <div className="flex items-center pt-3">
               <div className="flex gap-12">
                 <span className="flex items-center justify-center gap-2 text-zinc-500">
                   <ChatCircle size={24} className="cursor-pointer" />
@@ -120,13 +117,12 @@ export function ViewPost() {
         <>
           <Post value={post} />
           <Separator />
-          <FormPost value={userData} answer fetch={updateAnswers} />
+          <FormPost value={userData || null} answer />
           <Separator />
         </>
       )}
-      {answ.map((item) => (
-        <Post key={item.id_post} value={item} answer />
-      ))}
+      {answ &&
+        answ.map((item) => <Post key={item.id_post} value={item} answer />)}
     </>
   );
 }

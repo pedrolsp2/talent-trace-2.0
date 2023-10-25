@@ -12,7 +12,7 @@ export function BadgeType({ variant, type }: BadgeTypeProps) {
   useEffect(() => {
     switch (type) {
       case 'Treinos':
-        setBgColor('bg-primary-20');
+        setBgColor('bg-primary-30');
         setTextColor('text-white');
         break;
       case 'Peneiras':
@@ -21,7 +21,7 @@ export function BadgeType({ variant, type }: BadgeTypeProps) {
         break;
       case 'Curiosidades':
         setBgColor('bg-[#FFE576]');
-        setTextColor('text-[#D7B21A]');
+        setTextColor('text-[#a5860c]');
         break;
     }
   }, [type]);

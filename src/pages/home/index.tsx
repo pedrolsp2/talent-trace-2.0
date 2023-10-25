@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Separator } from '../../components/Separator';
 import { FormPost } from '../../components/FormPost';
 import { Post } from '../../components/Post';
@@ -10,8 +10,6 @@ import Lottie from 'lottie-react';
 import animation from '../../assets/animation.json';
 
 export default function Home() {
-  const [userData, setUserData] = useState<InfoUser | null>(null);
-
   const stroage = getUserLocalStorage();
   const email = stroage[0];
 
@@ -24,28 +22,26 @@ export default function Home() {
     }
   };
 
+  const fetchData = async (): Promise<InfoUser> => {
+    const userData = await fetchDataUser(email);
+    if (userData) {
+      return userData as InfoUser;
+    } else {
+      throw new Error('Usuário não encontrado');
+    }
+  };
+
   const { data, isLoading } = useQuery({
     queryKey: ['post'],
     queryFn: fetchPost,
   });
 
-  const fetchData = async () => {
-    try {
-      const userData = await fetchDataUser(email);
-      if (userData && userData.id_user) {
-        setUserData(userData as InfoUser);
-      } else {
-        console.error(
-          'Propriedade id_user não encontrada nos dados do usuário.'
-        );
-      }
-    } catch (error) {
-      console.error('Erro ao buscar dados do usuário:', error);
-    }
-  };
+  const { data: userData } = useQuery({
+    queryKey: ['user'],
+    queryFn: fetchData,
+  });
 
   useEffect(() => {
-    fetchData();
     const newTitle = 'Talent Trace | Início';
     document.title = newTitle;
   }, []);
@@ -59,7 +55,7 @@ export default function Home() {
   }
   return (
     <>
-      <FormPost value={userData} fetch={fetchData} />
+      <FormPost value={userData || null} fetch={fetchData} />
       <Separator />
       <div className="divide-y divide-slate-200 dark:divide-zinc-900">
         {data &&

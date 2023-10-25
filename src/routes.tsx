@@ -15,6 +15,7 @@ import { User } from './pages/user';
 import { Comunidades } from './pages/comunidades';
 import { Comunidade } from './pages/comunidade';
 import { Peneiras } from './pages/peneiras';
+import { Peneira } from './pages/peneira';
 
 function isMobileDevice() {
   return (
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
       {
         path: '/peneiras',
         element: <Peneiras />,
+      },
+      {
+        path: '/peneira/:id',
+        element: <Peneira />,
       },
     ],
   },

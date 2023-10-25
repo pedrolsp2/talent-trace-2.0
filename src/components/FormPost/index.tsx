@@ -138,7 +138,7 @@ export function FormPost(props: IForm) {
         setNewContent('');
         setImageUrl(null);
         setIsLoading(false);
-        queryClient.invalidateQueries({ queryKey: ['post'] });
+        queryClient.invalidateQueries({ queryKey: [`answers${id}`] });
       } catch (error) {
         console.error('Erro ao inserir:', error);
         setIsLoading(false);
@@ -154,13 +154,13 @@ export function FormPost(props: IForm) {
   return (
     <form
       onSubmit={props?.answer ? handleNewAnswer : handleNewPost}
-      className="px-5 py-6 flex flex-col dark:bg-dark-TT"
+      className="flex flex-col px-5 py-6 dark:bg-dark-TT"
     >
       <div className="grid grid-cols-[auto,1fr] gap-3">
         <AvatarUser />
         <div>
           <Textarea
-            className="resize-none border-0 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 pt-3 text-lg"
+            className="pt-3 text-lg border-0 resize-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
             placeholder={
               props?.answer ? 'Digite sua resposta?' : 'O que há de bom?'
             }
@@ -174,8 +174,8 @@ export function FormPost(props: IForm) {
           )}
         </div>
       </div>
-      <div className="ml-auto flex items-center gap-2">
-        <small className="mr-4 dark:text-zinc-600 text-gray-400">
+      <div className="flex items-center gap-2 ml-auto">
+        <small className="mr-4 text-gray-400 dark:text-zinc-600">
           {caracter} caracter restantes.
         </small>
         <input
@@ -186,11 +186,11 @@ export function FormPost(props: IForm) {
           id="fileInput"
         />
         <label htmlFor="fileInput">
-          <Image size={24} className="text-zinc-400 cursor-pointer" />
+          <Image size={24} className="cursor-pointer text-zinc-400" />
         </label>
         <Button
           type="submit"
-          className="bg-secondary-40 text-zinc-50 px-6 py-5 rounded-xl hover:bg-secondary-50"
+          className="px-6 py-5 bg-secondary-40 text-zinc-50 rounded-xl hover:bg-secondary-50"
         >
           {isLoading ? 'Carregando...' : props?.answer ? 'Responder' : 'Postar'}
         </Button>

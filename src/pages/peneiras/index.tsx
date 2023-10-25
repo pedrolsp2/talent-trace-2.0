@@ -32,26 +32,26 @@ export const Peneiras = () => {
   return (
     <>
       <div className="flex flex-col gap-1 p-3">
-        <section className="flex justify-between items-center p-2">
+        <section className="flex items-center justify-between p-2">
           <h1>Filtros</h1>
           <Filter />
         </section>
-        <section className="flex flex-wrap gap-2 items-center px-4 py-2 border dark:border-zinc-900">
-          <span className="flex flex-col p-1 gap-1">
+        <section className="flex flex-wrap items-center gap-2 px-4 py-2 border dark:border-zinc-900">
+          <span className="flex flex-col gap-1 p-1">
             <label htmlFor="cidade">Filtrar por cidade</label>
             <input
               type="text"
               className="bg-transparent border border-zinc-500"
             />
           </span>
-          <span className="flex flex-col p-1 gap-1">
+          <span className="flex flex-col gap-1 p-1">
             <label htmlFor="cidade">Filtrar por posição</label>
             <input
               type="text"
               className="bg-transparent border border-zinc-500"
             />
           </span>
-          <span className="flex flex-col p-1 gap-1">
+          <span className="flex flex-col gap-1 p-1">
             <label htmlFor="idade">Filtrar por idade</label>
             <input
               type="text"
@@ -62,7 +62,7 @@ export const Peneiras = () => {
       </div>
       {data &&
         data.map((peneira: IPeneira) => (
-          <Link to={`/peneira/`} key={peneira.id_peneira}>
+          <Link to={`/peneira/${peneira.id_peneira}`} key={peneira.id_peneira}>
             <div className="grid grid-cols-[75%,1fr] gap-x-12 items-center border dark:border-zinc-800 border-[#fafafa] p-2 rounded">
               <div className="flex flex-col gap-2 p-1">
                 <span className="text-[#3c3c3c] dark:text-zinc-300 text-lg font-bold leading-[normal] flex items-center gap-2">
