@@ -20,6 +20,8 @@ export const Peneira = () => {
     queryFn: getPeneira,
   });
 
+  console.log(data);
+
   if (isLoading) {
     return <h1>Carregando...</h1>;
   }
