@@ -4,6 +4,8 @@ import {
   InfoUser,
   LikeProps,
   PostProps,
+  UserInfo,
+  UserPopularity,
 } from '../AuthProvider/type';
 import firebase from '../../../src/services/firebase/config';
 import { toast } from '../../components/ui/use-toast';
@@ -386,16 +388,19 @@ export const fetchComunidadeName = async (name: string) => {
 };
 
 export const fetchComunidadeNames = async (name: string) => {
-  const userDoc = await firebase
+  const userDocs = await firebase
     .firestore()
     .collection('comunidade')
-    .where('nome', '==', name)
+    .where('nome', '>=', name)
+    .where('nome', '<=', name + '\uf8ff')
     .get();
-  if (!userDoc.empty) {
-    return userDoc.docs[0].data();
-  } else {
-    return null;
-  }
+
+  const results: Array<ComunidadeProps> = [];
+  userDocs.forEach((doc) => {
+    results.push(doc.data() as ComunidadeProps);
+  });
+
+  return results;
 };
 
 export const fetchUserComunidade = async (
@@ -586,6 +591,54 @@ export const fetchPeneira = async (id: number) => {
   if (!userDoc.empty) {
     return userDoc.docs.map((doc) => doc.data());
   } else {
+    return [];
+  }
+};
+
+export const fetchUserPopularityData = async () => {
+  try {
+    const usersQuerySnapshot = await firebase
+      .firestore()
+      .collection('users')
+      .get();
+    const userData: UserPopularity[] = [];
+
+    usersQuerySnapshot.forEach((userDoc) => {
+      const user = userDoc.data() as UserInfo;
+      user.id_user = parseInt(userDoc.id, 10);
+      user.cpf = user.cpf || '';
+      user.cref = user.cref || '';
+      user.dataNascimento = user.dataNascimento || '';
+      user.peso = user.peso || '';
+      user.estado = user.estado || '';
+      user.perna = user.perna || '';
+      user.altura = user.altura || '';
+      const userPopularity: UserPopularity = {
+        ...user,
+        likeCount: 1,
+      };
+
+      userData.push(userPopularity);
+    });
+
+    const likedQuerySnapshot = await firebase
+      .firestore()
+      .collection('liked')
+      .get();
+
+    likedQuerySnapshot.forEach((likedDoc) => {
+      const likedData = likedDoc.data();
+      const userId = likedData.id_user;
+
+      const userPopularity = userData.find((user) => user.id_user === userId);
+      if (userPopularity) {
+        userPopularity.likeCount++;
+      }
+    });
+
+    return userData;
+  } catch (error) {
+    console.error('Erro ao buscar dados de popularidade:', error);
     return [];
   }
 };

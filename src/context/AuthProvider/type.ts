@@ -23,6 +23,26 @@ export interface InfoUser {
   username: string;
 }
 
+export interface UserInfo {
+  id_user: number;
+  idade?: string;
+  email: string;
+  fotoPerfil: string;
+  cidade?: string;
+  username: string;
+  cpf?: string;
+  cref?: string;
+  dataNascimento?: string;
+  peso?: string;
+  estado?: string;
+  perna?: string;
+  altura?: string;
+}
+
+export interface UserPopularity extends UserInfo {
+  likeCount: number;
+}
+
 export interface IPost {
   value: PostProps;
   answer?: boolean;

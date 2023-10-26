@@ -1,45 +1,55 @@
-import { Heart, MessageCircle, ThumbsUp } from 'lucide-react';
+import { Heart, ThumbsUp } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { UserPopularity } from '../../../context/AuthProvider/type';
+import { Link } from 'react-router-dom';
 
-export const CardInfoBar = ({ avaliados }: { avaliados?: boolean }) => {
+type CardInfoBarProps = {
+  avaliados?: boolean;
+  info: UserPopularity;
+};
+
+export const CardInfoBar = (props: CardInfoBarProps) => {
+  console.log(props);
   return (
-    <div className="flex items-center justify-between gap-2 p-2">
+    <Link
+      to={`/user/${props.info.username}`}
+      className="flex items-center justify-between gap-2 p-2"
+    >
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage
-            src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-            alt="avatar"
-          />
+          <AvatarImage src={props.info.fotoPerfil} alt={props.info.username} />
           <AvatarFallback>A</AvatarFallback>
         </Avatar>
         <div>
           <p className="text-sm font-bold text-zinc-800 dark:text-zinc-300">
-            John Doe
+            {props.info.username}
           </p>
-          <p className="text-xs text-gray-500">XXXXXXXXXXXX</p>
+          <p className="text-xs text-gray-500">
+            {props.info.idade || props.info.idade} - {props.info.cidade}
+          </p>
         </div>
       </div>
       <div className="flex flex-col items-center">
-        {avaliados ? (
+        {props.avaliados ? (
           <>
             <span className="flex items-center gap-2">
               <ThumbsUp className="w-4 text-secondary-50 " />{' '}
-              <small className="text-zinc-800 dark:text-zinc-300">32</small>
+              <small className="text-zinc-800 dark:text-zinc-300">
+                {props.info.likeCount}
+              </small>
             </span>
           </>
         ) : (
           <>
             <span className="flex items-center gap-1">
               <Heart className="w-4 text-red-500 " />{' '}
-              <small className="text-zinc-800 dark:text-zinc-300">32</small>
-            </span>
-            <span className="flex items-center gap-1">
-              <MessageCircle className="w-4 text-primary-50" />{' '}
-              <small className="text-zinc-800 dark:text-zinc-300">32</small>
+              <small className="text-zinc-800 dark:text-zinc-300">
+                {props.info.likeCount}
+              </small>
             </span>
           </>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
