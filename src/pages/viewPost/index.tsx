@@ -1,6 +1,7 @@
 import {
   fetchAnswers,
   fetchDataUser,
+  fetchLike,
   fetchPost,
 } from '../../context/hooks/getData';
 import { useParams } from 'react-router-dom';
@@ -45,6 +46,15 @@ export function ViewPost() {
     }
   };
 
+  const fetchLikes = async (): Promise<boolean> => {
+    const postData = await fetchLike(userData?.id_user || 0, Number(id));
+    if (postData) {
+      return postData;
+    } else {
+      return false;
+    }
+  };
+
   const { data: post, isLoading } = useQuery({
     queryKey: [`post${id}`],
     queryFn: fetchDataPost,
@@ -58,6 +68,11 @@ export function ViewPost() {
   const { data: userData } = useQuery({
     queryKey: [`answersUser${id}`],
     queryFn: fetchDUser,
+  });
+
+  const { data: like } = useQuery({
+    queryKey: [`like${id}`],
+    queryFn: fetchLikes,
   });
 
   if (isLoading) {
@@ -115,7 +130,7 @@ export function ViewPost() {
     <>
       {post && (
         <>
-          <Post value={post} />
+          <Post value={post} liked={like} />
           <Separator />
           <FormPost value={userData || null} answer />
           <Separator />

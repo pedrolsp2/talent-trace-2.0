@@ -4,7 +4,6 @@ import {
   InfoUser,
   LikeProps,
   PostProps,
-  UserInfo,
   UserPopularity,
 } from '../AuthProvider/type';
 import firebase from '../../../src/services/firebase/config';
@@ -597,48 +596,41 @@ export const fetchPeneira = async (id: number) => {
 
 export const fetchUserPopularityData = async () => {
   try {
-    const usersQuerySnapshot = await firebase
+    const usersCollection = firebase
       .firestore()
       .collection('users')
-      .get();
-    const userData: UserPopularity[] = [];
+      .where('altura', '!=', '');
+    const userSnapshots = await usersCollection.get();
 
-    usersQuerySnapshot.forEach((userDoc) => {
-      const user = userDoc.data() as UserInfo;
-      user.id_user = parseInt(userDoc.id, 10);
-      user.cpf = user.cpf || '';
-      user.cref = user.cref || '';
-      user.dataNascimento = user.dataNascimento || '';
-      user.peso = user.peso || '';
-      user.estado = user.estado || '';
-      user.perna = user.perna || '';
-      user.altura = user.altura || '';
+    const userPopularityData: UserPopularity[] = [];
+
+    // Usar `map` para criar um array de Promises
+    const promises = userSnapshots.docs.map(async (doc) => {
+      const userData = doc.data();
+
+      const likesSnapshot = await firebase
+        .firestore()
+        .collection('liked')
+        .where('id_revice', '==', userData.id_user)
+        .get();
+      const likesData = likesSnapshot.docs.map((doc) => doc.data());
+
+      const numberOfLikes = likesData.length;
+
       const userPopularity: UserPopularity = {
-        ...user,
-        likeCount: 1,
+        id_user: userData.id_user,
+        idade: userData.idade,
+        cidade: userData.cidade,
+        username: userData.username,
+        fotoPerfil: userData.fotoPerfil,
+        numberOfLikes,
       };
 
-      userData.push(userPopularity);
+      userPopularityData.push(userPopularity);
     });
-
-    const likedQuerySnapshot = await firebase
-      .firestore()
-      .collection('liked')
-      .get();
-
-    likedQuerySnapshot.forEach((likedDoc) => {
-      const likedData = likedDoc.data();
-      const userId = likedData.id_user;
-
-      const userPopularity = userData.find((user) => user.id_user === userId);
-      if (userPopularity) {
-        userPopularity.likeCount++;
-      }
-    });
-
-    return userData;
+    await Promise.all(promises);
+    return userPopularityData;
   } catch (error) {
-    console.error('Erro ao buscar dados de popularidade:', error);
-    return [];
+    throw new Error('Erro ao buscar os dados de popularidade dos usuários');
   }
 };

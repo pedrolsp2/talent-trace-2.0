@@ -39,14 +39,26 @@ export interface UserInfo {
   altura?: string;
 }
 
-export interface UserPopularity extends UserInfo {
-  likeCount: number;
+export interface ILike {
+  id_post: number;
+  id_revice: number;
+  id_user: number;
+}
+
+export interface UserPopularity {
+  id_user: number;
+  idade: string | undefined;
+  cidade: string | undefined;
+  username: string;
+  fotoPerfil: string;
+  numberOfLikes: number;
 }
 
 export interface IPost {
   value: PostProps;
   answer?: boolean;
   fetch?: () => void;
+  liked?: boolean | undefined;
 }
 
 export interface PostProps {

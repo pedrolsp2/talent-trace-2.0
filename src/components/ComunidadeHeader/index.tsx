@@ -57,17 +57,19 @@ export function ComunidadeHeader(props: value) {
             </div>
           </div>
         </div>
-        <SearchComunidade />
-        {props.userData?.cref &&
-          (props.new ? (
-            props.status && (
-              <NovoPost userData={props.userData} fetch={props.fetch} />
-            )
-          ) : (
-            <div className="flex gap-4">
-              <NovaComunidade userData={props.userData} />
-            </div>
-          ))}
+        <div className="flex items-center gap-2">
+          <SearchComunidade />
+          {props.userData?.cref &&
+            (props.new ? (
+              props.status && (
+                <NovoPost userData={props.userData} fetch={props.fetch} />
+              )
+            ) : (
+              <div className="flex gap-4">
+                <NovaComunidade userData={props.userData} />
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );

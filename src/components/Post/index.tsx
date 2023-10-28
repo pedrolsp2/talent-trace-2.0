@@ -22,7 +22,6 @@ import {
   fetchDeleteAnswer,
   fetchDeleteLike,
   fetchDeletePost,
-  fetchLike,
   handleLike,
 } from '../../context/hooks/getData';
 import { BadgeCheck } from 'lucide-react';
@@ -32,7 +31,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function Post(props: IPost) {
   const [userData, setUserData] = useState<InfoUser | null>(null);
-  const [data, setData] = useState<boolean>(false);
   const [countLike, setCountLike] = useState(0);
   const strogae = getUserLocalStorage();
   const email = strogae[0];
@@ -86,7 +84,7 @@ export function Post(props: IPost) {
   }
 
   async function handleNewLike(id: number) {
-    if (data) {
+    if (props.liked) {
       if (userData) {
         await fetchDeleteLike(id, userData?.id_user || 0);
       }
@@ -113,7 +111,6 @@ export function Post(props: IPost) {
               title: 'Sucesso!',
               description: 'Você deu like!',
             });
-            props?.fetch && props.fetch();
           })
           .catch((error) => {
             console.error('Erro ao obter dados:', error);
@@ -125,8 +122,7 @@ export function Post(props: IPost) {
   async function checkLikedStatus() {
     const count = await fetchCountLike(props.value.id_post);
     setCountLike(count);
-    const like = await fetchLike(userData?.id_user || 0, props.value.id_post);
-    setData(like);
+    queryClient.invalidateQueries({ queryKey: ['likes'] });
   }
 
   const { mutate, isLoading } = useMutation(
@@ -147,7 +143,7 @@ export function Post(props: IPost) {
   }, [props.value.id_post, props.value.id_user]);
 
   return (
-    <div className="px-5 py-6 flex flex-col border-b border-slate-200 dark:border-zinc-900 dark:bg-dark-TT">
+    <div className="flex flex-col px-5 py-6 border-b border-slate-200 dark:border-zinc-900 dark:bg-dark-TT">
       <div className="grid grid-cols-[auto,1fr] gap-3">
         <Link to={`/user/${props?.value.username}`}>
           <Avatar>
@@ -169,7 +165,7 @@ export function Post(props: IPost) {
                 {props?.value.nome_user}
               </span>
               {props?.value.cref && <BadgeCheck size={14} color="#14AF6C" />}
-              <span className="text-zinc-500 font-normal text-xs">
+              <span className="text-xs font-normal text-zinc-500">
                 @{props?.value.username}
               </span>
             </span>
@@ -205,7 +201,7 @@ export function Post(props: IPost) {
           </div>
           <Link
             to={`/view-post/${props?.value.id_post}`}
-            className="p-1 flex flex-col gap-1"
+            className="flex flex-col gap-1 p-1"
           >
             {props?.value.content}
             {props?.value.image && (
@@ -214,7 +210,7 @@ export function Post(props: IPost) {
               </div>
             )}
           </Link>
-          <div className="pt-3 flex items-center">
+          <div className="flex items-center pt-3">
             <div className="flex gap-12">
               {props?.answer ? undefined : (
                 <>
@@ -222,24 +218,26 @@ export function Post(props: IPost) {
                     <ChatCircle size={24} className="cursor-pointer" />
                     <span className="text-base">{props?.value.n_comement}</span>
                   </span>
+                  <span className="flex items-center justify-center gap-2 text-zinc-500">
+                    <Heart
+                      size={24}
+                      onClick={() => mutate()}
+                      weight={`${props.liked ? 'fill' : 'regular'}`}
+                      className={`cursor-pointer ${
+                        props.liked ? 'text-red-500' : 'text-zinc-500'
+                      } ${isLoading ? 'animate-bounce' : ''}`}
+                    />
+                    <span className="text-base">{countLike}</span>
+                  </span>
                 </>
               )}
-              <span className="flex items-center justify-center gap-2 text-zinc-500">
-                <Heart
-                  size={24}
-                  onClick={() => mutate()}
-                  weight={`${data ? 'fill' : 'regular'}`}
-                  className={`cursor-pointer ${
-                    data ? 'text-red-500' : 'text-zinc-500'
-                  } ${isLoading ? 'animate-bounce' : ''}`}
-                />
-                <span className="text-base">{countLike}</span>
-              </span>
             </div>
-            <ShareNetwork
-              size={24}
-              className="ml-auto cursor-pointer text-zinc-400"
-            />
+            {props?.answer ? undefined : (
+              <ShareNetwork
+                size={24}
+                className="ml-auto cursor-pointer text-zinc-400"
+              />
+            )}
           </div>
         </div>
       </div>

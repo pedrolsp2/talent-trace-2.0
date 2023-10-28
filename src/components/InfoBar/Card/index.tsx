@@ -35,7 +35,7 @@ export const CardInfoBar = (props: CardInfoBarProps) => {
             <span className="flex items-center gap-2">
               <ThumbsUp className="w-4 text-secondary-50 " />{' '}
               <small className="text-zinc-800 dark:text-zinc-300">
-                {props.info.likeCount}
+                {props.info.numberOfLikes}
               </small>
             </span>
           </>
@@ -44,7 +44,7 @@ export const CardInfoBar = (props: CardInfoBarProps) => {
             <span className="flex items-center gap-1">
               <Heart className="w-4 text-red-500 " />{' '}
               <small className="text-zinc-800 dark:text-zinc-300">
-                {props.info.likeCount}
+                {props.info.numberOfLikes}
               </small>
             </span>
           </>

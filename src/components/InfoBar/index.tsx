@@ -8,6 +8,7 @@ export const InfoBar = () => {
     queryKey: ['info'],
     queryFn: fetchUserPopularityData,
   });
+  data?.sort((a, b) => b.numberOfLikes - a.numberOfLikes);
 
   console.log(data);
 
@@ -16,64 +17,64 @@ export const InfoBar = () => {
       <div className="flex flex-col gap-2 py-8">
         <Skeleton className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+            <div className="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-800"></div>
             <div className="flex flex-col gap-2">
-              <p className="w-24 p-2 text-sm font-bold rounded bg-zinc-800"></p>
-              <p className="w-40 p-2 text-sm font-bold rounded bg-zinc-800"></p>
+              <p className="w-24 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
+              <p className="w-40 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
             </div>
           </div>
         </Skeleton>
         <Skeleton className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+            <div className="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-800"></div>
             <div className="flex flex-col gap-2">
-              <p className="w-24 p-2 text-sm font-bold rounded bg-zinc-800"></p>
-              <p className="w-40 p-2 text-sm font-bold rounded bg-zinc-800"></p>
+              <p className="w-24 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
+              <p className="w-40 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
             </div>
           </div>
         </Skeleton>
         <Skeleton className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+            <div className="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-800"></div>
             <div className="flex flex-col gap-2">
-              <p className="w-24 p-2 text-sm font-bold rounded bg-zinc-800"></p>
-              <p className="w-40 p-2 text-sm font-bold rounded bg-zinc-800"></p>
+              <p className="w-24 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
+              <p className="w-40 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
             </div>
           </div>
         </Skeleton>
         <Skeleton className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+            <div className="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-800"></div>
             <div className="flex flex-col gap-2">
-              <p className="w-24 p-2 text-sm font-bold rounded bg-zinc-800"></p>
-              <p className="w-40 p-2 text-sm font-bold rounded bg-zinc-800"></p>
+              <p className="w-24 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
+              <p className="w-40 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
             </div>
           </div>
         </Skeleton>
         <Skeleton className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+            <div className="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-800"></div>
             <div className="flex flex-col gap-2">
-              <p className="w-24 p-2 text-sm font-bold rounded bg-zinc-800"></p>
-              <p className="w-40 p-2 text-sm font-bold rounded bg-zinc-800"></p>
+              <p className="w-24 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
+              <p className="w-40 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
             </div>
           </div>
         </Skeleton>
         <Skeleton className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+            <div className="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-800"></div>
             <div className="flex flex-col gap-2">
-              <p className="w-24 p-2 text-sm font-bold rounded bg-zinc-800"></p>
-              <p className="w-40 p-2 text-sm font-bold rounded bg-zinc-800"></p>
+              <p className="w-24 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
+              <p className="w-40 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
             </div>
           </div>
         </Skeleton>
         <Skeleton className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+            <div className="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-800"></div>
             <div className="flex flex-col gap-2">
-              <p className="w-24 p-2 text-sm font-bold rounded bg-zinc-800"></p>
-              <p className="w-40 p-2 text-sm font-bold rounded bg-zinc-800"></p>
+              <p className="w-24 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
+              <p className="w-40 p-2 text-sm font-bold rounded dark:bg-zinc-800 bg-zinc-200"></p>
             </div>
           </div>
         </Skeleton>
