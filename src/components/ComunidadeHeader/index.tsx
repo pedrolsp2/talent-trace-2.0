@@ -21,7 +21,7 @@ export function ComunidadeHeader(props: value) {
   return (
     <div
       className={`flex flex-col items-start gap-2.5 self-stretch py-2 px-3 dark:bg-dark-TT2 border border-[#ececec] bg-neutral-50 dark:border-zinc-900 ${
-        !isMobileDevice() && 'sticky z-[99] top-0'
+        !isMobileDevice() && 'sticky z-[40] top-0'
       }`}
     >
       <div className="flex flex-wrap items-center self-stretch justify-between px-1 py-0">

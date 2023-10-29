@@ -122,83 +122,83 @@ export const Comunidade = () => {
   if (isLoading) {
     return (
       <>
-        <Skeleton className="h-10 w-full dark:bg-dark-TT3 rounded-none bg-slate-100" />
+        <Skeleton className="w-full h-10 rounded-none dark:bg-dark-TT3 bg-slate-100" />
         <Skeleton className="flex justify-between items-center self-stretch py-1 px-8 border-b border-b-[#e8e8e8] dark:border-dark-TT">
-          <Skeleton className="flex justify-center items-center py-3 gap-4 px-0">
-            <Skeleton className="rounded-full w-20 h-20 dark:bg-dark-TT3 bg-slate-100" />
+          <Skeleton className="flex items-center justify-center gap-4 px-0 py-3">
+            <Skeleton className="w-20 h-20 rounded-full dark:bg-dark-TT3 bg-slate-100" />
             <Skeleton className="flex flex-col justify-between gap-1">
               <Skeleton className="text-[#3c3c3c] dark:text-zinc-300 text-[2rem] font-semibold leading-[100%] h-6 w-48 dark:bg-dark-TT3 bg-slate-100"></Skeleton>
-              <Skeleton className="flex items-center gap-1 h-4 w-24 dark:bg-dark-TT3 bg-slate-100">
+              <Skeleton className="flex items-center w-24 h-4 gap-1 dark:bg-dark-TT3 bg-slate-100">
                 <Skeleton className="text-[#888] dark:text-zinc-400 text-sm leading-[155.99%]"></Skeleton>
               </Skeleton>
             </Skeleton>
           </Skeleton>
         </Skeleton>
-        <Skeleton className="p-2 flex flex-col">
+        <Skeleton className="flex flex-col p-2">
           <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
             <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
             <Skeleton className="flex flex-col gap-5 px-2">
               <Skeleton className="flex flex-col">
-                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="w-16 h-4 dark:bg-dark-TT3 bg-slate-100 text-md" />
                 <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
               </Skeleton>
-              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="w-full h-4 mt-2 text-xl font-semibold dark:bg-dark-TT3 bg-slate-100" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
             </Skeleton>
           </Skeleton>
         </Skeleton>
-        <Skeleton className="p-2 flex flex-col">
+        <Skeleton className="flex flex-col p-2">
           <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
             <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
             <Skeleton className="flex flex-col gap-5 px-2">
               <Skeleton className="flex flex-col">
-                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="w-16 h-4 dark:bg-dark-TT3 bg-slate-100 text-md" />
                 <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
               </Skeleton>
-              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="w-full h-4 mt-2 text-xl font-semibold dark:bg-dark-TT3 bg-slate-100" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
             </Skeleton>
           </Skeleton>
         </Skeleton>
-        <Skeleton className="p-2 flex flex-col">
+        <Skeleton className="flex flex-col p-2">
           <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
             <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
             <Skeleton className="flex flex-col gap-5 px-2">
               <Skeleton className="flex flex-col">
-                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="w-16 h-4 dark:bg-dark-TT3 bg-slate-100 text-md" />
                 <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
               </Skeleton>
-              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="w-full h-4 mt-2 text-xl font-semibold dark:bg-dark-TT3 bg-slate-100" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
             </Skeleton>
           </Skeleton>
         </Skeleton>
-        <Skeleton className="p-2 flex flex-col">
+        <Skeleton className="flex flex-col p-2">
           <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
             <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
             <Skeleton className="flex flex-col gap-5 px-2">
               <Skeleton className="flex flex-col">
-                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="w-16 h-4 dark:bg-dark-TT3 bg-slate-100 text-md" />
                 <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
               </Skeleton>
-              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="w-full h-4 mt-2 text-xl font-semibold dark:bg-dark-TT3 bg-slate-100" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
             </Skeleton>
           </Skeleton>
         </Skeleton>
-        <Skeleton className="p-2 flex flex-col">
+        <Skeleton className="flex flex-col p-2">
           <Skeleton className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
             <Skeleton className="w-10 h-10 rounded-full dark:bg-dark-TT3 bg-slate-100" />
             <Skeleton className="flex flex-col gap-5 px-2">
               <Skeleton className="flex flex-col">
-                <Skeleton className="dark:bg-dark-TT3 bg-slate-100 w-16 h-4 text-md" />
+                <Skeleton className="w-16 h-4 dark:bg-dark-TT3 bg-slate-100 text-md" />
                 <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-[300px] h-4 mt-1" />
               </Skeleton>
-              <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-2" />
+              <Skeleton className="w-full h-4 mt-2 text-xl font-semibold dark:bg-dark-TT3 bg-slate-100" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
               <Skeleton className="dark:bg-dark-TT3 bg-slate-100 font-semibold text-xl w-full h-4 mt-[-12px]" />
             </Skeleton>
@@ -227,11 +227,11 @@ export const Comunidade = () => {
         <>
           {' '}
           <div className="flex flex-col p-1">
-            <div className="flex py-3 gap-4 px-0">
+            <div className="flex gap-4 px-0 py-3">
               <img
                 src={comunidade?.banner}
                 alt={comunidade?.nome}
-                className="rounded-full w-12 h-12"
+                className="object-cover w-12 h-12 rounded-full"
               />
               <div className="flex flex-col justify-between gap-1">
                 <div className="text-[#3c3c3c] dark:text-zinc-300 text-[1.5rem] font-semibold leading-[100%]">
@@ -263,12 +263,12 @@ export const Comunidade = () => {
       ) : (
         <>
           {' '}
-          <div className="flex justify-between items-center self-stretch py-1 px-8">
-            <div className="flex justify-center items-center py-3 gap-4 px-0">
+          <div className="flex items-center self-stretch justify-between px-8 py-1">
+            <div className="flex items-center justify-center gap-4 px-0 py-3">
               <img
                 src={comunidade?.banner}
                 alt={comunidade?.nome}
-                className="rounded-full w-20 h-20"
+                className="w-20 h-20 rounded-full"
               />
               <div className="flex flex-col justify-between gap-1">
                 <div className="text-[#3c3c3c] dark:text-zinc-300 text-[2rem] font-semibold leading-[100%]">
@@ -301,7 +301,7 @@ export const Comunidade = () => {
 
       {data?.length == 0 && (
         <>
-          <h1 className="text-center my-6">
+          <h1 className="my-6 text-center">
             Sem post nesta comunidade.
             <Link to={`/comunidades`} className="text-primary-50">
               {' '}
@@ -314,13 +314,13 @@ export const Comunidade = () => {
         data.map((item) =>
           isMobileDevice() ? (
             <>
-              <div className="flex flex-col gap-8 px-1 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
-                <div className="flex gap-2 w-full">
+              <div className="flex flex-col w-full gap-8 px-1 py-3 border border-zinc-100 dark:border-dark-TT2">
+                <div className="flex w-full gap-2">
                   <Avatar>
                     <AvatarFallback>FT</AvatarFallback>
                     <AvatarImage src={item.fotoOlheiro} />'
                   </Avatar>
-                  <div className="flex flex-col  w-full">
+                  <div className="flex flex-col w-full">
                     <span className="text-[#3c3c3c] dark:text-zinc-300 text-md">
                       {item.nomeOlheiro}
                     </span>
@@ -333,7 +333,7 @@ export const Comunidade = () => {
                   </div>
                 </div>
                 <p className="dark:text-zinc-400">{item.conteudo}</p>
-                <span className="ml-auto flex items-center gap-2">
+                <span className="flex items-center gap-2 ml-auto">
                   <Heart size={24} className="cursor-pointer text-zinc-500" />
                   <ChatCircle
                     size={24}
@@ -344,7 +344,7 @@ export const Comunidade = () => {
             </>
           ) : (
             <>
-              <div className="p-2 flex flex-col">
+              <div className="flex flex-col p-2">
                 <div className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
                   <Avatar>
                     <AvatarFallback>FT</AvatarFallback>
@@ -363,7 +363,7 @@ export const Comunidade = () => {
                       </div>
                     </div>
                     <p className="dark:text-zinc-400">{item.conteudo}</p>
-                    <span className="ml-auto flex items-center gap-2">
+                    <span className="flex items-center gap-2 ml-auto">
                       <Heart
                         size={24}
                         className="cursor-pointer text-zinc-500"

@@ -8,6 +8,7 @@ import {
 } from '../AuthProvider/type';
 import firebase from '../../../src/services/firebase/config';
 import { toast } from '../../components/ui/use-toast';
+import { ToastAction } from '../../components/ui/toast';
 
 export const fetchDataPost = async () => {
   const postsCollection = await firebase.firestore().collection('post').get();
@@ -361,7 +362,12 @@ export const handleNewComunidade = async (value: ComunidadeProps) => {
     toast({
       variant: 'default',
       title: 'Sucesso!',
-      description: 'Dados inseridos com sucesso!',
+      description: 'Comunidade criada com sucesso!',
+      action: (
+        <ToastAction altText="Ver a comunidade criada">
+          <a href={`/comunidade/${value.nameURL}`}>Ver</a>
+        </ToastAction>
+      ),
     });
   } catch (error) {
     console.error('Erro ao inserir os dados:', error);
@@ -469,11 +475,6 @@ export const userNewComunidade = async (
       nameURL: nameURL,
       tipo: type,
       nome: nome,
-    });
-    toast({
-      variant: 'default',
-      title: 'Sucesso!',
-      description: 'Bem vindo!',
     });
   } catch (error) {
     console.error('Erro ao inserir os dados:', error);

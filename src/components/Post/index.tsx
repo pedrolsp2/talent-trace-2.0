@@ -233,10 +233,12 @@ export function Post(props: IPost) {
               )}
             </div>
             {props?.answer ? undefined : (
-              <ShareNetwork
-                size={24}
+              <Link
+                to={`/view-post/${props.value.id_post}`}
                 className="ml-auto cursor-pointer text-zinc-400"
-              />
+              >
+                <ShareNetwork size={24} />
+              </Link>
             )}
           </div>
         </div>
