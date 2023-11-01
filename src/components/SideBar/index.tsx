@@ -17,7 +17,7 @@ import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import { Skeleton } from '../ui/skeleton';
 import { fetchDataUser, fetchMyCom } from '../../context/hooks/getData';
 import { BadgeCheck, Flame, LogOut, SlackIcon, User } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { BadgeType } from '../BadgeType';
 import {
   DropdownMenu,
@@ -41,6 +41,7 @@ export function SideBar() {
     localStorage.getItem('theme') ? localStorage.getItem('theme')! : 'light'
   );
 
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const auth = useAuth();
   const storoga = getUserLocalStorage();
@@ -284,6 +285,9 @@ export function SideBar() {
               {menuComunidade &&
                 menuComunidade.map((item) => (
                   <Link
+                    onClick={() =>
+                      queryClient.invalidateQueries(['comunidade_contet'])
+                    }
                     to={`/comunidade/${item.nameURL}`}
                     className="flex items-center gap-2"
                     key={item.nameURL}

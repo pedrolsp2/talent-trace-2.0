@@ -119,6 +119,7 @@ export interface IMessage {
 }
 
 export interface ContentComunidade {
+  id_content: number;
   nameURL: string;
   conteudo: string;
   titulo: string;
@@ -126,6 +127,17 @@ export interface ContentComunidade {
   nomeOlheiro: string;
   fotoOlheiro: string;
   img?: string;
+}
+
+export interface IConent {
+  nameURL: string;
+  img: string;
+  id_content: number;
+  tipo: 'Peneiras' | 'Curiosidades' | 'Treinos';
+  nomeOlheiro: string;
+  conteudo: string;
+  titulo: string;
+  fotoOlheiro: string;
 }
 
 export interface IPeneira {

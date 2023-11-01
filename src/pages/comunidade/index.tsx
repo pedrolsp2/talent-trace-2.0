@@ -25,6 +25,12 @@ import {
 import { ChatCircle } from '@phosphor-icons/react';
 import { BadgeType } from '../../components/BadgeType';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 function isMobileDevice() {
   return (
@@ -321,7 +327,7 @@ export const Comunidade = () => {
                     <AvatarImage src={item.fotoOlheiro} />'
                   </Avatar>
                   <div className="flex flex-col w-full">
-                    <span className="text-[#3c3c3c] dark:text-zinc-300 text-md">
+                    <span className="text-[#747474] dark:text-zinc-300 text-md">
                       {item.nomeOlheiro}
                     </span>
                     <span className="text-[#3c3c3c] dark:text-zinc-200 font-semibold text-xl">
@@ -332,7 +338,7 @@ export const Comunidade = () => {
                     </span>
                   </div>
                 </div>
-                <p className="dark:text-zinc-400">{item.conteudo}</p>
+                <div dangerouslySetInnerHTML={{ __html: item.conteudo }} />
                 <span className="flex items-center gap-2 ml-auto">
                   <Heart size={24} className="cursor-pointer text-zinc-500" />
                   <ChatCircle
@@ -352,7 +358,7 @@ export const Comunidade = () => {
                   </Avatar>
                   <div className="flex flex-col gap-5 px-2">
                     <div className="flex flex-col">
-                      <span className="text-[#3c3c3c] dark:text-zinc-300 text-md">
+                      <span className="text-[#747474] dark:text-zinc-300 text-md">
                         {item.nomeOlheiro}
                       </span>
                       <div className="flex items-center gap-2">
@@ -362,7 +368,38 @@ export const Comunidade = () => {
                         <BadgeType type={item.tipo} variant="default" />
                       </div>
                     </div>
-                    <p className="dark:text-zinc-400">{item.conteudo}</p>
+                    {!status ? (
+                      <Dialog>
+                        <DialogTrigger>
+                          <div
+                            className="text-left"
+                            dangerouslySetInnerHTML={{ __html: item.conteudo }}
+                          />
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            Não foi possivel interagir
+                          </DialogHeader>
+                          Para avançar, por favor entre na comundiade
+                          <button
+                            className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]"
+                            onClick={() => mutate()}
+                          >
+                            Entrar
+                          </button>
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <Link
+                        to={`/view-content/${item.id_content}`}
+                        className="dark:text-zinc-300"
+                      >
+                        <div
+                          dangerouslySetInnerHTML={{ __html: item.conteudo }}
+                        />
+                      </Link>
+                    )}
+
                     <span className="flex items-center gap-2 ml-auto">
                       <Heart
                         size={24}

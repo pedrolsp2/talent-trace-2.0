@@ -447,6 +447,7 @@ export const handleNewContentComundiade = async (value: ContentComunidade) => {
       nomeOlheiro: value.nomeOlheiro,
       fotoOlheiro: value.fotoOlheiro,
       img: value.img,
+      id_content: value.id_content,
     });
     toast({
       variant: 'default',
@@ -633,5 +634,62 @@ export const fetchUserPopularityData = async () => {
     return userPopularityData;
   } catch (error) {
     throw new Error('Erro ao buscar os dados de popularidade dos usuários');
+  }
+};
+
+export const fetchContentPostComunidade = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('contentComunidade')
+    .where('id_content', '==', id)
+    .get();
+  if (!userDoc.empty) {
+    return userDoc.docs[0].data();
+  } else {
+    return null;
+  }
+};
+
+export const newAnswerContent = async (
+  id_user: number,
+  id_content: number,
+  nome: string,
+  foto: string,
+  conteudo: string
+) => {
+  try {
+    await firebase.firestore().collection('answersContent').add({
+      id_user: id_user,
+      id_content: id_content,
+      nome: nome,
+      foto: foto,
+      conteudo: conteudo,
+    });
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Sucesso ao comentar!',
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao entrar. Por favor, tente novamente.',
+    });
+  }
+};
+
+export const fetchAnswersComunidade = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('answersContent')
+    .where('id_content', '==', id)
+    .get();
+  if (!userDoc.empty) {
+    return userDoc.docs.map((doc) => doc.data());
+  } else {
+    console.error('Erro ao buscar dados.');
+    return [];
   }
 };

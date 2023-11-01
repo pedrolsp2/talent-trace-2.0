@@ -57,8 +57,10 @@ export const NovoPost = (props: value) => {
   });
 
   const onSubmit = async (data: ContentComunidade) => {
+    const id = Math.floor(Math.random() * 10000);
     try {
       handleNewContentComundiade({
+        id_content: Number(id),
         nameURL: name || '',
         conteudo: editorContent,
         titulo: data.titulo,
