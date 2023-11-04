@@ -25,7 +25,7 @@ export function HoverCardLike(item: value) {
     <HoverCard>
       <div className="flex flex-col gap-2 p-4 bg-[#fafafa] relative dark:bg-dark-TT">
         <Alert className="border border-primary-50 bg-[#fff] max-w-xl dark:bg-dark-TT2">
-          <Smile className="h-4 w-4" color="#290398" />
+          <Smile className="w-4 h-4" color="#290398" />
           <AlertTitle className="dark:text-zinc-50">
             Você recebeu uma curtida!
           </AlertTitle>
@@ -33,12 +33,11 @@ export function HoverCardLike(item: value) {
             <span className="text-secondary-60 dark:text-zinc-400">
               {item.value.cref ? 'O olheiro ' : 'O jogador '}
               <HoverCardTrigger>
-                {' '}
-                <span className="text-zinc-50 font-bold cursor-pointer">
+                <span className="font-bold cursor-pointer text-zinc-500">
                   {item.value.username}{' '}
                 </span>
               </HoverCardTrigger>
-              <HoverCardContent className="bg-white flex gap-2">
+              <HoverCardContent className="flex gap-2 bg-white">
                 <Avatar>
                   <AvatarFallback>FT</AvatarFallback>
                   <AvatarImage src={item.value.fotoUser} />

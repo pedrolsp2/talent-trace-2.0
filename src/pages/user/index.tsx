@@ -153,14 +153,14 @@ export function User() {
       </div>
       {!isMobileDevice() ? (
         <>
-          <div className="flex items-center gap-3 self-stretch py-4 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT">
+          <div className="flex items-center self-stretch gap-3 px-3 py-4 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT">
             <AlignCenter size={24} className="text-primary-50" />
             <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal]">
               Atividades
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100 dark:bg-zinc-900">
-            <div className="flex justify-center items-center gap-2">
+          <div className="flex flex-wrap items-center self-stretch gap-10 p-4 bg-zinc-100 dark:bg-zinc-900">
+            <div className="flex items-center justify-center gap-2">
               <BookDownIcon size={20} className="text-primary-50" />
               <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                 {userData.cref ? data?.comunidades : data?.posts}{' '}
@@ -168,14 +168,14 @@ export function User() {
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <Heart size={20} className="text-primary-50" />
               <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                 {data?.likes} likes recebidos
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <Footprints size={20} className="text-primary-50" />
               <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                 4{' '}
@@ -183,7 +183,7 @@ export function User() {
               </div>
             </div>
             {userData.cref && (
-              <div className="flex justify-center items-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <Sticker size={20} className="text-primary-50" />
                 <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                   {data?.posts}{' '}
@@ -198,7 +198,7 @@ export function User() {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem
               value="item-1"
-              className="w-full py-1 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT"
+              className="w-full px-3 py-1 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT"
             >
               <AccordionTrigger>
                 <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] flex gap-3">
@@ -207,8 +207,8 @@ export function User() {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="flex flex-wrap items-center gap-10 self-stretch p-4 bg-zinc-100 dark:bg-dark-TT">
-                  <div className="flex justify-center items-center gap-2">
+                <div className="flex flex-wrap items-center self-stretch gap-10 p-4 bg-zinc-100 dark:bg-dark-TT">
+                  <div className="flex items-center justify-center gap-2">
                     <BookDownIcon size={20} className="text-primary-50" />
                     <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                       {data?.posts}{' '}
@@ -216,14 +216,14 @@ export function User() {
                     </div>
                   </div>
 
-                  <div className="flex justify-center items-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
                     <Heart size={20} className="text-primary-50" />
                     <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                       {data?.likes} likes recebidos
                     </div>
                   </div>
 
-                  <div className="flex justify-center items-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
                     <Footprints size={20} className="text-primary-50" />
                     <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                       4{' '}
@@ -233,7 +233,7 @@ export function User() {
                     </div>
                   </div>
                   {userData.cref && (
-                    <div className="flex justify-center items-center gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       <Sticker size={20} className="text-primary-50" />
                       <div className="text-[#444] dark:text-zinc-400 text-base leading-[normal]">
                         {data?.posts}{' '}
@@ -252,10 +252,10 @@ export function User() {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem
               value="item-1"
-              className="w-full py-1 px-3 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT"
+              className="w-full px-3 py-1 border-b border-b-zinc-150 dark:border-b-zinc-900 dark:bg-dark-TT"
             >
               <AccordionTrigger>
-                <div className="flex items-center gap-3 self-stretch py-4 px-3dark:bg-dark-TT relative">
+                <div className="relative flex items-center self-stretch gap-3 py-4 px-3dark:bg-dark-TT">
                   <Bell size={24} className="text-primary-50" />
                   <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
                     Notificações
@@ -277,7 +277,7 @@ export function User() {
         </>
       )}
 
-      <div className="flex items-center gap-3 self-stretch py-4 px-3 border-y border-y-zinc-150 dark:border-y-zinc-900 dark:bg-dark-TT">
+      <div className="flex items-center self-stretch gap-3 px-3 py-4 border-y border-y-zinc-150 dark:border-y-zinc-900 dark:bg-dark-TT">
         <ClipboardEdit size={24} className="text-primary-50" />
         <div className="text-[#b3b3b3] dark:text-white text-base leading-[normal] ">
           Últimos posts

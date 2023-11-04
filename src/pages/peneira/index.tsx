@@ -58,7 +58,7 @@ export const Peneira = () => {
     <>
       <div className="grid items-center justify-between grid-cols-[240px,1fr] gap-8 p-2 ">
         <div className="flex items-center justify-center">
-          <img src="https://github.com/pedrolsp2.png" alt="Pedro" />
+          <img src={data?.banner} alt="Banner" />
         </div>
         <div className="flex flex-col gap-2 p-4 border dark:border-dark-TT2">
           <span className="font-bold text-[24px] text-zinc-800 dark:text-white">
