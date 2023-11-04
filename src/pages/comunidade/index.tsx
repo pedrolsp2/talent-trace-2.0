@@ -11,26 +11,15 @@ import {
   fetchComunidadeName,
   fetchContentComundiade,
   fetchDataUser,
+  fetchLikeContent,
   fetchUserComunidade,
   userNewComunidade,
 } from '../../context/hooks/getData';
-import { Heart, UserCheck } from 'lucide-react';
+import { UserCheck } from 'lucide-react';
 import { ComunidadeHeader } from '../../components/ComunidadeHeader';
 import { Skeleton } from '../../components/ui/skeleton';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '../../components/ui/avatar';
-import { ChatCircle } from '@phosphor-icons/react';
-import { BadgeType } from '../../components/BadgeType';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { ContentComunidad } from '@/components/ContentComunidade';
 
 function isMobileDevice() {
   return (
@@ -39,11 +28,19 @@ function isMobileDevice() {
   );
 }
 
+async function checkLikedStatus(
+  id_user: number,
+  id_post: number
+): Promise<boolean | undefined> {
+  const like = await fetchLikeContent(id_user, id_post);
+  return like;
+}
+
 export const Comunidade = () => {
   const [comunidade, setComunidade] = useState<ComunidadeProps | null>(null);
   const [userData, setUserData] = useState<InfoUser | null>(null);
-  const [count, setCount] = useState(0);
   const { name } = useParams<{ name: string }>();
+  const [count, setCount] = useState(0);
   const [status, setStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -110,6 +107,22 @@ export const Comunidade = () => {
     setCount(count);
     queryClient.invalidateQueries({ queryKey: ['menu-comunidade'] });
   }
+
+  const fetchLiked = async () => {
+    if (data) {
+      const promises = data.map((item) =>
+        checkLikedStatus(userData?.id_user || 0, item.id_content)
+      );
+      return Promise.all(promises);
+    } else {
+      return [];
+    }
+  };
+
+  const { data: likedPromises } = useQuery({
+    queryKey: ['likesContent', name],
+    queryFn: fetchLiked,
+  });
 
   useEffect(() => {
     fetchData();
@@ -268,7 +281,6 @@ export const Comunidade = () => {
         </>
       ) : (
         <>
-          {' '}
           <div className="flex items-center self-stretch justify-between px-8 py-1">
             <div className="flex items-center justify-center gap-4 px-0 py-3">
               <img
@@ -317,105 +329,10 @@ export const Comunidade = () => {
         </>
       )}
       {data &&
-        data.map((item) =>
-          isMobileDevice() ? (
-            <>
-              <div className="flex flex-col w-full gap-8 px-1 py-3 border border-zinc-100 dark:border-dark-TT2">
-                <div className="flex w-full gap-2">
-                  <Avatar>
-                    <AvatarFallback>FT</AvatarFallback>
-                    <AvatarImage src={item.fotoOlheiro} />'
-                  </Avatar>
-                  <div className="flex flex-col w-full">
-                    <span className="text-[#747474] dark:text-zinc-300 text-md">
-                      {item.nomeOlheiro}
-                    </span>
-                    <span className="text-[#3c3c3c] dark:text-zinc-200 font-semibold text-xl">
-                      {item.titulo}
-                    </span>
-                    <span className="ml-auto">
-                      <BadgeType type={item.tipo} variant="default" />
-                    </span>
-                  </div>
-                </div>
-                <div dangerouslySetInnerHTML={{ __html: item.conteudo }} />
-                <span className="flex items-center gap-2 ml-auto">
-                  <Heart size={24} className="cursor-pointer text-zinc-500" />
-                  <ChatCircle
-                    size={24}
-                    className="cursor-pointer text-zinc-500"
-                  />
-                </span>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex flex-col p-2">
-                <div className="grid grid-cols-[2.25rem,1fr] gap-2 px-2 py-3 w-full border border-zinc-100 dark:border-dark-TT2">
-                  <Avatar>
-                    <AvatarFallback>FT</AvatarFallback>
-                    <AvatarImage src={item.fotoOlheiro} />'
-                  </Avatar>
-                  <div className="flex flex-col gap-5 px-2">
-                    <div className="flex flex-col">
-                      <span className="text-[#747474] dark:text-zinc-300 text-md">
-                        {item.nomeOlheiro}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#3c3c3c] dark:text-zinc-200 font-semibold text-xl">
-                          {item.titulo}
-                        </span>
-                        <BadgeType type={item.tipo} variant="default" />
-                      </div>
-                    </div>
-                    {!status ? (
-                      <Dialog>
-                        <DialogTrigger>
-                          <div
-                            className="text-left"
-                            dangerouslySetInnerHTML={{ __html: item.conteudo }}
-                          />
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            Não foi possivel interagir
-                          </DialogHeader>
-                          Para avançar, por favor entre na comundiade
-                          <button
-                            className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]"
-                            onClick={() => mutate()}
-                          >
-                            Entrar
-                          </button>
-                        </DialogContent>
-                      </Dialog>
-                    ) : (
-                      <Link
-                        to={`/view-content/${item.id_content}`}
-                        className="dark:text-zinc-300"
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{ __html: item.conteudo }}
-                        />
-                      </Link>
-                    )}
-
-                    <span className="flex items-center gap-2 ml-auto">
-                      <Heart
-                        size={24}
-                        className="cursor-pointer text-zinc-500"
-                      />
-                      <ChatCircle
-                        size={24}
-                        className="cursor-pointer text-zinc-500"
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
-          )
-        )}
+        data.map((item, index) => {
+          const liked = likedPromises?.[index] ?? null;
+          return <ContentComunidad item={item} key={index} liked={liked!} />;
+        })}
     </>
   );
 };

@@ -9,7 +9,7 @@ import {
 import { IConent, InfoUser } from '../../context/AuthProvider/type';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { BadgeType } from '@/components/BadgeType';
-import { Heart, Loader } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import { Separator } from '@/components/Separator';
 import { useState } from 'react';
 import ReactQuill from 'react-quill';
@@ -132,9 +132,6 @@ export const ViewContent = () => {
             <div className="dark:text-zinc-300">
               <div dangerouslySetInnerHTML={{ __html: data?.conteudo || '' }} />
             </div>
-            <span className="flex gap-2 ml-auto datas-center">
-              <Heart size={24} className="cursor-pointer text-zinc-500" />
-            </span>
           </div>
         </div>
       </div>
@@ -184,9 +181,6 @@ export const ViewContent = () => {
                 <div className="dark:text-zinc-300">
                   <div dangerouslySetInnerHTML={{ __html: item.conteudo }} />
                 </div>
-                <span className="flex gap-2 ml-auto datas-center">
-                  <Heart size={24} className="cursor-pointer text-zinc-500" />
-                </span>
               </div>
             </div>
           </div>

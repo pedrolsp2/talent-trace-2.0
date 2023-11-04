@@ -1,4 +1,9 @@
-import { Notebook, Sparkle, UserSquare } from '@phosphor-icons/react';
+import {
+  Notebook,
+  SoccerBall,
+  Sparkle,
+  UserSquare,
+} from '@phosphor-icons/react';
 import { SlackIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -16,6 +21,7 @@ export function Header() {
     '/view-post': <Notebook size={28} />,
     '/user': <UserSquare size={28} />,
     '/comunidades': <SlackIcon size={28} />,
+    '/peneiras': <SoccerBall size={28} />,
   };
   const pages: Record<string, string> = {
     '/': 'Home',
@@ -23,6 +29,7 @@ export function Header() {
     '/user': 'Perfil do usuário',
     '/comunidades': 'Comunidades',
     '/comunidade': 'Comunidade',
+    '/peneiras': 'Peneiras',
   };
 
   useEffect(() => {
@@ -50,12 +57,17 @@ export function Header() {
     }
   }, [location.pathname]);
 
-  if (page === 'Comunidade' || page === 'Comunidades' || null) {
+  if (
+    page === 'Comunidade' ||
+    page === 'Comunidades' ||
+    null ||
+    page === 'Peneiras'
+  ) {
     return null;
   }
 
   return (
-    <div className="border-x border-slate-200 dark:border-zinc-900 flex items-center justify-between px-5 py-6 bg-white dark:bg-dark-TT">
+    <div className="flex items-center justify-between px-5 py-6 bg-white border-x border-slate-200 dark:border-zinc-900 dark:bg-dark-TT">
       <span className="font-bold">{page}</span>
       <span className="text-secondary-40">{icon}</span>
     </div>

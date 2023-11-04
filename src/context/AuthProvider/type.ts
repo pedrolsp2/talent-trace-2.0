@@ -127,6 +127,7 @@ export interface ContentComunidade {
   nomeOlheiro: string;
   fotoOlheiro: string;
   img?: string;
+  n_comement: number;
 }
 
 export interface IConent {
@@ -145,16 +146,17 @@ export interface IPeneira {
   idadeMinima: number;
   nomePeneira: string;
   tipoDesejo: string;
-  horario: { seconds: number; nanoseconds: number };
   fotoOlheiro: string;
   id_peneira: number;
   nomeLocal: string;
-  dataPeneira: { seconds: number; nanoseconds: number };
+  dataPeneira: string;
   cidade: string;
   local: string;
   idadeMaxima: number;
   nomeOlheiro: string;
-  dataCriação: { seconds: number; nanoseconds: number };
+  dataCriação: Date;
+  obs: string;
+  banner: string;
 }
 
 export interface IInfoProfile {

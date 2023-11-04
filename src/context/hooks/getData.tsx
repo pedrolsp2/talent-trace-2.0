@@ -1,6 +1,7 @@
 import {
   ComunidadeProps,
   ContentComunidade,
+  IPeneira,
   InfoUser,
   LikeProps,
   PostProps,
@@ -196,6 +197,55 @@ export const fetchNewAnswers = async (
   }
 };
 
+export const newAnswerContent = async (
+  id_user: number,
+  id_content: number,
+  nome: string,
+  foto: string,
+  conteudo: string
+) => {
+  try {
+    await firebase.firestore().collection('answersContent').add({
+      id_user: id_user,
+      id_content: id_content,
+      nome: nome,
+      foto: foto,
+      conteudo: conteudo,
+    });
+    const userDoc = await firebase
+      .firestore()
+      .collection('contentComunidade')
+      .where('id_content', '==', id_content)
+      .limit(1) // Fetch only one matching document, since we expect only one match
+      .get();
+
+    if (!userDoc.empty) {
+      const doc = userDoc.docs[0];
+      const id = doc.id;
+
+      await firebase
+        .firestore()
+        .collection('contentComunidade')
+        .doc(id)
+        .update({
+          n_comement: firebase.firestore.FieldValue.increment(1),
+        });
+    }
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Sucesso ao comentar!',
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao entrar. Por favor, tente novamente.',
+    });
+  }
+};
+
 export const fetchDeletePost = async (id_post: number) => {
   const postRef = firebase.firestore().collection('post');
   const postSnapshot = await postRef.where('id_post', '==', id_post).get();
@@ -244,8 +294,44 @@ export const fetchLike = async (id_user: number, id_post: number) => {
   }
 };
 
+export const fetchLikeContent = async (id_user: number, id_post: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('likedContent')
+    .where('id_user', '==', id_user)
+    .where('id_post', '==', id_post)
+    .get();
+  if (!userDoc.empty) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const fetchDeleteLike = async (id_post: number, id_user: number) => {
   const postRef = firebase.firestore().collection('liked');
+  const postSnapshot = await postRef
+    .where('id_user', '==', id_user)
+    .where('id_post', '==', id_post)
+    .get();
+
+  postSnapshot.forEach((documentSnapshot) => {
+    documentSnapshot.ref
+      .delete()
+      .then(() => {
+        console.log("Documento deletado com sucesso em 'post'!");
+      })
+      .catch((error) => {
+        console.error("Erro ao deletar documento em 'post': ", error);
+      });
+  });
+};
+
+export const fetchDeleteLikeContent = async (
+  id_post: number,
+  id_user: number
+) => {
+  const postRef = firebase.firestore().collection('likedContent');
   const postSnapshot = await postRef
     .where('id_user', '==', id_user)
     .where('id_post', '==', id_post)
@@ -278,6 +364,21 @@ export const fetchCountLike = async (id: number) => {
   }
 };
 
+export const fetchCountLikeContent = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('likedContent')
+    .where('id_post', '==', id)
+    .get();
+  if (!userDoc.empty) {
+    const doc = userDoc.docs.map((doc) => doc.data());
+    console.log(doc.length);
+    return doc.length;
+  } else {
+    return 0;
+  }
+};
+
 export const fetchAlertLiked = async (id: number) => {
   const userDoc = await firebase
     .firestore()
@@ -289,6 +390,32 @@ export const fetchAlertLiked = async (id: number) => {
     return userDoc.docs.map((doc) => doc.data());
   } else {
     return [];
+  }
+};
+
+export const handleLikeContent = async (
+  id: number,
+  id_user: number,
+  nomeOlheiro: string
+) => {
+  try {
+    await firebase.firestore().collection('likedContent').add({
+      id_user: id_user,
+      id_post: id,
+      id_revice: nomeOlheiro,
+    });
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Você deu like!',
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao inserir os dados. Por favor, tente novamente.',
+    });
   }
 };
 
@@ -366,6 +493,45 @@ export const handleNewComunidade = async (value: ComunidadeProps) => {
       action: (
         <ToastAction altText="Ver a comunidade criada">
           <a href={`/comunidade/${value.nameURL}`}>Ver</a>
+        </ToastAction>
+      ),
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao inserir os dados. Por favor, tente novamente.',
+    });
+  }
+};
+
+export const handleNewPeneira = async (value: IPeneira) => {
+  try {
+    await firebase.firestore().collection('listPeneira').add({
+      descricaoPeneira: value.descricaoPeneira,
+      idadeMinima: value.idadeMinima,
+      nomePeneira: value.nomePeneira,
+      tipoDesejo: value.tipoDesejo,
+      dataPeneira: value.dataPeneira,
+      fotoOlheiro: value.fotoOlheiro,
+      id_peneira: value.id_peneira,
+      nomeLocal: value.nomeLocal,
+      cidade: value.cidade,
+      local: value.local,
+      idadeMaxima: value.idadeMaxima,
+      nomeOlheiro: value.nomeOlheiro,
+      dataCriação: new Date(),
+      obs: value.obs,
+      banner: value.banner,
+    });
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Peneira criada com sucesso!',
+      action: (
+        <ToastAction altText="Ver a peneira criada">
+          <a href={`/peneira/${value.id_peneira}`}>Ver</a>
         </ToastAction>
       ),
     });
@@ -460,6 +626,29 @@ export const handleNewContentComundiade = async (value: ContentComunidade) => {
       variant: 'destructive',
       title: 'Erro!',
       description: 'Erro ao inserir os dados. Por favor, tente novamente.',
+    });
+  }
+};
+
+export const userNewPeneira = async (
+  id_user: number,
+  id_peneira: number,
+  nome: string,
+  cref?: number
+) => {
+  try {
+    await firebase.firestore().collection('userPeneira').add({
+      id_user: id_user,
+      id_peneira: id_peneira,
+      cref: cref,
+      nome: nome,
+    });
+  } catch (error) {
+    console.error('Erro ao inserir os dados:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erro!',
+      description: 'Erro ao entrar. Por favor, tente novamente.',
     });
   }
 };
@@ -650,36 +839,6 @@ export const fetchContentPostComunidade = async (id: number) => {
   }
 };
 
-export const newAnswerContent = async (
-  id_user: number,
-  id_content: number,
-  nome: string,
-  foto: string,
-  conteudo: string
-) => {
-  try {
-    await firebase.firestore().collection('answersContent').add({
-      id_user: id_user,
-      id_content: id_content,
-      nome: nome,
-      foto: foto,
-      conteudo: conteudo,
-    });
-    toast({
-      variant: 'default',
-      title: 'Sucesso!',
-      description: 'Sucesso ao comentar!',
-    });
-  } catch (error) {
-    console.error('Erro ao inserir os dados:', error);
-    toast({
-      variant: 'destructive',
-      title: 'Erro!',
-      description: 'Erro ao entrar. Por favor, tente novamente.',
-    });
-  }
-};
-
 export const fetchAnswersComunidade = async (id: number) => {
   const userDoc = await firebase
     .firestore()
@@ -690,6 +849,19 @@ export const fetchAnswersComunidade = async (id: number) => {
     return userDoc.docs.map((doc) => doc.data());
   } else {
     console.error('Erro ao buscar dados.');
+    return [];
+  }
+};
+
+export const getParticipantes = async (id: number) => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('userPeneira')
+    .where('id_peneira', '==', id)
+    .get();
+  if (!userDoc.empty) {
+    return userDoc.docs.map((doc) => doc.data());
+  } else {
     return [];
   }
 };

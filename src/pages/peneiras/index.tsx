@@ -7,10 +7,36 @@ import {
 } from '../../components/ui/avatar';
 import { Filter, UserCheck } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchPeneiras } from '../../context/hooks/getData';
-import { IPeneira } from '../../context/AuthProvider/type';
+import { fetchDataUser, fetchPeneiras } from '../../context/hooks/getData';
+import { IPeneira, InfoUser } from '../../context/AuthProvider/type';
+import { getUserLocalStorage } from '@/context/AuthProvider/uitl';
+import { useEffect, useState } from 'react';
+import { PeneiraHeader } from '@/components/PeneiraHeader';
 
 export const Peneiras = () => {
+  const storage = getUserLocalStorage();
+  const email = storage[0];
+  const [userData, setUserData] = useState<InfoUser | null>(null);
+
+  async function fetchData() {
+    try {
+      const userData = await fetchDataUser(email);
+      if (userData && userData.id_user) {
+        setUserData(userData as InfoUser);
+      } else {
+        console.error(
+          'Propriedade id_user não encontrada nos dados do usuário.'
+        );
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados do usuário:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, [email]);
+
   const fetchPeneira = async (): Promise<IPeneira[]> => {
     const data = await fetchPeneiras();
     if (data) {
@@ -31,6 +57,7 @@ export const Peneiras = () => {
 
   return (
     <>
+      {userData && <PeneiraHeader userData={userData} />}
       <div className="flex flex-col gap-1 p-3">
         <section className="flex items-center justify-between p-2">
           <h1>Filtros</h1>
@@ -87,7 +114,7 @@ export const Peneiras = () => {
                     </svg>
                   </svg>
                   {peneira.nomePeneira}
-                  {data && <BadgePeneira value={data} />}
+                  {data && <BadgePeneira value={peneira} />}
                 </span>
                 <p className="text-[#666] dark:text-zinc-400 p-2 text-sm">
                   {peneira.descricaoPeneira}
