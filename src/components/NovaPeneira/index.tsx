@@ -83,7 +83,7 @@ export const NovaPeneira = (props: value) => {
         idadeMinima: data.idadeMinima,
         nomePeneira: data.nomePeneira,
         tipoDesejo: data.tipoDesejo,
-        dataPeneira: data.dataPeneira + horario,
+        dataPeneira: data.dataPeneira,
         fotoOlheiro: props.userData.fotoPerfil,
         id_peneira: id,
         nomeLocal: data.nomeLocal,

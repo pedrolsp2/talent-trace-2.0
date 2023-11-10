@@ -4,6 +4,7 @@ import { fetchPeneira, getParticipantes } from '../../context/hooks/getData';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import CountdownTimer from '@/components/CoutdownTime';
 
 type IPart = {
   cref?: number;
@@ -48,8 +49,6 @@ export const Peneira = () => {
     mutationFn: getParticipantesData,
   });
 
-  console.log(dataParticipantes);
-
   if (isLoading) {
     return <h1>Carregando...</h1>;
   }
@@ -61,8 +60,9 @@ export const Peneira = () => {
           <img src={data?.banner} alt="Banner" />
         </div>
         <div className="flex flex-col gap-2 p-4 border dark:border-dark-TT2">
-          <span className="font-bold text-[24px] text-zinc-800 dark:text-white">
+          <span className="font-bold text-[24px] text-zinc-800 dark:text-white flex justify-between">
             {data?.nomePeneira}
+            <CountdownTimer targetDate={data?.dataPeneira} />
           </span>
           <div className="flex items-center gap-2">
             <img
@@ -89,7 +89,7 @@ export const Peneira = () => {
               {dataParticipantes && dataParticipantes?.length > 0 ? (
                 dataParticipantes.map((part) => (
                   <div key={part.id_user} className="p-4">
-                    <div className="flex items-center gap-2 p-2 border">
+                    <div className="flex items-center gap-2 p-2">
                       <img
                         src={part.foto}
                         alt={part.nome}
@@ -139,7 +139,15 @@ export const Peneira = () => {
           </span>
           <span className="dark:text-zinc-300">
             <strong className="text-zinc-800 dark:text-white">Data:</strong>{' '}
-            <time>{new Date(data?.dataPeneira || 0).toLocaleString()}</time>
+            <time>
+              {data?.dataPeneira?.toDate()
+                ? `${data?.dataPeneira
+                    .toDate()
+                    .toLocaleDateString('pt-BR')} - ${data?.dataPeneira
+                    .toDate()
+                    .toLocaleTimeString()}`
+                : 'Data não disponível'}
+            </time>
           </span>
           <span className="dark:text-zinc-300">{data?.obs}</span>
         </div>

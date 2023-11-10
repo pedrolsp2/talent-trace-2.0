@@ -149,7 +149,7 @@ export interface IPeneira {
   fotoOlheiro: string;
   id_peneira: number;
   nomeLocal: string;
-  dataPeneira: string;
+  dataPeneira: Date;
   cidade: string;
   local: string;
   idadeMaxima: number;

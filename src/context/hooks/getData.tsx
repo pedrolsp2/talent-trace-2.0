@@ -262,6 +262,22 @@ export const fetchDeletePost = async (id_post: number) => {
   });
 };
 
+export const fetchDeleteContent = async (id_post: number) => {
+  const postRef = firebase.firestore().collection('contentComunidade');
+  const postSnapshot = await postRef.where('id_content', '==', id_post).get();
+
+  postSnapshot.forEach((documentSnapshot) => {
+    documentSnapshot.ref
+      .delete()
+      .then(() => {
+        console.log('Documento deletado com sucesso!');
+      })
+      .catch((error) => {
+        console.error("Erro ao deletar documento em 'post': ", error);
+      });
+  });
+};
+
 export const fetchDeleteAnswer = async (id_answers: number) => {
   const postRef = firebase.firestore().collection('answers');
   const postSnapshot = await postRef

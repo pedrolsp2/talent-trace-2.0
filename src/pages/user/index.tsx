@@ -39,6 +39,7 @@ import {
   AccordionContent,
 } from '../../components/ui/accordion';
 import { useQuery } from '@tanstack/react-query';
+import EditPerfil from '@/components/EditPerfil';
 
 function isMobileDevice() {
   return (
@@ -48,7 +49,6 @@ function isMobileDevice() {
 }
 
 export function User() {
-  const [isMobile, setIsMobile] = useState(false);
   const { username } = useParams<{ username: string }>();
   const [userData, setUserData] = useState<InfoUser | null>(null);
   const [posts, setPosts] = useState<PostProps[]>([]);
@@ -99,14 +99,6 @@ export function User() {
 
   useEffect(() => {
     fetchInfo();
-    const handleResize = () => {
-      setIsMobile(window.innerWidth > 600);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
   }, []);
 
   useEffect(() => {
@@ -140,16 +132,7 @@ export function User() {
             </div>
           </div>
         </div>
-        {userData?.email === email && (
-          <Button className="flex justify-center items-center gap-2.5 py-2 px-3 rounded bg-primary-50 hover:bg-primary-40">
-            <FileEdit size={24} color="#fff" />
-            {isMobile && (
-              <div className="text-white text-sm font-bold leading-[100%]">
-                Editar Perfil
-              </div>
-            )}
-          </Button>
-        )}
+        {userData?.email === email && <EditPerfil />}
       </div>
       {!isMobileDevice() ? (
         <>

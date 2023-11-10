@@ -21,10 +21,20 @@ import {
   fetchUserComunidade,
   handleLikeContent,
   userNewComunidade,
+  fetchDeleteContent,
 } from '@/context/hooks/getData';
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getUserLocalStorage } from '@/context/AuthProvider/uitl';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { DotsThreeVertical } from '@phosphor-icons/react';
 
 function isMobileDevice() {
   return (
@@ -120,6 +130,13 @@ export const ContentComunidad = (props: IValue) => {
     }
   );
 
+  const { mutate: mutateDelet } = useMutation({
+    mutationFn: (id: number) => fetchDeleteContent(id),
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ['comunidade_contet'] });
+    },
+  });
+
   useEffect(() => {
     fetchData();
     checkLikedStatus();
@@ -181,6 +198,26 @@ export const ContentComunidad = (props: IValue) => {
                   {props.item.titulo}
                 </span>
                 <BadgeType type={props.item.tipo} variant="default" />
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="ml-auto">
+                    {email == userData?.email && (
+                      <DotsThreeVertical
+                        size={28}
+                        className="ml-auto cursor-pointer text-zinc-400"
+                      />
+                    )}
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-zinc-100 dark:bg-dark-TT dark:text-zinc-100 dark:border-dark-TT2">
+                    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-zinc-200 dark:bg-dark-TT2" />
+                    <DropdownMenuItem
+                      onClick={() => mutateDelet(props.item.id_content)}
+                      className="cursor-pointer"
+                    >
+                      Deletar post
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
             {status ? (

@@ -83,7 +83,7 @@ export function FormPost(props: IForm) {
     e.preventDefault();
     setIsLoading(true);
 
-    let uploadedImageUrl = null;
+    let uploadedImageUrl = '';
     if (selectedImage) {
       const result = await uploadImageToFirebase(selectedImage, 'post');
       uploadedImageUrl = result.url;
@@ -117,7 +117,7 @@ export function FormPost(props: IForm) {
     setIsLoading(true);
     e.preventDefault();
 
-    let uploadedImageUrl = null;
+    let uploadedImageUrl = '';
     if (selectedImage) {
       const result = await uploadImageToFirebase(selectedImage, 'post');
       uploadedImageUrl = result.url;
