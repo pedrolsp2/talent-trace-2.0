@@ -8,6 +8,7 @@ import {
 import { getUserLocalStorage } from '../../context/AuthProvider/uitl';
 import {
   countUserComunidade,
+  deleteUserComunidade,
   fetchComunidadeName,
   fetchContentComundiade,
   fetchDataUser,
@@ -15,7 +16,7 @@ import {
   fetchUserComunidade,
   userNewComunidade,
 } from '../../context/hooks/getData';
-import { UserCheck } from 'lucide-react';
+import { Loader, UserCheck } from 'lucide-react';
 import { ComunidadeHeader } from '../../components/ComunidadeHeader';
 import { Skeleton } from '../../components/ui/skeleton';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -70,6 +71,13 @@ export const Comunidade = () => {
         comunidade?.tipo || '',
         comunidade?.nome || ''
       ),
+    {
+      onSuccess: () => fetchStatus(),
+    }
+  );
+
+  const { mutate: mutateSair, isLoading: isLoadingSair } = useMutation(
+    () => deleteUserComunidade(userData?.id_user || 0, name || ''),
     {
       onSuccess: () => fetchStatus(),
     }
@@ -273,8 +281,11 @@ export const Comunidade = () => {
                 Entrar
               </button>
             ) : (
-              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
-                Sair
+              <button
+                className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]"
+                onClick={() => mutateSair()}
+              >
+                {isLoadingSair ? <Loader className="animate-spin" /> : 'Sair'}
               </button>
             )}
           </div>
@@ -309,8 +320,11 @@ export const Comunidade = () => {
                 Entrar
               </button>
             ) : (
-              <button className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]">
-                Sair
+              <button
+                className="flex justify-center items-center gap-2.5 py-3 px-8 rounded bg-primary-50 text-white text-sm font-bold leading-[100%]"
+                onClick={() => mutateSair()}
+              >
+                {isLoadingSair ? <Loader className="animate-spin" /> : 'Sair'}
               </button>
             )}
           </div>

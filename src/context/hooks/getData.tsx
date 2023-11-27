@@ -604,6 +604,20 @@ export const fetchUserComunidade = async (
   return !userDoc.empty;
 };
 
+export const fetchUserPeneira = async (
+  id_peneira: number,
+  id: number
+): Promise<boolean> => {
+  const userDoc = await firebase
+    .firestore()
+    .collection('userPeneira')
+    .where('id_peneira', '==', id_peneira)
+    .where('id_user', '==', id)
+    .get();
+
+  return !userDoc.empty;
+};
+
 export const fetchContentComundiade = async (name: string) => {
   const postsCollection = await firebase
     .firestore()
@@ -650,21 +664,36 @@ export const userNewPeneira = async (
   id_user: number,
   id_peneira: number,
   nome: string,
+  nomeUser: string,
+  foto: string,
+  email: string,
   cref?: number
 ) => {
   try {
-    await firebase.firestore().collection('userPeneira').add({
-      id_user: id_user,
-      id_peneira: id_peneira,
-      cref: cref,
-      nome: nome,
+    console.log(id_user, id_peneira, nome, cref);
+    await firebase
+      .firestore()
+      .collection('userPeneira')
+      .add({
+        id_user: id_user,
+        id_peneira: id_peneira,
+        cref: cref || '',
+        nome: nome,
+        nomeUser: nomeUser,
+        foto: foto,
+        email: email,
+      });
+    toast({
+      variant: 'default',
+      title: 'Sucesso!',
+      description: 'Bem vindo e boa sorte!',
     });
   } catch (error) {
     console.error('Erro ao inserir os dados:', error);
     toast({
       variant: 'destructive',
       title: 'Erro!',
-      description: 'Erro ao entrar. Por favor, tente novamente.',
+      description: 'Erro ao inscrever. Por favor, tente novamente.',
     });
   }
 };
@@ -689,6 +718,55 @@ export const userNewComunidade = async (
       title: 'Erro!',
       description: 'Erro ao entrar. Por favor, tente novamente.',
     });
+  }
+};
+
+export const deleteUserComunidade = async (
+  id_user: number,
+  nameURL: string
+) => {
+  const postRef = firebase.firestore().collection('userComunidade');
+
+  try {
+    const postSnapshot = await postRef
+      .where('id_user', '==', id_user)
+      .where('nameURL', '==', nameURL)
+      .get();
+
+    if (postSnapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+
+    postSnapshot.forEach(async (documentSnapshot) => {
+      await documentSnapshot.ref.delete();
+    });
+
+    console.log('Você saiu com sucesso!');
+  } catch (error) {
+    console.error('Erro ao sair:', error);
+  }
+};
+
+export const deleteUserPeneira = async (
+  id_user: number,
+  id_peneira: number
+) => {
+  console.log(id_user, id_peneira);
+  try {
+    const querySnapshot = await firebase
+      .firestore()
+      .collection('userPeneira')
+      .where('id_user', '==', id_user)
+      .where('id_peneira', '==', id_peneira)
+      .get();
+
+    querySnapshot.forEach((doc) => {
+      doc.ref.delete();
+      console.log('Você saiu com sucesso!', doc);
+    });
+  } catch (error) {
+    console.error('Erro ao deletar documento: ', error);
   }
 };
 

@@ -56,6 +56,11 @@ export function Comunidades() {
   }
 
   useEffect(() => {
+    const newTitle = 'Talent Trace | Comunidades';
+    document.title = newTitle;
+  }, []);
+
+  useEffect(() => {
     fetchData();
   }, [email]);
 

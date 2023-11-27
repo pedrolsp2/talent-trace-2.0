@@ -99,6 +99,9 @@ export const NovaPeneira = (props: value) => {
         props.userData?.id_user || 0,
         id,
         data.nomePeneira,
+        props.userData.username,
+        props.userData.fotoPerfil,
+        props.userData.email,
         Number(props.userData.cref)
       );
     } catch (error) {

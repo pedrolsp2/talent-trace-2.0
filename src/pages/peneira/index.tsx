@@ -1,10 +1,20 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { IPeneira } from '../../context/AuthProvider/type';
-import { fetchPeneira, getParticipantes } from '../../context/hooks/getData';
+import { IPeneira, InfoUser } from '../../context/AuthProvider/type';
+import {
+  deleteUserPeneira,
+  fetchDataUser,
+  fetchPeneira,
+  fetchUserPeneira,
+  getParticipantes,
+  userNewPeneira,
+} from '../../context/hooks/getData';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import CountdownTimer from '@/components/CoutdownTime';
+import { getUserLocalStorage } from '@/context/AuthProvider/uitl';
+import { useEffect, useState } from 'react';
+import { Loader } from 'lucide-react';
 
 type IPart = {
   cref?: number;
@@ -13,10 +23,28 @@ type IPart = {
   id_peneira: number;
   id_user: number;
   nome: string;
+  nomeUser: string;
 };
 
 export const Peneira = () => {
   const { id } = useParams();
+  const [status, setStatus] = useState(false);
+  const stroage = getUserLocalStorage();
+  const email = stroage[0];
+
+  const fetchData = async (): Promise<InfoUser> => {
+    const userData = await fetchDataUser(email);
+    if (userData) {
+      return userData as InfoUser;
+    } else {
+      throw new Error('Usuário não encontrado');
+    }
+  };
+
+  const { data: userData } = useQuery({
+    queryKey: ['user', id],
+    queryFn: fetchData,
+  });
 
   async function getPeneira(): Promise<IPeneira> {
     const data = await fetchPeneira(Number(id));
@@ -48,6 +76,50 @@ export const Peneira = () => {
   } = useMutation({
     mutationFn: getParticipantesData,
   });
+
+  const { mutate: mutateInscreva, isLoading: loadingInscreva } = useMutation(
+    () =>
+      userNewPeneira(
+        userData?.id_user || 0,
+        Number(id),
+        data?.nomePeneira || '',
+        userData?.user || '',
+        userData?.fotoPerfil || '',
+        userData?.email || ''
+      ),
+    {
+      onSuccess() {
+        fetchStatus();
+      },
+    }
+  );
+
+  const { mutate: mutateSair, isLoading: loadingSair } = useMutation({
+    mutationFn: () =>
+      deleteUserPeneira(userData?.id_user || 0, Number(id) || 0),
+    mutationKey: ['sair'],
+    onSuccess: () => {
+      fetchStatus();
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
+
+  async function fetchStatus() {
+    const result = await fetchUserPeneira(
+      Number(id) || 0,
+      userData?.id_user || 0
+    );
+    console.log(result);
+    setStatus(result);
+  }
+
+  useEffect(() => {
+    fetchStatus();
+    const newTitle = 'Talent Trace | Peneira';
+    document.title = newTitle;
+  }, [id]);
 
   if (isLoading) {
     return <h1>Carregando...</h1>;
@@ -92,12 +164,12 @@ export const Peneira = () => {
                     <div className="flex items-center gap-2 p-2">
                       <img
                         src={part.foto}
-                        alt={part.nome}
+                        alt={part.nomeUser}
                         className="w-12 h-12 rounded-full"
                       />
                       <div className="flex flex-col gap-1">
                         <span className="font-bold text-[14px]">
-                          {part.nome}
+                          {part.nomeUser}
                         </span>
                         <span className="text-[12px]">{part.email}</span>
                       </div>
@@ -151,9 +223,25 @@ export const Peneira = () => {
           </span>
           <span className="dark:text-zinc-300">{data?.obs}</span>
         </div>
-        <Button className="px-8 mx-auto mt-4 text-white bg-primary-50 hover:bg-primary-60">
-          Inscreva-se
-        </Button>
+        {!status ? (
+          <Button
+            className="px-8 mx-auto mt-4 text-white bg-primary-50 hover:bg-primary-60"
+            onClick={() => mutateInscreva()}
+          >
+            {loadingInscreva ? (
+              <Loader className="animate-spin" />
+            ) : (
+              'Inscrever-se'
+            )}
+          </Button>
+        ) : (
+          <Button
+            className="px-8 mx-auto mt-4 text-white bg-primary-50 hover:bg-primary-60"
+            onClick={() => mutateSair()}
+          >
+            {loadingSair ? <Loader className="animate-spin" /> : 'Sair'}
+          </Button>
+        )}
       </main>
     </>
   );
